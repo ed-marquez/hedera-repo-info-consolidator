@@ -96,3 +96,18 @@ do
 
     cd ..
 done
+
+# Combine all combined files into a single main file
+all_hedera_repos_combined="all_hedera_repos_combined.txt"
+echo "Creating single combined file for all repos: $all_hedera_repos_combined"
+
+# Remove existing main combined file if it exists
+rm -f "$all_hedera_repos_combined"
+
+# Loop over combined files in the parent directory
+for combined_file in ./*_repo_combined_*.*; do
+    echo "Adding $combined_file to $all_hedera_repos_combined"
+    echo "===== Start of $combined_file =====" >> "$all_hedera_repos_combined"
+    cat "$combined_file" >> "$all_hedera_repos_combined"
+    echo "===== End of $combined_file =====" >> "$all_hedera_repos_combined"
+done
