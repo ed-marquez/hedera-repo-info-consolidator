@@ -137,6 +137,8 @@ $ anvil --help
 $ cast --help
 ```
 <!-- Filename: README.md -->
+:warning: :bangbang: ***All examples and contracts in this repository are exploration code and have NOT been audited. Use them at your own risk!*** :bangbang: :warning:
+
 # Hedera Smart Contracts
 
 Reference library for Smart Contracts utilized by the Hedera network with supporting files and examples.
@@ -371,10 +373,39 @@ The table below outlines the available Hedera Account Service System Contract fu
 
 | Function Name     | Function Selector Hash | Consensus Node Release Version                                               | HIP                                            | Method Interface                                                           |
 | ----------------- | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------- |
-| `hbarAllowance`   | `0xbbee989e`           | [0.52](https://docs.hedera.com/hedera/networks/release-notes/services#v0.52) | [HIP 906](https://hips.hedera.com/hip/hip-906) | `hbarAllowance(address spender)`                                           |
-| `hbarApprove`     | `0x86aff07c`           | [0.52](https://docs.hedera.com/hedera/networks/release-notes/services#v0.52) | [HIP 906](https://hips.hedera.com/hip/hip-906) | `hbarApprove(address spender, int256 amount)`                              |
-| `isAuthorizedRaw` | `0xb2a31da4`           | [0.52](https://docs.hedera.com/hedera/networks/release-notes/services#v0.52) | [HIP 632](https://hips.hedera.com/hip/hip-632) | `isAuthorizedRaw(address, bytes /*messageHash*/, bytes /*signatureBlob*/)` |
-<!-- Filename: contracts/system-contracts/hedera-token-service/README.md -->
+| `hbarAllowance`   | `0xbbee989e`           | [0.52](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.52) | [HIP 906](https://hips.hedera.com/hip/hip-906) | `hbarAllowance(address spender)`                                           |
+| `hbarApprove`     | `0x86aff07c`           | [0.52](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.52) | [HIP 906](https://hips.hedera.com/hip/hip-906) | `hbarApprove(address spender, int256 amount)`                              |
+| `isAuthorizedRaw` | `0xb2a31da4`           | [0.52](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.52) | [HIP 632](https://hips.hedera.com/hip/hip-632) | `isAuthorizedRaw(address, bytes /*messageHash*/, bytes /*signatureBlob*/)` |
+| `isAuthorized`    | `0xb2526367`           | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56) | [HIP 632](https://hips.hedera.com/hip/hip-632) | `isAuthorizedRaw(address, bytes /*messageHash*/, bytes /*signatureBlob*/)` |
+
+The Hedera network also make facade contract calls available to EOAs for improved experience.
+Facade function allow for EOAs to make calls without requiring a deployed contract
+The table below outlines the available Hedera Account Service (HAS) System Contract facade functions:
+
+| Function Name                          | Function Selector Hash | Consensus Node Release Version                                               | HIP                                            | Method Interface                                                                                                                                                              | Comments                                                       |
+| -------------------------------------- | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `setUnlimitedAutomaticAssociations`   | `0xf5677e99`  | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56)  | [HIP 904](https://hips.hedera.com/hip/hip-904) | `setUnlimitedAutomaticAssociations(bool enableAutoAssociations) external returns (int64 responseCode)` |<!-- Filename: contracts/system-contracts/hedera-schedule-service/README.md -->
+## Hedera Schedule Service (HSS) System Contract Functions
+
+The Hedera Schedule Service (HSS) System Contract is accessible at address `0x16b` on the Hedera network. This contract interface introduces a new schedule transaction proxy contract to interact with other contracts for functionality such as creating and signing scheduled transactions. It also enables querying information about certain scheduled transactions.
+
+The table below outlines the available Hedera Schedule Service System Contract functions:
+
+| Function Name     | Function Selector Hash | Consensus Node Release Version                                               | HIP                                            | Method Interface                                                           |
+| -----------------  | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------- |
+| `authorizeSchedule` | `0xf0637961`           | [0.57](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.57) | [HIP 755](https://hips.hedera.com/hip/hip-755) | `authorizeSchedule(address schedule) external returns (int64 responseCode)`                                           |
+| `signSchedule`     | `0x358eeb03`           | [0.59](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59) | [HIP 755](https://hips.hedera.com/hip/hip-755) | `signSchedule(address schedule, bytes memory signatureMap) external returns (int64 responseCode`                              |
+| `scheduleNative` | `0xca829811`           | [0.59](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59) | [HIP 756](https://hips.hedera.com/hip/hip-756) | `scheduleNative(address systemContractAddress, bytes memory callData, address payer) external returns (int64 responseCode, address scheduleAddress)` |
+| `getScheduledCreateFungibleTokenInfo`    | `0xda2d5f8f`           | [0.59](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59) | [HIP 756](https://hips.hedera.com/hip/hip-756) | `getScheduledCreateFungibleTokenInfo(address scheduleAddress) external returns (int64 responseCode, IHederaTokenService.FungibleTokenInfo memory fungibleTokenInfo)` |
+| `getScheduledCreateNonFungibleTokenInfo`    | `0xd68c902c`           | [0.59](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.59) | [HIP 756](https://hips.hedera.com/hip/hip-756) | `getScheduledCreateNonFungibleTokenInfo(address scheduleAddress) external returns (int64 responseCode, IHederaTokenService.NonFungibleTokenInfo memory nonFungibleTokenInfo)` |
+
+The Hedera network also make facade contract calls available to EOAs for improved experience.
+Facade function allow for EOAs to make calls without requiring a deployed contract
+The table below outlines the available Hedera Schedule Service (HSS) System Contract facade functions:
+
+| Function Name                          | Function Selector Hash | Consensus Node Release Version                                               | HIP                                            | Method Interface                                                                                |
+| -------------------------------------- | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | 
+| `signSchedule`   | `0x06d15889`  | [0.57](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.57)  | [HIP 755](https://hips.hedera.com/hip/hip-755) | `signSchedule() external returns (int64 responseCode)` <!-- Filename: contracts/system-contracts/hedera-token-service/README.md -->
 ## Hedera Token Service (HTS) System Contract Functions
 
 The Hedera Token Service (HTS) System Contract is accessible at address `0x167` on the Hedera network. This contract interface provides a comprehensive set of methods for creating, managing, and interacting with various types of tokens on the Hedera network.
@@ -383,16 +414,18 @@ The table below outlines the available Hedera Token Service (HTS) System Contrac
 
 | Function Name                          | Function Selector Hash | Consensus Node Release Version                                               | HIP                                            | Method Interface                                                                                                                                                              | Comments                                                       |
 | -------------------------------------- | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `airdropTokens`                       | `0x2f348119`           | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#v0.56) | [HIP 904](https://hips.hedera.com/hip/hip-904) | `airdropTokens(TokenTransferList[] memory tokenTransfers)`                                                                                                                    |
 | `allowance`                            | `0x927da105`           | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `allowance(address token, address owner, address spender)`                                                                                                                    |
 | `allowance`                            | `0xdd62ed3e`           | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 376](https://hips.hedera.com/hip/hip-376) | `allowance(address owner, address spender)`                                                                                                                                   | ERC allowance                                                  |
 | `approve`                              | `0xe1f21c67`           | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `approve(address token, address to, uint256 tokenId)`                                                                                                                         |
 | `approve`                              | `0x95ea7b3`            | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 376](https://hips.hedera.com/hip/hip-376) | `approve(address to, uint256 tokenId)`                                                                                                                                        | ERC approve                                                    |
 | `approveNFT`                           | `0x7336aaf0`           | [0.28](https://docs.hedera.com/hedera/networks/release-notes/services#v0.28) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `approveNFT(address token, address to, uint256 tokenId)`                                                                                                                      |
-| `associate`                            | `0x0a754de6`           | [0.38](https://docs.hedera.com/hedera/networks/release-notes/services#v0.38) | [HIP 719](https://hips.hedera.com/hip/hip-719) | `associate()`                                                                                                                                                                 |
 | `associateToken`                       | `0x49146bde`           | [0.22](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `associateToken(address account, address token)`                                                                                                                              |
 | `associateTokens`                      | `0x2e63879b`           | [0.22](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `associateTokens(address account, address[] memory tokens)`                                                                                                                   |
 | `burnToken`                            | `0xacb9cff9`           | [0.22](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `burnToken(address token, uint64 amount, int64[] memory serialNumbers)`                                                                                                       |
 | `burnToken`                            | `0xd6910d06`           | [0.32](https://docs.hedera.com/hedera/networks/release-notes/services#v0.32) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `burnToken(address token, int64 amount, int64[] memory serialNumbers)`                                                                                                        | v2. Update amount int64                                        |
+| `cancelAirdrops`                       | `0x012ebcaf`           | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#v0.56) | [HIP 904](https://hips.hedera.com/hip/hip-904) | `cancelAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode)`                                                                              |
+| `claimAirdrops`                       | `0x05961641`           | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#v0.56) | [HIP 904](https://hips.hedera.com/hip/hip-904) | `claimAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode)`                                                                            |
 | `createFungibleToken`                  | `0x7812a04b`           | [0.25](https://docs.hedera.com/hedera/networks/release-notes/services#v0.25) | [HIP 358](https://hips.hedera.com/hip/hip-358) | `createFungibleToken(HederaToken memory token, uint initialTotalSupply, uint decimals)`                                                                                       |
 | `createFungibleToken`                  | `0xc23baeb6`           | [0.30](https://docs.hedera.com/hedera/networks/release-notes/services#v0.30) | [HIP 358](https://hips.hedera.com/hip/hip-358) | `createFungibleToken(HederaToken memory token, uint64 initialTotalSupply, uint32 decimals)`                                                                                   | v2. Update initialTotalSupply to uint64 and decimals to uint32 |
 | `createFungibleToken`                  | `0x0fb65bf3`           | [0.32](https://docs.hedera.com/hedera/networks/release-notes/services#v0.32) | [HIP 358](https://hips.hedera.com/hip/hip-358) | `createFungibleToken(HederaToken memory token, int64 initialTotalSupply, int32 decimals)`                                                                                     | v3. Update initialTotalSupply to int64 and decimals to int32   |
@@ -408,7 +441,6 @@ The table below outlines the available Hedera Token Service (HTS) System Contrac
 | `cryptoTransfer`                       | `0x189a554c`           | [0.22](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `cryptoTransfer(TokenTransferList[] memory tokenTransfers)`                                                                                                                   |
 | `cryptoTransfer`                       | `0x0e71804f`           | Unreleased                                                                   | [HIP 206](https://hips.hedera.com/hip/hip-206) | `cryptoTransfer(TransferList memory transferList, TokenTransferList[] memory tokenTransfers) external returns (int64 responseCode)`                                           | v2. Atomic transfers                                           |
 | `deleteToken`                          | `0xf069f712`           | [0.29](https://docs.hedera.com/hedera/networks/release-notes/services#v0.29) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `deleteToken(address token)`                                                                                                                                                  |
-| `dissociate`                           | `0x5c9217e0`           | [0.38](https://docs.hedera.com/hedera/networks/release-notes/services#v0.38) | [HIP 719](https://hips.hedera.com/hip/hip-719) | `dissociate()`                                                                                                                                                                |
 | `dissociateToken`                      | `0x099794e8`           | [0.22](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `dissociateToken(address account, address token)`                                                                                                                             |
 | `dissociateTokens`                     | `0x78b63918`           | [0.22](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `dissociateTokens(address account, address[] memory tokens)`                                                                                                                  |
 | `freezeToken`                          | `0x5b8f8584`           | [0.29](https://docs.hedera.com/hedera/networks/release-notes/services#v0.29) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `freezeToken(address token, address account)`                                                                                                                                 |
@@ -424,7 +456,6 @@ The table below outlines the available Hedera Token Service (HTS) System Contrac
 | `getTokenKey`                          | `0x3c4dd32e`           | [0.30](https://docs.hedera.com/hedera/networks/release-notes/services#v0.30) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `getTokenKey(address token, uint256 keyType)`                                                                                                                                 |
 | `getTokenType`                         | `0x93272baf`           | [0.30](https://docs.hedera.com/hedera/networks/release-notes/services#v0.30) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `getTokenType(address token)`                                                                                                                                                 |
 | `grantTokenKyc`                        | `0x8f8d7f99`           | [0.29](https://docs.hedera.com/hedera/networks/release-notes/services#v0.29) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `grantTokenKyc(address  token, address account)`                                                                                                                              |
-| `isAssociated`                         | `0x4d8fdd6d`           | [0.53](https://docs.hedera.com/hedera/networks/release-notes/services#v0.53) | [HIP 719](https://hips.hedera.com/hip/hip-719) | `isAssociated()`                                                                                                                                                              |                                                                |
 | `isApprovedForAll`                     | `0xf49f40db`           | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 376](https://hips.hedera.com/hip/hip-376) | `isApprovedForAll(address token, address owner, address operator)`                                                                                                            | ERC                                                            |
 | `isApprovedForAll`                     | `0xe985e9c5`           | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 376](https://hips.hedera.com/hip/hip-376) | `isApprovedForAll(address token, address owner, address operator)`                                                                                                            |
 | `isFrozen`                             | `0x46de0fb1`           | [0.29](https://docs.hedera.com/hedera/networks/release-notes/services#v0.29) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `isFrozen(address token, address account)`                                                                                                                                    |
@@ -433,6 +464,7 @@ The table below outlines the available Hedera Token Service (HTS) System Contrac
 | `mintToken`                            | `0x278e0b88`           | [0.22](https://docs.hedera.com/hedera/networks/release-notes/services#v0.22) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `mintToken(address token, uint64 amount, bytes[] memory metadata)`                                                                                                            |
 | `mintToken`                            | `0xe0f4059a`           | [0.32](https://docs.hedera.com/hedera/networks/release-notes/services#v0.32) | [HIP 206](https://hips.hedera.com/hip/hip-206) | `mintToken(address token, int64 amount, bytes[] memory metadata)`                                                                                                             | v2. Update amount to int64                                     |
 | `redirectForToken`                     | `0x618dc65e`           | [0.30](https://docs.hedera.com/hedera/networks/release-notes/services#v0.24) | [HIP 218](https://hips.hedera.com/hip/hip-218) | `redirectForToken(address token, bytes memory data)`                                                                                                                          |
+| `rejectTokens`                       | `0xebd595e0`           | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#v0.56) | [HIP 904](https://hips.hedera.com/hip/hip-904) | `rejectTokens(address rejectingAddress, address[] memory ftAddresses, NftID[] memory nftIDs)`                                                                   |
 | `revokeTokenKyc`                       | `0xaf99c633`           | [0.29](https://docs.hedera.com/hedera/networks/release-notes/services#v0.29) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `revokeTokenKyc(address token, address account)`                                                                                                                              |
 | `setApprovalForAll`                    | `0xa22cb465`           | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 376](https://hips.hedera.com/hip/hip-376) | `setApprovalForAll(address operator, bool approved)`                                                                                                                          | ERC                                                            |
 | `setApprovalForAll`                    | `0x367605ca`           | [0.26](https://docs.hedera.com/hedera/networks/release-notes/services#v0.26) | [HIP 376](https://hips.hedera.com/hip/hip-376) | `setApprovalForAll(address token, address operator, bool approved)`                                                                                                           |
@@ -454,6 +486,23 @@ The table below outlines the available Hedera Token Service (HTS) System Contrac
 | `wipeTokenAccount`                     | `0x9790686d`           | [0.29](https://docs.hedera.com/hedera/networks/release-notes/services#v0.29) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `wipeTokenAccount(address token, address account, uint32 amount)`                                                                                                             |
 | `wipeTokenAccount`                     | `0xefef57f9`           | [0.32](https://docs.hedera.com/hedera/networks/release-notes/services#v0.32) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `wipeTokenAccount(address token, address account, int64 amount)`                                                                                                              | v2. Update amount to int64                                     |
 | `wipeTokenAccountNFT`                  | `0xf7f38e26`           | [0.29](https://docs.hedera.com/hedera/networks/release-notes/services#v0.29) | [HIP 514](https://hips.hedera.com/hip/hip-514) | `wipeTokenAccountNFT(address token, address account, int64[] serialNumbers)`                                                                                                  |
+
+
+The Hedera network also make facade contract calls available to EOAs for improved experience.
+Facade function allow for EOAs to make calls without requiring a deployed contract
+The table below outlines the available Hedera Token Service (HTS) System Contract facade functions:
+
+| Function Name                          | Function Selector Hash | Consensus Node Release Version                                               | HIP                                            | Method Interface                                                                                                                                                              | Comments                                                       |
+| -------------------------------------- | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `associate`     | `0x0a754de6`  | [0.38](https://docs.hedera.com/hedera/networks/release-notes/services#v0.38)  | [HIP 719](https://hips.hedera.com/hip/hip-904) | `associate() external returns (int64 responseCode)` |
+| `cancelAirdropFT`     | `0xcef5b705`  | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56)  | [HIP 904](https://hips.hedera.com/hip/hip-904) | `cancelAirdropFT(address receiverAddress) external returns (int64 responseCode)` |
+| `cancelAirdropNFT`    | `0xad4917cf`  | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56)  | [HIP 904](https://hips.hedera.com/hip/hip-904) | `cancelAirdropNFT(address receiverAddress, int64 serialNumber) external returns (int64 responseCode)` |
+| `claimAirdropFT`      | `0xa83bc5b2`  | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56)  | [HIP 904](https://hips.hedera.com/hip/hip-904) | `claimAirdropFT(address senderAddress) external returns (int64 responseCode)` |
+| `claimAirdropNFT`     | `0x63ada5d7`  | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56)  | [HIP 904](https://hips.hedera.com/hip/hip-904) | `claimAirdropNFT(address senderAddress, int64 serialNumber) external returns (int64 responseCode)` |
+| `dissociate`          | `0x5c9217e0`  | [0.38](https://docs.hedera.com/hedera/networks/release-notes/services#v0.38) | [HIP 719](https://hips.hedera.com/hip/hip-719) | `dissociate(int64 responseCode)`  |
+| `isAssociated`        | `0x4d8fdd6d`  | [0.53](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.53) | [HIP 719](https://hips.hedera.com/hip/hip-719) | `isAssociated(bool associated)`  |
+| `rejectTokenFT`       | `0x76c6b391`  | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56)  | [HIP 904](https://hips.hedera.com/hip/hip-904) | `rejectTokenFT() external returns (int64 responseCode)` |
+| `rejectTokenNFTs`     | `0xa869c78a`  | [0.56](https://docs.hedera.com/hedera/networks/release-notes/services#release-v0.56)  | [HIP 904](https://hips.hedera.com/hip/hip-904) | `rejectTokenNFTs(int64[] memory serialNumbers) external returns (int64 responseCode)` |
 <!-- Filename: contracts/system-contracts/pseudo-random-number-generator/README.md -->
 ## Pseudo-Random Number Generator (PRNG) System Contract Functions
 
@@ -464,6 +513,181 @@ The table below outlines the available Pseudo-Random Number Generator (PRNG) Sys
 | Function Name         | Function Selector Hash | Consensus Node Release Version                                               | HIP                                            | Method Interface        |
 | --------------------- | ---------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------- |
 | `getPseudorandomSeed` | `0xd83bf9a1`           | [0.28](https://docs.hedera.com/hedera/networks/release-notes/services#v0.28) | [HIP 351](https://hips.hedera.com/hip/hip-351) | `getPseudorandomSeed()` |
+<!-- Filename: contracts/wrapped-tokens/README.md -->
+### WHBAR
+
+The WHBAR contract for Wrapped HBAR to help transactions that use native token payments.
+
+##### Properties:
+- name - ```string``` "Wrapped HBAR"
+- symbol - ```string``` "WHBAR"decimals
+- decimals - ```uint8``` 8
+- balanceOf - ``` mapping(address => uint256) balanceOf```
+- allowance - ```mapping(address => mapping(address => uint256)) allowance```
+
+##### Events:
+- Approval - ```event Approval(address src, address guy, uint256 wad)```
+- Transfer - ``` event Transfer(address src, address dst, uint256 wad)```
+- Deposit - ``` event Deposit(address dst, uint256 wad)```
+- Withdrawal - ``` event Withdrawal(address src, uint256 wad)```
+
+##### Errors:
+- InsufficientFunds - ```error InsufficientFunds()```
+- InsufficientAllowance - ```error InsufficientAllowance()```
+- SendFailed - ```error SendFailed()```
+
+##### Methods:
+- receive - ```receive() external payable```
+- fallback - ```fallback() external payable```
+- deposit - ```function deposit() external payable```
+- withdraw - ```function withdraw(uint256 wad) external```
+- totalSupply - ```function totalSupply() public view returns (uint256)```
+- approve - ```function approve(address guy, uint256 wad) public returns (bool)```
+- transfer - ```function transfer(address dst, uint256 wad) public returns (bool)```
+- transferFrom - ```function transferFrom(address src, address dst, uint256 wad) public returns (bool)```
+<!-- Filename: lib/layer-zero/README.md -->
+# Layer Zero examples
+
+### OApp
+
+Message-passing interface to send and receive arbitrary pieces of data between contracts existing on different chains.
+
+##### Action steps:
+
+- Deploying the oapp contract on each network we're going to interact
+
+- In order to connect oapps together, we need to set the peer of the target oapp, more info can be found here https://docs.layerzero.network/v2/developers/evm/getting-started#connecting-your-contracts
+
+- Now, we're sending messages from one chain to another and vice versa
+
+- Wait a couple of minutes, the LZ progress can be tracked on https://testnet.layerzeroscan.com/tx/<tx_hash>
+
+- Finally we're checking whether the messages are received on both chains
+
+### OFT
+
+Allows fungible tokens to be transferred across multiple chains.
+
+##### Action steps:
+
+- Deploying OFT tokens which under the hood are ERC20s and contain the messaging between chains functionality provided by LZ
+
+- In order to connect OFTs together, we need to set the peer of the target OFT, more info can be found here https://docs.layerzero.network/v2/developers/evm/getting-started#connecting-your-contracts
+
+- Now, we're sending tokens between chains. That means we're burning tokens on the source chain and minting new ones on the destination chain
+
+- Wait a couple of minutes, the LZ progress can be tracked on https://testnet.layerzeroscan.com/tx/<tx_hash>
+
+- Finally we're checking whether the token balances are as expected on both the source and destination chains.
+
+### OFT Adapter
+
+If your token already exists on the chain you want to connect, you can deploy the OFT Adapter contract to act as an intermediary lockbox for the token.
+
+##### Action steps:
+
+- Deploying ERC20 tokens on each chain
+
+- Deploying an OFT Adapters which will be used as a lockbox of ERC20s deployed the step above, you can use an already existing HTS token as well
+
+- In order to connect OFT Adapters together, we need to set the peer of the target OFT Adapter, more info can be found here https://docs.layerzero.network/v2/developers/evm/getting-started#connecting-your-contracts
+
+- We're funding the Adapter on both chains with some liquidity and after that we're approving it to spend the signer's token
+
+- Now, we're sending already existing tokens that are used by OFT Adapter between different chains
+
+- Wait a couple of minutes, the LZ progress can be tracked on https://testnet.layerzeroscan.com/tx/<tx_hash>
+
+- Finally we're checking the balances on each chain
+
+### ONFT
+
+Allows non-fungible tokens to be transferred across multiple chains.
+
+##### Action steps:
+
+- Deploying ONFT tokens which under the hood are ERC721s and contain the messaging between chains functionality provided by LZ
+
+- In order to connect ONFTs together, we need to set the peer of the target ONFT, more info can be found here https://docs.layerzero.network/v2/developers/evm/getting-started#connecting-your-contracts
+
+- Now, we're sending NFTs between chains. That means we're burning the NFT on the source chain and minting new one on the destination chain
+
+- Wait a couple of minutes, the LZ progress can be tracked on https://testnet.layerzeroscan.com/tx/<tx_hash>
+
+- Finally we're checking whether the NFTs are transferred successfully
+
+### ONFT Adapter
+
+If your NFT contract already exists on the chain you want to connect, you can deploy the ONFT Adapter contract to act as an intermediary lockbox.
+
+##### Action steps:
+
+- Deploying ERC721s on each chain we want to connect
+
+- Deploying an ONFT Adapter which will be used as a lockbox of ERC721s deployed the step above
+
+- In order to connect ONFT Adapters together, we need to set the peer of the target ONFT Adapter, more info can be found here https://docs.layerzero.network/v2/developers/evm/getting-started#connecting-your-contracts
+
+- First, we have to mint some NFTs on each chain
+
+- Then, we have to approve the Adapter to be able to spend the NFT we want to send to another chain
+
+- Now, we're sending already existing NFTs between chains
+
+- Wait a couple of minutes, the LZ progress can be tracked on https://testnet.layerzeroscan.com/tx/<tx_hash>
+
+- Finally we're checking whether the NFTs are transferred successfully
+
+### HTS Connector
+
+That's a variant of OFT but using an HTS token. Due to several incompatibilities between ERC20 and HTS tokens, we're not able to use them out of the box. All of them are described in the "HTS Adapter vs HTS Connector" section below.
+
+##### Action steps:
+
+- Deploying OFT on an EVM chain and HTS Connector on the Hedera chain. The HTS Connector extends OFTCore and creates HTS token within its constructor. Also, overrides OFTCore _debit and _credit with related HTS mint and burn precompile calls
+
+- In order to connect OFTs together, we need to set the peer of the target OFT, more info can be found here https://docs.layerzero.network/v2/developers/evm/getting-started#connecting-your-contracts
+
+- Approving HTS Connector to use some signer's tokens
+
+- Now, we're sending tokens from an EVM chain to Hedera and receiving HTS tokens and vice versa
+
+- Wait a couple of minutes, the LZ progress can be tracked on https://testnet.layerzeroscan.com/tx/<tx_hash>
+
+Finally we're checking whether the balances are expected on both source and destination chains
+
+### HTS Connector for existing HTS token
+
+That's a variant of OFT but using an already existing HTS token. Keep in mind that "supply key" of the token must contains the HTS Connector contract's address.
+
+##### Action steps:
+
+- Create an HTS token
+
+- Deploying OFT on an EVM chain and HTS Connector on the Hedera chain. The HTS Connector for existing token extends OFTCore and receives the HTS tokens address as constructor parameter. Also, overrides OFTCore _debit and _credit with related HTS mint and burn precompile calls
+
+- In order to connect OFTs together, we need to set the peer of the target OFT, more info can be found here https://docs.layerzero.network/v2/developers/evm/getting-started#connecting-your-contracts
+
+- Adding the HTSConnectorExistingToken contract's address as a supply key of the existing HTS token
+
+- Funding the HTSConnectorExistingToken contract
+
+- Approving HTS Connector to use some signer's tokens
+
+- Now, we're sending tokens from an EVM chain to Hedera and receiving HTS tokens and vice versa
+
+- Wait a couple of minutes, the LZ progress can be tracked on https://testnet.layerzeroscan.com/tx/<tx_hash>
+
+- Finally we're checking whether the balances are expected on both source and destination chains
+
+### Useful information:
+- The addresses of endpoints [here](https://github.com/hashgraph/hedera-json-rpc-relay/blob/1030-lz-setup/tools/layer-zero-example/hardhat.config.js#L60) are the official LZ endpoints. A entire list of LZ supported endpoints can be found on https://docs.layerzero.network/v2/developers/evm/technical-reference/deployed-contracts.
+
+### HTS Adapter vs HTS Connector
+- You could use a HTS Adapter when you already have an existing HTS token on the fly.
+- You could use a HTS Connector when you want to create a new token.
+- You could use a HTS Connector with the existing HTS token but you have to add the HTS Connector contract as the Supply Key of the HTS token in order to execute the needed burnToken/mintToken precompile calls.
+- The main reason of using a HTS Connector instead of HTS Adapter is to avoid liquidity logic.
 <!-- Filename: system-contract-dapp-playground/README.md -->
 <p align="center">
 <br />
@@ -1994,4 +2218,318 @@ The output format is the following
 
 ```console
 <contract address> <precompile address> <bytecode path> <call/staticcall/deletegatecall where precompile address is used>
+```
+<!-- Filename: tools/erc-repository-indexer/docs/registry_design.md -->
+# ERC Contracts Indexer
+
+## Abstract
+
+This document outlines the design and implementation of the **ERC Contracts Indexer**, a standalone tool for identifying and cataloging ERC20 and ERC721 token contracts on the Hedera network. The indexer will index the Hedera network and scan contracts, verify their adherence to ERC standards, and produce structured output files for downstream applications. The goal is to provide developers and users with a reliable registry of tokens to enhance network insight and application usability.
+
+## Motivation
+
+Hedera supports ERC tokens alongside its native HTS tokens. However, there is no built-in mechanism to identify and list ERC20 and ERC721 tokens on the network. This lack of visibility impacts the usability of tools like the Mirror Node Explorer and limits the ability of developers to interact with these tokens.
+
+The **ERC Contract Indexer** addresses this gap by:
+
+1. **Providing Discoverability**: Enabling tools to display and interact with ERC tokens effectively.
+2. **Automating Identification**: Streamlining the process of detecting and validating token contracts.
+3. **Serving as a Foundation**: Establishing a structured dataset for broader ecosystem enhancements.
+
+## Design
+
+### Tool Overview
+
+The **ERC Contract Indexer** will:
+
+- Fetch smart contracts from the Hedera network using Mirror Node APIs.
+- Detect ERC20 and ERC721 token contracts by performing function signature matching.
+- Optionally validate contracts via `eth_call` for additional confidence.
+- Finally, generate two registries in the format of JSON: one for ERC20 tokens and another for ERC721 tokens.
+
+### Architecture
+
+#### 1. **ERC Interface Signature Matcher**
+
+- **Objective**: Leverage Hedera Mirror Node APIs to retrieve and analyze all smart contracts on the Hedera network. Validate the bytecode of each contract through signature matching to determine compliance with the ERC-20 or ERC-721 standard.
+- **Limitations**: While effective, this method may fail to detect some contracts, such as those that implement ERC standards in unconventional ways. For this reason, Step 2 (Validator) is optionally included to increase confidence and accuracy.
+- **Output**: A comprehensive list of verified ERC-20 and ERC-721 compliant contracts.
+
+#### 2. **Validator** (Optional)
+
+- **Purpose**: To increase confidence and catch contracts that might have been missed in Step 1.
+- **Output**: Filtered and validated list of ERC tokens.
+
+#### 3. **Registry Generator**
+
+- **Purpose**: Generate output files in the required format.
+- **Output**: JSON files:
+  - `ERC20_registry.json`
+  - `ERC721_registry.json`
+
+#### 4. **Configuration Manager**
+
+- **Purpose**: Enable flexible and environment-specific configurations.
+- **Parameters**:
+  - `HEDERA_NETWORK`: Network environment (e.g., testnet, mainnet).
+  - `MIRROR_NODE_URL`: API URL for the Hedera mirror node.
+  - `STARTING_POINT`: Starting contract ID or contract EVM address (or a `next` pointer from a previous run).
+  - `ENABLE_DETECTION_ONLY`: A configuration flag that enables the detection of ERC contracts while bypassing registry updates, designed for analysis-only scenarios.
+  - `SCAN_CONTRACT_LIMIT`: Defines the maximum number of contracts to scan per operation, with a default value of 100. Accepts only numeric values within the range of 1 to 100. This setting overrides the `limit` parameter in the `next` link if one exists in storage. For example, if the `next` link in storage is `/api/v1/contracts?limit=100&order=asc&contract.id=gt:0.0.5294198` and `SCAN_CONTRACT_LIMIT` is set to 30, the link will be updated to `/api/v1/contracts?limit=30&order=asc&contract.id=gt:0.0.5294198`.
+
+### Class Diagram
+
+The following class diagram illustrates the code structure and relationships between the components of the ERC Contracts Indexer tool:
+
+```mermaid
+classDiagram
+    class Main {
+        +run() Promise<void>
+    }
+
+    class ConfigService {
+        +getNetwork() string
+        +resolveStartingPoint(registryGenerator: RegistryGenerator) Promise<string>
+        +validateConfigs() void
+    }
+
+    class ByteCodeAnalyzer {
+        +categorizeERCContracts(contractScannerService: ContractScannerService, contractObject: MirrorNodeContract[]) Promise<string>
+    }
+
+    class ContractScannerService {
+        +fetchContracts(next: string) Promise<string>
+        +fetchContractObject(contractId: string) Promise<string>
+    }
+
+    class RegistryGenerator {
+        +generateErcRegistry(erc20Contracts: string[], erc721Contracts: string[]) Promise<void>
+        +updateNextPointer(next: string) Promise<void>
+        +retrieveNextPointer() Promise<string>
+    }
+
+    Main --> ConfigService : "Validates configuration settings"
+    Main --> ContractScannerService : "Fetches batches of contracts"
+    Main --> ByteCodeAnalyzer : "Processes contracts and analyzes bytecode"
+    ByteCodeAnalyzer --> ContractScannerService : "Fetches detailed contract objects and bytecodes"
+    ByteCodeAnalyzer --> RegistryGenerator : "Provides categorized ERC-20 and ERC-721 contracts"
+    RegistryGenerator --> ContractScannerService : "Uses to generate registries"
+
+```
+
+### Implementation Workflow
+
+1. **Initialization**:
+
+   - Load environment variables and configuration parameters.
+
+2. **Identifying ERCs**:
+
+   a. **Retrieve Contract Batches**:
+
+   - Use the Hedera Mirror Node API to index the entire network, retrieving contracts in ascending order (from oldest to newest):
+     - `https://{{network}}.mirrornode.hedera.com/api/v1/contracts?order=asc`
+
+   b. **Fetch Contract Details and Parse Bytecode**:
+
+   - For each contract:
+     - Retrieve contract details:
+       - `https://{{network}}.mirrornode.hedera.com/api/v1/contracts/{contractIdOrEvmAddress}`
+     - Extract and parse the bytecode from the contract detail object.
+       _Note: Utilize concurrent requests to optimize execution efficiency._
+
+   c. **Perform Interface Signature Matching**:
+
+   - Perform bytecode analysis for ERC-20 and ERC-721 compliance using a regex-based approach. This method utilizes positive lookahead assertions to match all requisite function selectors and event topics directly within the bytecode, ensuring accurate interface validation.
+
+   d. **Handle Pagination**:
+
+   - Since the `/contracts` endpoint has a limit of 100 records per request, use the `next` pointer provided in the response to recursively fetch subsequent batches and comprehensively index the network.
+   - Write the `next` pointer to disk for persistence, allowing the indexing process to resume from the last recorded point if interrupted or to accommodate future runs when additional contracts are deployed on the network.
+
+3. **Validation (Optional)**:
+
+   - Perform `eth_call` on detected contracts to confirm:
+     - ERC20:
+       - `name`, `symbol`, `decimals`, `totalSupply`.
+     - ERC721:
+       - `name`, `symbol`.
+   - Filter out contracts that fail validation.
+
+4. **Registry Generation**:
+   - Aggregate validated contracts into two separate registries:
+     - **ERC20**:
+       ```json
+       [
+         {
+           "address": "0x....",
+           "contractId": "0.0.x",
+           "name": "...",
+           "symbol": "...",
+           "decimals": x,
+           "totalSupply": "..."
+         }
+       ]
+       ```
+     - **ERC721**:
+       ```json
+       [
+         {
+           "address": "0x....",
+           "contractId": "0.0.x",
+           "name": "...",
+           "symbol": "...",
+           "serial_id": "..."
+         }
+       ]
+       ```
+   - Sort entries in ascending order of `contractId`.
+   - Save output files to `tools/erc-repository-indexer/registry`.
+
+---
+
+## Future Features
+
+1. **Bytecode Storage**:
+
+   - Option to save bytecode to disk for analysis or debugging.
+   - Include file size considerations and storage optimizations.
+
+2. **Manual Contract Addition**:
+   - Allow users to manually add a contract to the registry if the tool fails to identify it but subsequent investigation proves it is ERC-compliant.
+
+---
+
+## Roadmap
+
+- **Phase 1**: Develop and test the indexer tool with function signature matching.
+- **Phase 2**: Integrate optional validation using `eth_call` and handle edge cases for improved accuracy.
+- **Phase 3**: Add features for bytecode storage and manual contract addition based on user feedback.
+<!-- Filename: tools/erc-repository-indexer/erc-contract-indexer/README.md -->
+# ERC Contract Indexer for Hedera Hashgraph
+
+## Overview
+
+The ERC Contract Indexer is a tool designed to facilitate the indexing and management of ERC20, ERC721 and ERC1155 smart contracts on the Hedera Hashgraph network. This project provides a set of services to fetch, analyze, and store contract data efficiently, enabling developers and users to interact with smart contracts seamlessly.
+
+## Features
+
+- **Contract Fetching**: Retrieve contract details from the Hedera mirror node.
+- **Bytecode Analysis**: Analyze smart contract bytecode to categorize contracts as ERC20, ERC721, or ERC1155.
+- **Registry Management**: Generate and update registries for ERC20, ERC721, and ERC1155 contracts.
+- **Next Pointer Handling**: Manage pagination for contract indexing using a next pointer.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (version 18 or higher)
+- npm (Node Package Manager)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/hashgraph/hedera-smart-contracts.git
+   cd tools/erc-repository-indexer/erc-contract-indexer
+   ```
+
+2. Install the dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file in the root directory and configure your environment variables:
+
+| Variable                | Description                                                                                                    | Accepted Values                                                                                                                                                                                                                 |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HEDERA_NETWORK`        | The network to connect to.                                                                                     | `local-node`, `previewnet`, `testnet`, or `mainnet`                                                                                                                                                                             |
+| `MIRROR_NODE_URL`       | The URL for the Hedera mirror node API.                                                                        | A valid URL pointing to the Hedera mirror node (e.g., `https://{previewnet\|testnet\|mainnet}.mirrornode.hedera.com`)                                                                                                           |
+| `MIRROR_NODE_URL_WEB3`  | The URL for the Hedera Mirror Node Web3Module API, required only when `HEDERA_NETWORK` is set to `local-node`. | Any value                                                                                                                                                                                                                       |
+| `STARTING_POINT`        | The starting point for contract indexing.                                                                      | A Hedera contract ID (e.g., `0.0.369`), an EVM 20-byte address (e.g., `0x0000000000000000000000000000000000000369`), or a get contract list next pointer (e.g., `/api/v1/contracts?limit=100&order=asc&contract.id=gt:0.0.369`) |
+| `ENABLE_DETECTION_ONLY` | Enable detection of ERC contracts without updating the registry.                                               | Any                                                                                                                                                                                                                             |
+| `SCAN_CONTRACT_LIMIT`   | Specifies the maximum number of contracts to scan per operation. Defaults to 100.                              | Accepts numeric values ranging from 1 to 100.                                                                                                                                                                                   |
+
+Example configuration:
+
+```plaintext
+HEDERA_NETWORK=testnet
+MIRROR_NODE_URL=https://testnet.mirrornode.hedera.com
+STARTING_POINT=0.0.1013
+```
+
+> **Note:** If a `STARTING_POINT` is not set, the tool will first look for a saved `next` pointer in the registry storage to continue indexing. If no pointer is available, the tool will start from the genesis block.
+
+### Usage
+
+To start the indexing process, run the following command:
+
+```bash
+npm start
+```
+
+This will initiate the indexing process, fetching contracts from the specified starting point and categorizing them into ERC20, ERC721, and ERC1155 contracts. The end goal is to generate a comprehensive registry that contains JSON files for ERC-20, ERC-721, and ERC1155 tokens. The expected format for these registries is as follows:
+
+- **ERC20**:
+  ```json
+  [
+    {
+      "address": "0xevm_address",
+      "contractId": "0.0.hedera_contract_id",
+      "name": "token_name",
+      "symbol": "token_symbol",
+      "totalSupply": token_totalSupply,
+      "decimals": token_decimals
+    }
+  ]
+  ```
+- **ERC721**:
+
+  ```json
+  [
+    {
+      "address": "0xevm_address",
+      "contractId": "0.0.hedera_contract_id",
+      "name": "token_name",
+      "symbol": "token_symbol"
+    }
+  ]
+  ```
+
+- **ERC1155**:
+  ```json
+  [
+    {
+      "address": "0xevm_address",
+      "contractId": "0.0.hedera_contract_id"
+    }
+  ]
+  ```
+  These JSON files will serve as a reliable registry of ERC tokens on the Hedera network, enhancing visibility and usability for developers and users alike.
+
+> **Note:** Future updates will enhance the JSON file format to include additional details about the ERC tokens.
+
+### Unit Testing
+
+To run the unit tests for the project, use the following command:
+
+```bash
+npm test:unit
+```
+
+### Acceptance Testing
+
+To enable acceptance testing, new configurations must be added to the `.env` file:
+
+| Variable           | Description                                          | Accepted Values                |
+| ------------------ | ---------------------------------------------------- | ------------------------------ |
+| `SDK_OPERATOR_ID`  | The operator ID used to initialize a Hashgraph SDK.  | Hedera Account IDs             |
+| `SDK_OPERATOR_KEY` | The operator key used to initialize a Hashgraph SDK. | Hedera Account DER Private Key |
+
+To execute the acceptance tests, use the following command:
+
+```bash
+npm test:acceptance
 ```

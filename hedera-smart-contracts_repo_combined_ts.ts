@@ -1,23 +1,5 @@
 // Filename: system-contract-dapp-playground/__tests__/ethers/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract, ethers } from 'ethers';
 import { HEDERA_SMART_CONTRACTS_ASSETS } from '@/utils/common/constants';
@@ -62,25 +44,7 @@ describe('Contract tests', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/erc20-interactions/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {
   balanceOf,
@@ -511,25 +475,7 @@ describe('Transfer', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/erc721-interactions/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {
   erc721Mint,
@@ -931,25 +877,7 @@ describe('ERC721 test suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/exchange-rate-interactions/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract } from 'ethers';
 import {
@@ -1018,25 +946,7 @@ describe('Exchange Rate Test Suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/helper/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { constructIHederaTokenKey } from '@/utils/contract-interactions/HTS/helpers';
 import {
@@ -1127,25 +1037,7 @@ describe('constructIHederaTokenKey test suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/hts-interactions/token-create-custom/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract } from 'ethers';
 import {
@@ -1884,25 +1776,7 @@ describe('createHederaFungibleToken test suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/hts-interactions/token-management-contract/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract } from 'ethers';
 import {
@@ -2665,25 +2539,7 @@ describe('TokenManagementContract test suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/hts-interactions/token-query-contract/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract } from 'ethers';
 import {
@@ -3007,25 +2863,7 @@ describe('TokenQueryContract Test Suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/hts-interactions/token-transfer-contract/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract } from 'ethers';
 import {
@@ -3498,25 +3336,7 @@ describe('TokenTransferContract test suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/ihrc-interactions/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { ethers } from 'ethers';
 import { handleIHRC719APIs } from '@/api/hedera/ihrc-interactions';
@@ -3584,25 +3404,7 @@ describe('handleIHR719CAPIs test suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { ContractFactory } from 'ethers';
 import { deploySmartContract } from '@/api/hedera';
@@ -3675,25 +3477,7 @@ describe('deploySmartContract', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/hedera/prng-interactions/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract } from 'ethers';
 import { handlePRGNAPI } from '@/api/hedera/prng-interactions';
@@ -3738,25 +3522,7 @@ describe('PRNG Test Suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/mirror-node/index.test.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -3838,25 +3604,7 @@ describe('Mirror Node Test Suite', () => {
   });
 });
 // Filename: system-contract-dapp-playground/__tests__/utils/common/constants.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 export const MOCK_RESPONSE_CODE = 22;
 export const MOCK_GAS_LIMIT = 1_000_000;
@@ -3866,25 +3614,7 @@ export const MOCK_SIGNER_ADDRESS = '0x21725B0AE10F52eC4D587D51B37732Badb223D94';
 export const MOCK_TOKEN_ADDRESS = '0x00000000000000000000000000000000000084b7';
 export const MOCK_TX_HASH = '0x63424020a69bf46a0669f46dd66addba741b9c02d37fab1686428f5209bc759d';
 // Filename: system-contract-dapp-playground/prerequisite-check/contracts-info/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 /**
  * @dev setting up the directory/location information for smart contract assets
@@ -3941,25 +3671,7 @@ const getHederaSmartContractAssets = (HederaSmartContractsRootPath: string) => {
 
 module.exports = getHederaSmartContractAssets;
 // Filename: system-contract-dapp-playground/prerequisite-check/scripts/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 const fs = require('fs');
 const path = require('path');
@@ -4028,25 +3740,7 @@ const HEDERA_SMART_CONTRACTS = getHederaSmartContractAssetsFunc(HederaSmartContr
   }
 })();
 // Filename: system-contract-dapp-playground/src/api/cookies/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import Cookies from 'js-cookie';
 
@@ -4160,25 +3854,7 @@ export const clearCookies = async () => {
   }
 };
 // Filename: system-contract-dapp-playground/src/api/ethers/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { ethers } from 'ethers';
 import { getWalletProvider } from '../wallet';
@@ -4217,25 +3893,7 @@ export const generateBaseContractInstance = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/erc20-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { TNetworkName } from '@/types/common';
 import { Contract, ethers, isAddress } from 'ethers';
@@ -4501,25 +4159,7 @@ export const erc20Transfers = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/erc721-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { TNetworkName } from '@/types/common';
 import { handleEstimateGas } from '@/utils/common/helpers';
@@ -4900,25 +4540,7 @@ export const erc721Transfers = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/exchange-rate-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract, ethers } from 'ethers';
 import { TNetworkName } from '@/types/common';
@@ -4999,25 +4621,7 @@ export const handleExchangeRate = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/hts-interactions/tokenCreateCustom-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {
   handleContractResponse,
@@ -5611,25 +5215,7 @@ export const grantTokenKYCToAccount = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/hts-interactions/tokenManagement-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract, ethers, isAddress } from 'ethers';
 import { ISmartContractExecutionResult } from '@/types/contract-interactions/shared';
@@ -6296,25 +5882,7 @@ export const manageTokenDeduction = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/hts-interactions/tokenQuery-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract, ethers, isAddress } from 'ethers';
 import { ISmartContractExecutionResult } from '@/types/contract-interactions/shared';
@@ -6913,25 +6481,7 @@ export const queryTokenStatusInformation = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/hts-interactions/tokenTransfer-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { TNetworkName } from '@/types/common';
 import { Contract, ethers, isAddress } from 'ethers';
@@ -7321,25 +6871,7 @@ export const transferSingleToken = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/ihrc-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { TNetworkName } from '@/types/common';
 import { Contract, ethers, isAddress } from 'ethers';
@@ -7429,25 +6961,7 @@ export const handleIHRC719APIs = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { ContractFactory } from 'ethers';
 import { getWalletProvider } from '../wallet';
@@ -7525,25 +7039,7 @@ export const deploySmartContract = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/hedera/prng-interactions/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract, ethers } from 'ethers';
 import { TNetworkName } from '@/types/common';
@@ -7599,25 +7095,7 @@ export const handlePRGNAPI = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/localStorage/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { OFFCIAL_NETWORK_NAME } from '@/utils/common/constants';
 
@@ -7694,25 +7172,7 @@ export const clearCachedTransactions = (contractKey?: string, readonly?: boolean
   }
 };
 // Filename: system-contract-dapp-playground/src/api/mirror-node/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import axios from 'axios';
 import { ethers } from 'ethers';
@@ -7791,25 +7251,7 @@ export const estimateGasViaMirrorNode = async (
   }
 };
 // Filename: system-contract-dapp-playground/src/api/wallet/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { IWalletResult } from '@/types/common';
 import { ethers, BrowserProvider } from 'ethers';
@@ -7903,25 +7345,7 @@ export const requestAccount = async (walletProvider: ethers.BrowserProvider): Pr
   }
 };
 // Filename: system-contract-dapp-playground/src/components/contract-interaction/hts/shared/states/commonStates.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // Page Size
 export const TRANSACTION_PAGE_SIZE = 10;
@@ -7946,25 +7370,7 @@ export const HederaTokenKeyValueType: IHederaTokenServiceKeyValueType[] = [
   'delegatableContractId',
 ];
 // Filename: system-contract-dapp-playground/src/components/contract-interaction/hts/token-transfer-contract/method/transferCrypto/helpers/generateInitialValues.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { generatedRandomUniqueKey } from '@/utils/common/helpers';
 
@@ -8043,25 +7449,7 @@ export const generateInitialTokenTransferParamValues = (): TokenTransferParam =>
   };
 };
 // Filename: system-contract-dapp-playground/src/components/contract-interaction/hts/token-transfer-contract/method/transferCrypto/helpers/prepareCryptoTransferValues.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { CryptoTransferParam, TokenTransferParam } from './generateInitialValues';
 
@@ -8160,25 +7548,7 @@ export const prepareTokenTransferList = ({
   return tokenTransferList;
 };
 // Filename: system-contract-dapp-playground/src/components/contract-interaction/hts/token-transfer-contract/method/transferMultipleTokens/helpers/generateInitialValues.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { generatedRandomUniqueKey } from '@/utils/common/helpers';
 
@@ -8220,25 +7590,7 @@ export const generateInitialNonFungibleParamValue = (): NonFungibleParamValue =>
   };
 };
 // Filename: system-contract-dapp-playground/src/fonts/index.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import localFont from 'next/font/local';
 
@@ -8342,25 +7694,7 @@ const StyreneAWebFont = localFont({
 
 export default StyreneAWebFont;
 // Filename: system-contract-dapp-playground/src/middleware.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
@@ -8383,25 +7717,7 @@ export const config = {
   matcher: ['/', '/hedera/:path*', '/activity'],
 };
 // Filename: system-contract-dapp-playground/src/types/common/index.d.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { BrowserProvider, Contract, ContractFactory } from 'ethers';
 
@@ -8526,25 +7842,7 @@ interface IHederaContractAsset {
   methods: string[];
 }
 // Filename: system-contract-dapp-playground/src/types/contract-interactions/HTS/index.d.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 /**
  * @dev a type for the IHederaTokenService.TokenKey.keyType
@@ -8894,25 +8192,7 @@ interface IHederaTokenServiceTokenTransferList {
   nftTransfers: IHederaTokenServiceNftTransfer[];
 }
 // Filename: system-contract-dapp-playground/src/types/contract-interactions/erc/index.d.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 /**
  * @dev an interface for the results returned back from interacting with ERC20Mock & ERC721Mock smart contract
@@ -8938,25 +8218,7 @@ interface IERCSmartContractResult {
   err?: any;
 }
 // Filename: system-contract-dapp-playground/src/types/contract-interactions/shared/index.d.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 /** @dev an interface for transaction results when interacting with smart contracts. */
 export interface ITransactionResult {
@@ -9046,25 +8308,7 @@ interface ISmartContractExecutionResult {
   err?: any;
 }
 // Filename: system-contract-dapp-playground/src/utils/common/constants.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { TContractName } from '@/types/common';
 import ERC20Mock from '@hashgraph-smartcontract/artifacts/contracts/openzeppelin/ERC-20/ERC20Mock.sol/OZERC20Mock.json';
@@ -9580,25 +8824,7 @@ export const HEDERA_COMMON_TRANSACTION_TYPE = {
   HTS_QUERY_DEFAULT_FREEZE_STATUS: 'HTS-QUERY-DEFAULT-FREEZE-STATUS',
 };
 // Filename: system-contract-dapp-playground/src/utils/common/helpers.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Contract, ethers } from 'ethers';
 import { TNetworkName } from '@/types/common';
@@ -9825,25 +9051,7 @@ export const handleEstimateGas = async (
   return { gasLimit: estimateGas.gasLimit };
 };
 // Filename: system-contract-dapp-playground/src/utils/common/metadata.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { Metadata } from 'next';
 
@@ -9897,25 +9105,7 @@ const dappMetadata: Metadata = {
 
 export default dappMetadata;
 // Filename: system-contract-dapp-playground/src/utils/contract-interactions/HTS/helpers.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {
   EXPIRY_KEYS,
@@ -10187,25 +9377,7 @@ export const convertsArgsProxyToHTSSpecificInfo = (
   }
 };
 // Filename: system-contract-dapp-playground/src/utils/contract-interactions/HTS/token-create-custom/constant.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { ethers } from 'ethers';
 import { HEDERA_SHARED_PARAM_INPUT_FIELDS } from '@/utils/common/constants';
@@ -10389,25 +9561,7 @@ export const htsGrantTokenKYCParamFields = {
   },
 };
 // Filename: system-contract-dapp-playground/src/utils/contract-interactions/HTS/token-management/constant.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { ethers } from 'ethers';
 import { HEDERA_SHARED_PARAM_INPUT_FIELDS } from '@/utils/common/constants';
@@ -10638,25 +9792,7 @@ export const htsTokenDeductionParamFields = {
   },
 };
 // Filename: system-contract-dapp-playground/src/utils/contract-interactions/HTS/token-query/constant.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { HEDERA_SHARED_PARAM_INPUT_FIELDS } from '@/utils/common/constants';
 
@@ -10781,25 +9917,7 @@ export const KEY_VALUE_KEYS = [
 ];
 export const EXPIRY_KEYS = ['second', 'autoRenewAccount', 'autoRenewPeriod'];
 // Filename: system-contract-dapp-playground/src/utils/contract-interactions/HTS/token-transfer/paramFieldConstant.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { HEDERA_SHARED_PARAM_INPUT_FIELDS } from '@/utils/common/constants';
 
@@ -10946,25 +10064,8 @@ export const htsMultiTokensTransferParamFields = {
   },
 };
 // Filename: system-contract-dapp-playground/src/utils/contract-interactions/erc/erc20/constant.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
+
 import { HEDERA_SHARED_PARAM_INPUT_FIELDS } from '@/utils/common/constants';
 
 export const mintParamFields = [
@@ -11078,25 +10179,7 @@ export const transferFromParamFields = [
   },
 ];
 // Filename: system-contract-dapp-playground/src/utils/contract-interactions/erc/erc721/constant.ts
-/*-
- *
- * Hedera Smart Contracts
- *
- * Copyright (C) 2023 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import { HEDERA_SHARED_PARAM_INPUT_FIELDS } from '@/utils/common/constants';
 
@@ -11207,3 +10290,2814 @@ export const safeTransferFromERC721ParamFields = [
     inputPlaceholder: 'Data..',
   },
 ];
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/index.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import { ercRegistryRunner } from './runner';
+
+(async () => {
+  try {
+    await ercRegistryRunner();
+    console.log('Runner executed successfully.');
+  } catch (err) {
+    console.error('Error executing runner:', err);
+    process.exit(1); // Exit with failure status
+  }
+})();
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/runner.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import dotenv from 'dotenv';
+import { ByteCodeAnalyzer } from './services/byteCodeAnalyzer';
+import { ConfigService } from './services/config';
+import { ContractScannerService } from './services/contractScanner';
+import { RegistryGenerator } from './services/registryGenerator';
+
+dotenv.config();
+
+export const ercRegistryRunner = async () => {
+  const configService = new ConfigService();
+  const registryGenerator = new RegistryGenerator();
+  const contractScannerService = new ContractScannerService(
+    configService.getMirrorNodeUrl(),
+    configService.getMirrorNodeUrlWeb3(),
+    configService.getScanContractLimit()
+  );
+  const byteCodeAnalyzer = new ByteCodeAnalyzer();
+
+  try {
+    let next = await configService.resolveStartingPoint(registryGenerator);
+    await processContracts(
+      next,
+      contractScannerService,
+      byteCodeAnalyzer,
+      registryGenerator,
+      configService
+    );
+  } catch (error) {
+    console.error('Error during the indexing process:', error);
+  }
+};
+
+const processContracts = async (
+  next: string | null,
+  contractScannerService: ContractScannerService,
+  byteCodeAnalyzer: ByteCodeAnalyzer,
+  registryGenerator: RegistryGenerator,
+  configService: ConfigService
+) => {
+  do {
+    const fetchContractsResponse =
+      await contractScannerService.fetchContracts(next);
+
+    if (!fetchContractsResponse || !fetchContractsResponse.contracts.length) {
+      console.warn('No contracts found.');
+      return;
+    }
+
+    next = fetchContractsResponse.links.next;
+
+    const ercContracts = await byteCodeAnalyzer.categorizeERCContracts(
+      contractScannerService,
+      fetchContractsResponse.contracts
+    );
+
+    // only update registry if detectionOnly is off
+    if (!configService.getDetectionOnly()) {
+      // let the registry update process to run asynchronously in the background
+      registryGenerator.generateErcRegistry(
+        ercContracts.erc20Contracts,
+        ercContracts.erc721Contracts,
+        ercContracts.erc1155Contracts
+      );
+
+      registryGenerator.updateNextPointer(next);
+    }
+  } while (next);
+};
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/schemas/ERCRegistrySchemas.ts
+// SPDX-License-Identifier: Apache-2.0
+
+export interface ERCOutputInterface {
+  address: string;
+  contractId: string;
+}
+
+export interface ERC20OutputInterface extends ERCOutputInterface {
+  name: string;
+  symbol: string;
+  decimals: number;
+  totalSupply: number;
+}
+
+export interface ERC721OutputInterface extends ERCOutputInterface {
+  name: string;
+  symbol: string;
+}
+
+export interface ERC1155OutputInterface extends ERCOutputInterface {}
+
+export type TokenOutputInterface =
+  | ERC20OutputInterface
+  | ERC721OutputInterface
+  | ERC1155OutputInterface;
+
+export interface ERCTokenInfoSelectors {
+  type: string;
+  field: string;
+  sighash: string;
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/schemas/MirrorNodeSchemas.ts
+// SPDX-License-Identifier: Apache-2.0
+
+// refs: https://github.com/hashgraph/hedera-mirror-node-explorer/blob/main/src/schemas/MirrorNodeSchemas.ts#L543
+export interface MirrorNodeContract {
+  admin_key: any;
+  auto_renew_account: string | null; // Network entity ID in the format of shard.realm.num
+  auto_renew_period: number | null;
+  contract_id: string | null; // Network entity ID in the format of shard.realm.num
+  created_timestamp: string | null;
+  deleted: boolean;
+  evm_address: string;
+  expiration_timestamp: string | null;
+  file_id: string | null | undefined; // Network entity ID in the format of shard.realm.num
+  max_automatic_token_associations: number | null;
+  memo: string;
+  nonce: number | undefined;
+  obtainer_id: string | null; // Network entity ID in the format of shard.realm.num
+  permanent_removal: boolean | null;
+  proxy_account_id: string | null; // Network entity ID in the format of shard.realm.num
+  timestamp: any;
+}
+
+export interface MirrorNodeContractResponse extends MirrorNodeContract {
+  bytecode: string | null;
+  runtime_bytecode: string | null;
+}
+
+export interface Links {
+  next: string | null;
+}
+
+export interface ContractCallData {
+  data: string;
+  to: string;
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/services/byteCodeAnalyzer.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import AhoCorasick from 'ahocorasick';
+import { ContractScannerService } from './contractScanner';
+import constants from '../utils/constants';
+import { ethers } from 'ethers';
+import {
+  ERCOutputInterface,
+  ERCTokenInfoSelectors,
+  TokenOutputInterface,
+} from '../schemas/ERCRegistrySchemas';
+import {
+  MirrorNodeContract,
+  MirrorNodeContractResponse,
+} from '../schemas/MirrorNodeSchemas';
+
+enum ERCID {
+  ERC20 = 'ERC20',
+  ERC721 = 'ERC721',
+  ERCC1155 = 'ERC1155',
+}
+
+export class ByteCodeAnalyzer {
+  /**
+   * Analyzes bytecode, detects and categorizes contracts into ERC20, ERC721, and ERC1155 types based on their bytecode.
+   *
+   * This method fetches contract bytecode for the provided contract objects and categorizes them into ERC20, ERC721, and ERC1155 contracts
+   * based on their bytecode analysis. It returns an object containing arrays of categorized contracts.
+   *
+   * @param {ContractScannerService} contractScannerService - The service used to fetch contract bytecode.
+   * @param {MirrorNodeContract[]} contractObject - An array of contract objects to categorize.
+   * @returns {Promise<{erc20Contracts: ERCOutputInterface[], erc721Contracts: ERCOutputInterface[], erc1155Contracts: ERCOutputInterface[]}>}
+   * @throws {Error} If there's an error while analyzing contract bytecode.
+   */
+  async categorizeERCContracts(
+    contractScannerService: ContractScannerService,
+    contractObject: MirrorNodeContract[]
+  ): Promise<{
+    erc20Contracts: ERCOutputInterface[];
+    erc721Contracts: ERCOutputInterface[];
+    erc1155Contracts: ERCOutputInterface[];
+  }> {
+    const erc20Contracts: ERCOutputInterface[] = [];
+    const erc721Contracts: ERCOutputInterface[] = [];
+    const erc1155Contracts: ERCOutputInterface[] = [];
+
+    try {
+      const contractResponses = await Promise.all(
+        contractObject.map(({ contract_id }) =>
+          contract_id
+            ? contractScannerService.fetchContractObject(contract_id)
+            : null
+        )
+      );
+
+      for (const contract of contractResponses) {
+        if (
+          !contract ||
+          !contract.bytecode ||
+          !contract.contract_id ||
+          !contract.evm_address ||
+          !contract.runtime_bytecode
+        ) {
+          console.warn('Skipping contract due to missing data:', {
+            contractId: contract?.contract_id,
+            hasBytecode: !!contract?.bytecode,
+            hasContractId: !!contract?.contract_id,
+            hasEvmAddress: !!contract?.evm_address,
+            hasRuntimeBytecode: !!contract?.runtime_bytecode,
+          });
+          continue;
+        }
+
+        const contractBytecode =
+          contract.runtime_bytecode === '0x'
+            ? contract.bytecode
+            : contract.runtime_bytecode;
+
+        if (contractBytecode === '0x') {
+          console.log(
+            `Skipping analyzing contract due to empty bytecode: contractId=${contract.contract_id}`
+          );
+          continue;
+        }
+
+        console.log(`Analyzing contract: contractId=${contract.contract_id}`);
+
+        if (this.isErc(ERCID.ERC20, contractBytecode)) {
+          const ercTokenInfoObject = await this.analyzeErcContract(
+            ERCID.ERC20,
+            contract,
+            contractScannerService,
+            constants.ERC20_TOKEN_INFO_SELECTORS
+          );
+          if (ercTokenInfoObject) {
+            erc20Contracts.push(ercTokenInfoObject);
+          }
+        }
+
+        if (this.isErc(ERCID.ERC721, contractBytecode)) {
+          const ercTokenInfoObject = await this.analyzeErcContract(
+            ERCID.ERC721,
+            contract,
+            contractScannerService,
+            constants.ERC721_TOKEN_INFO_SELECTORS
+          );
+          if (ercTokenInfoObject) {
+            erc721Contracts.push(ercTokenInfoObject);
+          }
+        }
+
+        if (this.isErc(ERCID.ERCC1155, contractBytecode)) {
+          const ercTokenInfoObject = await this.analyzeErcContract(
+            ERCID.ERCC1155,
+            contract,
+            contractScannerService,
+            []
+          );
+          if (ercTokenInfoObject) {
+            erc1155Contracts.push(ercTokenInfoObject);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error while analyzing contract bytecode:', error);
+    }
+
+    return { erc20Contracts, erc721Contracts, erc1155Contracts };
+  }
+
+  /**
+   * Analyzes a specific ERC contract to extract token information.
+   *
+   * This method logs the detection of a new ERC contract and attempts to retrieve its token information
+   * using the provided contract scanner service. If successful, it returns the token information object.
+   *
+   * @param {ERCID} ercId - The type of ERC contract (ERC20, ERC721, or ERC1155).
+   * @param {MirrorNodeContractResponse} contract - The contract object containing relevant data.
+   * @param {ContractScannerService} contractScannerService - The service used to fetch contract token information.
+   * @param {ERCTokenInfoSelectors[]} ercTokenInfoSelectors - An array of selectors for token information.
+   * @returns {Promise<TokenOutputInterface |  null>} The token information object or null if not found.
+   */
+  private async analyzeErcContract(
+    ercId: ERCID,
+    contract: MirrorNodeContractResponse,
+    contractScannerService: ContractScannerService,
+    ercTokenInfoSelectors: ERCTokenInfoSelectors[]
+  ): Promise<TokenOutputInterface | null> {
+    console.log(
+      `New ERC contract detected: contractId=${contract.contract_id}, ercID: ${ercId}`
+    );
+
+    try {
+      return await this.getErcTokenInfo(
+        contractScannerService,
+        contract,
+        ercTokenInfoSelectors
+      );
+    } catch (error: any) {
+      console.warn(error.errMessage);
+      console.log(`Skip ERC contract: contractId=${contract.contract_id}`);
+      return null;
+    }
+  }
+
+  /**
+   * Retrieves token information for a given ERC contract by making contract call requests.
+   *
+   * This method constructs and sends contract call requests based on the provided token info selectors,
+   * decodes the responses, and returns an object containing the token information.
+   *
+   * @param {ContractScannerService} contractScannerService - The service used to fetch contract token information.
+   * @param {MirrorNodeContractResponse} contract - The contract object containing relevant data.
+   * @param {ERCTokenInfoSelectors[]} ercTokenInfoSelectors - An array of selectors for token information.
+   * @returns {Promise<TokenOutputInterface>} The token information object.
+   * @throws {Error} If a contract call fails despite passing signature matching.
+   */
+  private async getErcTokenInfo(
+    contractScannerService: ContractScannerService,
+    contract: MirrorNodeContractResponse,
+    ercTokenInfoSelectors: ERCTokenInfoSelectors[]
+  ): Promise<TokenOutputInterface> {
+    const contractCallPromises = ercTokenInfoSelectors.map(
+      ({ type, field, sighash }) =>
+        contractScannerService
+          .contractCallRequest({
+            data: sighash,
+            to: contract.evm_address,
+          })
+          .then((tokenInfoResponse) => ({
+            type,
+            field,
+            tokenInfoResponse,
+          }))
+    );
+    const contractCallResponses = await Promise.all(contractCallPromises);
+
+    const ercTokenInfoObject = contractCallResponses.reduce<
+      Record<string, string | number | null>
+    >((ercTokenInfoObject, { type, field, tokenInfoResponse }) => {
+      if (!tokenInfoResponse) {
+        ercTokenInfoObject[field] = tokenInfoResponse;
+      } else {
+        const decodedTokenInfo = ethers.AbiCoder.defaultAbiCoder().decode(
+          [type],
+          tokenInfoResponse
+        )[0];
+
+        // `decodedTokenInfo` can potentially be one of two types: string or BigInt.
+        // Since the goal is to write the data to disk, convert BigInt to a Number,
+        // as the filesystem (fs) cannot directly handle BigInt values.
+        ercTokenInfoObject[field] =
+          type === 'string' ? decodedTokenInfo : Number(decodedTokenInfo);
+      }
+
+      return ercTokenInfoObject;
+    }, {});
+
+    return {
+      contractId: contract.contract_id!,
+      address: contract.evm_address,
+      ...ercTokenInfoObject,
+    } as TokenOutputInterface;
+  }
+
+  /**
+   * Determines if the provided bytecode conforms to the specified ERC standard by searching for all required function selectors and event topics using the Aho-Corasick algorithm.
+   *
+   * The Aho-Corasick algorithm constructs a finite state machine from the provided set of standard signatures, facilitating efficient multi-pattern matching within the bytecode.
+   * It operates with linear time complexity, O(n + m + z), where n represents the bytecode length, m is the total length of the signatures, and z is the number of matches identified.
+   * This efficiency is especially beneficial for analyzing large bytecode sequences, as it drastically minimizes processing time.
+   *
+   * @param {ERCID} ercId - Identifier for the ERC standard (e.g., ERC-20, ERC-721, ERC-1155).
+   * @param {string} bytecode - The contract's bytecode to be analyzed.
+   * @returns {boolean} - Returns true if the bytecode contains all required signatures for the specified ERC standard; otherwise, false.
+   */
+  private isErc(ercId: ERCID, bytecode: string): boolean {
+    const standardErcSignatures = constants.ERC_STANDARD_SIGNATURES[ercId];
+
+    const ahoCorasick = new AhoCorasick(standardErcSignatures);
+    const matches = ahoCorasick.search(bytecode);
+
+    // Each match returned by ahoCorasick.search() is in the format [occurrences, ['key']], where:
+    // - `match[1]` refers to the array containing the matched signature(s) (the `key` array).
+    // - `match[1][0]` accesses the first item in this `key` array, which represents the actual matched signature.
+    // This logic ensures we extract only the relevant signature from each match.
+    const foundSignatures = new Set(matches.map((match: any) => match[1][0]));
+
+    return standardErcSignatures.every((signature) =>
+      foundSignatures.has(signature)
+    );
+  }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/services/config.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import constants from '../utils/constants';
+import { ContractScannerService } from './contractScanner';
+import { Helper } from '../utils/helper';
+import { RegistryGenerator } from './registryGenerator';
+
+export class ConfigService {
+  /**
+   * @private
+   * @readonly
+   * @property {string} network - The network identifier for the Hedera network (e.g., previewnet, testnet, mainnet).
+   */
+  private readonly network: string;
+
+  /**
+   * @private
+   * @readonly
+   * @property {string} mirrorNodeUrl - The URL for the Hedera Mirror Node API.
+   */
+  private readonly mirrorNodeUrl: string;
+
+  /**
+   * @private
+   * @readonly
+   * @property {string} mirrorNodeUrlWeb3 - The URL for the Hedera Mirror Node Web3Module API.
+   */
+  private readonly mirrorNodeUrlWeb3: string;
+
+  /**
+   * @private
+   * @readonly
+   * @property {string} startingPoint - The starting point for indexing, which can be a contract ID or a pagination pointer.
+   */
+  private readonly startingPoint: string;
+
+  /**
+   * @private
+   * @readonly
+   * @property {boolean} detectionOnly - A flag indicating whether detection-only mode is enabled.
+   * If `true`, only contract detection occurs; if `false`, registry updates are also performed.
+   */
+  private readonly detectionOnly: boolean;
+
+  /**
+   * @private
+   * @readonly
+   * @property {number} scanContractLimit - The maximum number of contracts to scan per operation.
+   */
+  private readonly scanContractLimit: number;
+
+  constructor() {
+    this.network = process.env.HEDERA_NETWORK || '';
+    this.mirrorNodeUrl = process.env.MIRROR_NODE_URL || '';
+    this.mirrorNodeUrlWeb3 = process.env.MIRROR_NODE_URL_WEB3 || '';
+    this.startingPoint = process.env.STARTING_POINT || '';
+    this.detectionOnly = process.env.ENABLE_DETECTION_ONLY === 'true';
+    this.scanContractLimit = process.env.SCAN_CONTRACT_LIMIT
+      ? parseInt(process.env.SCAN_CONTRACT_LIMIT)
+      : 100;
+    this.validateConfigs();
+
+    console.log(
+      `Indexing process initiated: network=${this.network}, mirrorNodeUrl=${this.mirrorNodeUrl}, mirrorNodeUrlWeb3=${this.mirrorNodeUrlWeb3}, detectionOnly=${this.detectionOnly}, scanContractLimit=${this.scanContractLimit}`
+    );
+  }
+
+  /**
+   * Validates the configuration values for network and starting point.
+   * Throws an error if the configurations are invalid.
+   * @throws {Error} If HEDERA_NETWORK or STARTING_POINT is not properly configured.
+   */
+  private validateConfigs(): void {
+    if (!this.network || !constants.NETWORK_REGEX.test(this.network)) {
+      throw new Error(
+        `HEDERA_NETWORK Is Not Properly Configured: network=${this.network}`
+      );
+    }
+
+    if (constants.PRODUCTION_NETWORKS.includes(this.network)) {
+      if (
+        !this.mirrorNodeUrl ||
+        !constants.MIRROR_NODE_URL_REGEX.test(this.mirrorNodeUrl)
+      ) {
+        throw new Error(
+          `MIRROR_NODE_URL Is Not Properly Configured: mirrorNodeUrl=${this.mirrorNodeUrl}`
+        );
+      }
+    }
+
+    if (
+      this.startingPoint &&
+      !constants.STARTING_POINT_REGEX.test(this.startingPoint)
+    ) {
+      throw new Error(
+        `STARTING_POINT Is Not Properly Configured: startingPoint=${this.startingPoint}`
+      );
+    }
+
+    if (
+      isNaN(this.scanContractLimit) ||
+      this.scanContractLimit <= 0 ||
+      this.scanContractLimit > 100
+    ) {
+      throw new Error(
+        `SCAN_CONTRACT_LIMIT Is Not Properly Configured (should be a number from 1-100): scanContractLimit=${this.scanContractLimit}`
+      );
+    }
+  }
+
+  /**
+   * Determines the starting point for indexing based on the configuration settings.
+   * The method prioritizes the STARTING_POINT if it is defined in the configuration.
+   * If STARTING_POINT is not defined, it checks for a stored next pointer on disk; if found, it uses that.
+   * If neither is available, the indexing will start from the genesis block.
+   *
+   * @param {RegistryGenerator} registryGenerator - An instance of the RegistryGenerator used to retrieve the next pointer from storage.
+   * @returns {Promise<string | null>} A promise that resolves to the starting point string, or null if no valid starting point is set.
+   */
+  async resolveStartingPoint(
+    registryGenerator: RegistryGenerator
+  ): Promise<string | null> {
+    if (constants.GET_CONTRACTS_LISTS_NEXT_REGEX.test(this.startingPoint)) {
+      console.log(
+        `Start indexing the network from next_pointer=${this.startingPoint}`
+      );
+      return this.startingPoint;
+    }
+
+    if (constants.HEDERA_CONTRACT_ID_REGEX.test(this.startingPoint)) {
+      console.log(
+        `Start indexing the network from contractId=${this.startingPoint}`
+      );
+      return Helper.buildStartingPoint(this.startingPoint);
+    }
+
+    if (constants.EVM_ADDRESS_REGEX.test(this.startingPoint)) {
+      return this.resolveFromEvmAddress();
+    }
+
+    const startingPointFromStorage =
+      await registryGenerator.retrieveNextPointer();
+
+    if (startingPointFromStorage) {
+      console.log(
+        `Start indexing the network from storage next pointer=${startingPointFromStorage}`
+      );
+      return startingPointFromStorage;
+    }
+
+    console.log('Start indexing the network from genesis');
+    return null;
+  }
+
+  /**
+   * Resolves the starting point from an EVM address by fetching the detailed contract object.
+   * @returns {Promise<string>} A promise that resolves to the starting point string.
+   * @throws {Error} If the contract is not found.
+   */
+  private async resolveFromEvmAddress(): Promise<string> {
+    const contractScanner = new ContractScannerService(
+      this.mirrorNodeUrl,
+      this.mirrorNodeUrlWeb3,
+      this.scanContractLimit
+    );
+    const contractResponse = await contractScanner.fetchContractObject(
+      this.startingPoint
+    );
+
+    if (!contractResponse?.contract_id) {
+      throw new Error(
+        `Resource Not Found: startingPoint=${this.startingPoint}`
+      );
+    }
+
+    console.log(
+      `Start indexing the network from contractAddress=${this.startingPoint} (${contractResponse.contract_id})`
+    );
+    return Helper.buildStartingPoint(contractResponse.contract_id);
+  }
+
+  /**
+   * Gets the configured network.
+   * @returns {string} The network string.
+   */
+  getNetwork(): string {
+    return this.network;
+  }
+
+  /**
+   * Gets the URL of the mirror node.
+   * @returns {string} The mirror node URL.
+   */
+  getMirrorNodeUrl(): string {
+    return this.mirrorNodeUrl;
+  }
+
+  /**
+   * Gets the URL of the mirror node web3module.
+   * @returns {string} The mirror node URL web3module.
+   */
+  getMirrorNodeUrlWeb3(): string {
+    return this.mirrorNodeUrlWeb3;
+  }
+
+  /**
+   * Gets the current status of the detection-only mode.
+   * @returns {boolean} `true` if detection-only mode is enabled, `false` otherwise.
+   */
+  getDetectionOnly(): boolean {
+    return this.detectionOnly;
+  }
+
+  /**
+   * Retrieves the maximum number of contracts to scan per operation.
+   * @returns {number} The configured contract scan limit.
+   */
+  getScanContractLimit(): number {
+    return this.scanContractLimit;
+  }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/services/contractScanner.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import { AxiosError, AxiosInstance } from 'axios';
+import constants from '../utils/constants';
+import { Helper } from '../utils/helper';
+import {
+  ContractCallData,
+  Links,
+  MirrorNodeContract,
+  MirrorNodeContractResponse,
+} from '../schemas/MirrorNodeSchemas';
+
+export class ContractScannerService {
+  /**
+   * @private
+   * @readonly
+   * @property {AxiosInstance} mirrorNodeRestClient - Axios client instance for interacting with the Hedera Mirror Node REST API.
+   */
+  private readonly mirrorNodeRestClient: AxiosInstance;
+
+  /**
+   * @private
+   * @readonly
+   * @property {AxiosInstance} mirrorNodeWeb3Client - Axios client instance for interacting with the Hedera Mirror Node Web3Module API.
+   */
+  private readonly mirrorNodeWeb3Client: AxiosInstance;
+
+  /**
+   * @private
+   * @readonly
+   * @property {number} scanContractLimit - The maximum number of contracts to scan per operation.
+   */
+  private readonly scanContractLimit: number;
+
+  constructor(
+    mirrorNodeUrl: string,
+    mirrorNodeUrlWeb3: string,
+    scanContractLimit: number
+  ) {
+    const mirrorNodeClients = Helper.buildAxiosClient(
+      mirrorNodeUrl,
+      mirrorNodeUrlWeb3
+    );
+    this.mirrorNodeRestClient = mirrorNodeClients.mirrorNodeRestClient;
+    this.mirrorNodeWeb3Client = mirrorNodeClients.mirrorNodeWeb3Client;
+    this.scanContractLimit = scanContractLimit;
+  }
+
+  /**
+   * Fetches contracts from the mirror node API.
+   * @param {string | null} next - The pagination token for the next set of results. If null, fetches from the beginning.
+   * @returns {Promise<{ contracts: MirrorNodeContract[]; links: Links } | null>} A promise that resolves to an object containing an array of contract data and pagination links, or null if the request fails.
+   * @throws {Error} When there is a network or API error. Rate limit errors (429) are automatically retried.
+   */
+  async fetchContracts(
+    next: string | null = null
+  ): Promise<{ contracts: MirrorNodeContract[]; links: Links } | null> {
+    const getAllContractPath = Helper.buildUrl(next, this.scanContractLimit);
+    console.log('Fetching contract batch from URL:', getAllContractPath);
+
+    try {
+      const response = await this.mirrorNodeRestClient.get(getAllContractPath);
+      return response.data;
+    } catch (error) {
+      return this.handleAxiosError(error, this.fetchContracts, next);
+    }
+  }
+
+  /**
+   * Fetches detailed contract object for a specific contract from the mirror node API.
+   * @param {string} contractId - The ID of the contract to fetch details for.
+   * @returns {Promise<MirrorNodeContractResponse | null>} A promise that resolves to the contract details including bytecode, or null if the request fails.
+   * @throws {Error} When there is a network or API error. Rate limit errors (429) are automatically retried.
+   */
+  async fetchContractObject(
+    contractId: string
+  ): Promise<MirrorNodeContractResponse | null> {
+    try {
+      const response = await this.mirrorNodeRestClient.get(
+        `${constants.GET_CONTRACT_ENDPOINT}/${contractId}`
+      );
+      return response.data;
+    } catch (error) {
+      return this.handleAxiosError(error, this.fetchContractObject, contractId);
+    }
+  }
+
+  /**
+   * Handles Axios errors, specifically dealing with rate limiting (429) errors by implementing retry logic.
+   * @param {unknown} error - The error thrown by Axios
+   * @param {(param: string | null) => any} retryMethod - The method to retry if rate limited
+   * @param {any} param - Parameter to pass to the retry method
+   * @returns {Promise<any>} Returns the result of the retry method if successful, null otherwise
+   */
+  private async handleAxiosError(
+    error: unknown,
+    retryMethod: (param: any) => any,
+    param: any
+  ): Promise<any> {
+    const isRateLimitError = (error as AxiosError).response?.status === 429;
+    const isBadRequestError = (error as AxiosError).response?.status === 400;
+    if (isRateLimitError) {
+      console.log(
+        `Rate limit exceeded. Retrying in ${constants.RETRY_DELAY_MS}ms...`
+      );
+      await Helper.wait(constants.RETRY_DELAY_MS);
+      return retryMethod.call(this, param);
+    }
+
+    // Bad requests for contractCallRequest are expected for non-ERC contracts.
+    // To prevent log clutter, log the error only if it is not a bad request originating from contractCallRequest.
+    if (
+      !isBadRequestError &&
+      retryMethod.name !== this.contractCallRequest.name
+    ) {
+      console.error('Error returned from the mirror node:', error);
+    }
+
+    return null;
+  }
+  /**
+   * Sends a contract call request to the mirror node API.
+   *
+   * This method constructs a POST request to the contract call endpoint with the provided call data.
+   * It handles any potential errors, including rate limit errors, by retrying the request if necessary.
+   *
+   * @param {ContractCallData} callData - The data required for the contract call, including the target contract address and the data to be sent.
+   * @returns {Promise<any>} A promise that resolves to the result of the contract call, or null if the request fails.
+   * @throws {Error} When there is a network or API error.
+   */
+  async contractCallRequest(callData: ContractCallData): Promise<any> {
+    try {
+      const response = await this.mirrorNodeWeb3Client.post(
+        constants.CONTRACT_CALL_ENDPOINT,
+        callData
+      );
+      return response.data.result;
+    } catch (error) {
+      return this.handleAxiosError(error, this.contractCallRequest, callData);
+    }
+  }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/services/registryGenerator.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import fs from 'fs';
+import path from 'path';
+import constants from '../utils/constants';
+import { ERCOutputInterface } from '../schemas/ERCRegistrySchemas';
+import { Helper } from '../utils/helper';
+import _ from 'lodash';
+
+export class RegistryGenerator {
+  /**
+   * @private
+   * @readonly
+   * @property {string} erc20JsonFilePath - The file path where ERC20 contract registry data will be stored
+   */
+  private readonly erc20JsonFilePath: string;
+
+  /**
+   * @private
+   * @readonly
+   * @property {string} erc721JsonFilePath - The file path where ERC721 contract registry data will be stored
+   */
+  private readonly erc721JsonFilePath: string;
+
+  /**
+   * @private
+   * @readonly
+   * @property {string} erc1155JsonFilePath - The file path where ERC1155 contract registry data will be stored
+   */
+  private readonly erc1155JsonFilePath: string;
+
+  /**
+   * @private
+   * @readonly
+   * @property {string} nextPointerFilePath - The file path where the next pointer for indexing will be stored.
+   */
+  private readonly nextPointerFilePath: string;
+
+  constructor() {
+    this.erc20JsonFilePath = Helper.buildFilePath(
+      constants.ERC_20_JSON_FILE_NAME
+    );
+    this.erc721JsonFilePath = Helper.buildFilePath(
+      constants.ERC_721_JSON_FILE_NAME
+    );
+    this.erc1155JsonFilePath = Helper.buildFilePath(
+      constants.ERC_1155_JSON_FILE_NAME
+    );
+    this.nextPointerFilePath = Helper.buildFilePath(
+      constants.GET_CONTRACTS_LIST_NEXT_POINTER_JSON_FILE_NAME
+    );
+  }
+
+  /**
+   * Updates the next pointer in a file if it is not null.
+   * @param {string | null} next - The next pointer to be written to the file. If null, the file will not be updated.
+   * @returns {Promise<void>} A promise that resolves when the next pointer has been successfully written to the file.
+   */
+  async updateNextPointer(next: string | null): Promise<void> {
+    if (next) {
+      await this.writeContentsToFile(this.nextPointerFilePath, next);
+      console.log('Next pointer has been successfully updated to:', next);
+    }
+  }
+
+  /**
+   * Retrieves the next pointer from nextPointerFilePath.
+   * @returns {Promise<string | null>} A promise that resolves to the next pointer if it exists, or null if the file is empty or does not exist.
+   */
+  async retrieveNextPointer(): Promise<string | null> {
+    const fileContent = this.readContentsFromFile(this.nextPointerFilePath);
+    return fileContent ? JSON.parse(fileContent) : null;
+  }
+
+  /**
+   * Generates registry files for ERC20, ERC721, and ERC1155 contracts by updating existing registries with new contracts.
+   * @param {ERCOutputInterface[]} erc20Contracts - Array of ERC20 contract interfaces to add to registry
+   * @param {ERCOutputInterface[]} erc721Contracts - Array of ERC721 contract interfaces to add to registry
+   * @param {ERCOutputInterface[]} erc1155Contracts - Array of ERC1155 contract interfaces to add to registry
+   * @returns {Promise<void>} Promise that resolves when registry files are updated
+   */
+  async generateErcRegistry(
+    erc20Contracts: ERCOutputInterface[],
+    erc721Contracts: ERCOutputInterface[],
+    erc1155Contracts: ERCOutputInterface[]
+  ): Promise<void> {
+    const updatePromises = [];
+
+    if (erc20Contracts.length) {
+      updatePromises.push(
+        this.updateRegistry(this.erc20JsonFilePath, erc20Contracts)
+      );
+    }
+
+    if (erc721Contracts.length) {
+      updatePromises.push(
+        this.updateRegistry(this.erc721JsonFilePath, erc721Contracts)
+      );
+    }
+
+    if (erc1155Contracts.length) {
+      updatePromises.push(
+        this.updateRegistry(this.erc1155JsonFilePath, erc1155Contracts)
+      );
+    }
+
+    // Wait for all updates to complete in parallel
+    await Promise.all(updatePromises);
+  }
+
+  /**
+   * Updates a registry file with new contracts by merging them with existing contracts,
+   * ensuring the registry remains sorted and free of duplicates.
+   *
+   * @param {string} filePath - The file path to the registry file.
+   * @param {ERCOutputInterface[]} newContracts - The new contracts to add to the registry.
+   * @returns {Promise<void>} - A promise that resolves once the registry is successfully updated.
+   *
+   * @private
+   */
+  private async updateRegistry(
+    filePath: string,
+    newContracts: ERCOutputInterface[]
+  ): Promise<void> {
+    let uniqueContracts: ERCOutputInterface[] = [];
+    const fileContent = this.readContentsFromFile(filePath);
+    const existingContracts = fileContent
+      ? (JSON.parse(fileContent) as ERCOutputInterface[])
+      : [];
+
+    if (!existingContracts.length) {
+      uniqueContracts = newContracts;
+    } else if (
+      // Since both arrays are sorted in ascending order, if the `contractId` of the last item in `existingContracts`
+      // is less than the `contractId` of the first item in `newContracts`, just merged the contracts and remove dups without sorting.
+      existingContracts[existingContracts.length - 1].contractId <
+      newContracts[0].contractId
+    ) {
+      uniqueContracts = _.chain([...existingContracts, ...newContracts]) // merge contracts
+        .uniqBy('contractId') // Remove duplicates based on contractId
+        .value(); // Extract the final array
+    } else {
+      uniqueContracts = _.chain([...existingContracts, ...newContracts]) // merge contracts
+        .uniqBy('contractId') // Remove duplicates based on contractId
+        .sortBy((contract) => Number(contract.contractId.split('.')[2])) // Sort by the numeric value of contractId
+        .value(); // Extract the final array
+    }
+
+    await this.writeContentsToFile(filePath, uniqueContracts);
+
+    // Convert Map values back to array for file writing
+
+    console.log(
+      `Finished writing ${newContracts.length} new ERC token contracts to registry.`
+    );
+  }
+
+  /**
+   * Reads the contents of a registry file and returns the existing contracts.
+   * If the file does not exist, an empty string is returned.
+   * @param {string} filePath - The path to the registry file.
+   * @returns {string} The contents of the registry file as a string, or an empty string if the file doesn't exist.
+   * @private
+   */
+  private readContentsFromFile(filePath: string): string {
+    if (!fs.existsSync(filePath)) {
+      return '';
+    }
+    return fs.readFileSync(filePath, 'utf8');
+  }
+
+  /**
+   * Writes the specified contents to a file at the given file path.
+   * If the directory does not exist, it will be created recursively.
+   *
+   * @param {string} filePath - The path to the file where contents will be written.
+   * @param {any} contents - The contents to write to the file, which will be stringified as JSON.
+   * @returns {Promise<void>} A promise that resolves when the file has been successfully written.
+   */
+  private async writeContentsToFile(
+    filePath: string,
+    contents: any
+  ): Promise<void> {
+    const dir = path.dirname(filePath);
+    await fs.promises.mkdir(dir, { recursive: true });
+    await fs.promises.writeFile(filePath, JSON.stringify(contents, null, 2));
+  }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/utils/constants.ts
+// SPDX-License-Identifier: Apache-2.0
+
+export default {
+  RETRY_DELAY_MS: 9000,
+  GET_CONTRACT_ENDPOINT: '/api/v1/contracts',
+  CONTRACT_CALL_ENDPOINT: '/api/v1/contracts/call',
+  ERC_20_JSON_FILE_NAME: 'erc-20.json',
+  ERC_721_JSON_FILE_NAME: 'erc-721.json',
+  ERC_1155_JSON_FILE_NAME: 'erc-1155.json',
+  GET_CONTRACTS_LIST_NEXT_POINTER_JSON_FILE_NAME: 'next-pointer.json',
+  PRODUCTION_NETWORKS: ['previewnet', 'testnet', 'mainnet'],
+  NETWORK_REGEX: /^(local-node|previewnet|testnet|mainnet)$/,
+  MIRROR_NODE_URL_REGEX:
+    /^https:\/\/(previewnet|testnet|mainnet)\.mirrornode\.hedera\.com$/,
+  STARTING_POINT_REGEX:
+    /^(0x[a-fA-F0-9]{40}|0\.0\.\d+|\/api\/v1\/contracts\?limit=100&order=asc&contract\.id=gte:0\.0\.\d+)$/,
+  EVM_ADDRESS_REGEX: /^0x[a-fA-F0-9]{40}$/,
+  HEDERA_CONTRACT_ID_REGEX: /^0\.0\.\d+$/,
+  GET_CONTRACTS_LISTS_NEXT_REGEX:
+    /^\/api\/v1\/contracts\?limit=100&order=asc&contract\.id=gte:0\.0\.\d+$/,
+  ERC20_TOKEN_INFO_SELECTORS: [
+    {
+      type: 'string',
+      field: 'name',
+      sighash: '0x06fdde03',
+    },
+    {
+      type: 'string',
+      field: 'symbol',
+      sighash: '0x95d89b41',
+    },
+    {
+      type: 'uint256',
+      field: 'totalSupply',
+      sighash: '0x18160ddd',
+    },
+    {
+      type: 'uint8',
+      field: 'decimals',
+      sighash: '0x313ce567',
+    },
+  ],
+  ERC721_TOKEN_INFO_SELECTORS: [
+    {
+      type: 'string',
+      field: 'name',
+      sighash: '0x06fdde03',
+    },
+    {
+      type: 'string',
+      field: 'symbol',
+      sighash: '0x95d89b41',
+    },
+  ],
+  ERC_STANDARD_SIGNATURES: {
+    /**
+     * The pattern for identifying ERC-20 bytecode, based on a set of method and event signatures
+     * as defined in the ERC-20 standard interface.
+     *
+     * Selectors (Methods):
+     * - 'dd62ed3e': allowance(address _owner, address _spender) view returns (uint256 remaining)
+     * - '095ea7b3': approve(address _spender, uint256 _value) returns (bool success)
+     * - '70a08231': balanceOf(address _owner) view returns (uint256 balance)
+     * - '18160ddd': totalSupply() view returns (uint256)
+     * - 'a9059cbb': transfer(address _to, uint256 _value) returns (bool success)
+     * - '23b872dd': transferFrom(address _from, address _to, uint256 _value) returns (bool success)
+     *
+     * Topics (Events):
+     * - '8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925': Approval(address indexed _owner, address indexed _spender, uint256 _value)
+     * - 'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef': Transfer(address indexed _from, address indexed _to, uint256 _value)
+     *
+     * source: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.1.0/contracts/token/ERC20/IERC20.sol
+     */
+    ERC20: [
+      'dd62ed3e',
+      '095ea7b3',
+      '70a08231',
+      '18160ddd',
+      'a9059cbb',
+      '23b872dd',
+      '8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925',
+      'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+    ],
+
+    /**
+     * The pattern for identifying ERC-721 bytecode, based on a set of method and event signatures
+     * as defined in the ERC-721 standard interface.
+     *
+     * Selectors (Methods):
+     * - '095ea7b3': approve(address _approved, uint256 _tokenId) payable
+     * - '70a08231': balanceOf(address _owner) view returns (uint256)
+     * - '081812fc': getApproved(uint256 _tokenId) view returns (address)
+     * - 'e985e9c5': isApprovedForAll(address _owner, address _operator) view returns (bool)
+     * - '6352211e': ownerOf(uint256 _tokenId) view returns (address)
+     * - '42842e0e': safeTransferFrom(address _from, address _to, uint256 _tokenId) payable
+     * - 'b88d4fde': safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes data) payable
+     * - 'a22cb465': setApprovalForAll(address _operator, bool _approved)
+     * - '01ffc9a7': supportsInterface(bytes4 interfaceID) view returns (bool)
+     * - '23b872dd': transferFrom(address _from, address _to, uint256 _tokenId) payable
+     *
+     * Topics (Events):
+     * - '8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925': Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId)
+     * - '17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31': ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved)
+     * - 'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef': Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId)
+     *
+     * source: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.1.0/contracts/token/ERC721/IERC721.sol
+     */
+    ERC721: [
+      '095ea7b3',
+      '70a08231',
+      '081812fc',
+      'e985e9c5',
+      '6352211e',
+      '42842e0e',
+      'b88d4fde',
+      'a22cb465',
+      '01ffc9a7',
+      '23b872dd',
+      '8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925',
+      '17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31',
+      'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+    ],
+
+    /**
+     * The pattern for identifying ERC-1155 bytecode, based on a set of method and event signatures
+     * as defined in the ERC-1155 standard interface.
+     *
+     * Selectors (Methods):
+     * - '00fdd58e': 'function balanceOf(address account, uint256 id) external view returns (uint256)',
+     * - '4e1273f4': 'function balanceOfBatch(address[] calldata accounts, uint256[] calldata ids) external view returns (uint256[] memory)',
+     * - 'e985e9c5': 'function isApprovedForAll(address account, address operator) external view returns (bool),
+     * - '2eb2c2d6': 'function safeBatchTransferFrom(address from, address to, uint256[] calldata ids, uint256[] calldata values, bytes calldata data) external',
+     * - 'f242432a': 'function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes calldata data) external',
+     * - 'a22cb465': 'function setApprovalForAll(address operator, bool approved) external',
+     * - '01ffc9a7': 'function supportsInterface(bytes4 interfaceID) view returns (bool)'
+     *
+     * Topics (Events):
+     * - '17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31': 'event ApprovalForAll(address indexed account, address indexed operator, bool approved)',
+     * - '4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb': 'event TransferBatch(address indexed operator, address indexed from, address indexed to, uint256[] ids, uint256[] values)',
+     * - 'c3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62': 'event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);',
+     * - '6bb7ff708619ba0610cba295a58592e0451dee2622938c8755667688daf3529b': 'event URI(string value, uint256 indexed id)'. Note: This event is defined in the IERC1155 interface but is not triggered in the base OpenZeppelin ERC1155 abstract contract.
+     *                                                                                                                      As a result, it is not included in the bytecode of a custom contract inheriting from ERC1155. Only if explicitly implemented
+     *                                                                                                                      in a derived contract, the event signature hash will appear in the compiled bytecode. For more flexible signature matching,
+     *                                                                                                                      this hash is excluded from the ERC1155 array below.
+     *
+     * source: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.1.0/contracts/token/ERC1155/IERC1155.sol
+     */
+    ERC1155: [
+      'fdd58e', // Leading zeros ('00') are omitted in the bytecode due to EVM optimizations. This does not affect functionality, as Solidity uses a PUSH3 instruction to load the selector onto the stack.
+      '4e1273f4',
+      'e985e9c5',
+      '2eb2c2d6',
+      'f242432a',
+      'a22cb465',
+      '01ffc9a7',
+      '17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31',
+      '4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb',
+      'c3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62',
+    ],
+  },
+};
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/src/utils/helper.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import axios, { AxiosInstance } from 'axios';
+import constants from './constants';
+import path from 'path';
+
+export class Helper {
+  /**
+   * Constructs the file path for the specified file name based on the current Hedera network.
+   * The network is determined by the HEDERA_NETWORK environment variable, defaulting to 'previewnet'.
+   *
+   * @param {string} fileName - The name of the file for which to build the path.
+   * @returns {string} The constructed file path.
+   */
+  static buildFilePath(fileName: string): string {
+    const network = process.env.HEDERA_NETWORK || 'local-node';
+    return path.join(__dirname, '../../erc-registry', network, fileName);
+  }
+
+  /**
+   * Constructs a URL based on the provided `next` parameter. If `next` is not null,
+   * it updates the value of the `limit=` parameter in the URL using the provided `scanContractLimit`.
+   * If `next` is null, it returns a default URL with query parameters, including `scanContractLimit`
+   * and an ascending order for fetching contracts.
+   *
+   * @param {string | null} next - The pagination token for the next set of results, or null to use the default endpoint.
+   * @param {number} scanContractLimit - The limit for the number of contracts to fetch, used to update or construct the URL.
+   * @returns {string} The complete URL to query the mirror node API.
+   */
+  static buildUrl(
+    next: string | null,
+    scanContractLimit: number = 100
+  ): string {
+    return next
+      ? // Replace the value of the 'limit=' parameter in the URL with the given scanContractLimit.
+        // Regex explanation:
+        // - (limit=): Captures the exact string 'limit=' using a capture group.
+        // - \d+: Matches one or more digits following 'limit='.
+        // - `$1${scanContractLimit}`: Replaces the matched pattern with 'limit=' (from capture group) and the new value of scanContractLimit.
+        next.replace(/(limit=)\d+/, `$1${scanContractLimit}`)
+      : // If 'next' is null, construct a new URL with the scanContractLimit and order.
+        `${constants.GET_CONTRACT_ENDPOINT}?limit=${scanContractLimit}&order=asc`;
+  }
+
+  /**
+   * Creates a promise that resolves after the specified delay
+   * @param {number} ms - The delay in milliseconds
+   * @returns {Promise<void>} A promise that resolves after the specified delay
+   */
+  static wait(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Builds a starting point URL for fetching contracts from the mirror node API.
+   * The URL is constructed to retrieve contracts with IDs greater than or equal to the specified contract ID.
+   *
+   * @param {string} contractId - The contract ID to use as a reference for the starting point.
+   * @returns {string} The constructed starting point URL for the mirror node API.
+   */
+  static buildStartingPoint(contractId: string): string {
+    return `/api/v1/contracts?limit=100&order=asc&contract.id=gte:${contractId}`;
+  }
+
+  /**
+   * Creates and returns Axios client instances for interacting with the Hedera Mirror Node REST API
+   * and Web3-compatible API.
+   *
+   * @param {string} mirrorNodeUrl - The base URL for the Hedera Mirror Node REST API.
+   * @param {string} mirrorNodeUrlWeb3 - The base URL for the Hedera Mirror Node Web3-compatible API.
+   *                                     If not provided, defaults to the value of `mirrorNodeUrl`.
+   * @returns {{ mirrorNodeRestClient: AxiosInstance, mirrorNodeWeb3Client: AxiosInstance }}
+   */
+  static buildAxiosClient(
+    mirrorNodeUrl: string,
+    mirrorNodeUrlWeb3: string
+  ): {
+    mirrorNodeRestClient: AxiosInstance;
+    mirrorNodeWeb3Client: AxiosInstance;
+  } {
+    return {
+      mirrorNodeRestClient: axios.create({ baseURL: mirrorNodeUrl }),
+      mirrorNodeWeb3Client: axios.create({
+        baseURL: mirrorNodeUrlWeb3 || mirrorNodeUrl,
+      }),
+    };
+  }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/acceptance.test.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import dotenv from 'dotenv';
+dotenv.config();
+import testHelper from './utils/helper';
+import testConstants from './utils/constants';
+import { ercRegistryRunner } from '../../src/runner';
+import { Helper } from '../../src/utils/helper';
+import constants from '../../src/utils/constants';
+import NodeClient from '@hashgraph/sdk/lib/client/NodeClient';
+
+describe('ERC Registry Acceptance Test', () => {
+  // production networks take more time to finish deployments
+  jest.setTimeout(60000);
+
+  const totalExpectedDeploymentsForEachContractType = 1;
+
+  const erc20JsonFilePath = Helper.buildFilePath(
+    constants.ERC_20_JSON_FILE_NAME
+  );
+  const erc721JsonFilePath = Helper.buildFilePath(
+    constants.ERC_721_JSON_FILE_NAME
+  );
+  const erc1155JsonFilePath = Helper.buildFilePath(
+    constants.ERC_1155_JSON_FILE_NAME
+  );
+
+  let deployedAddresses = {
+    erc20: [] as string[],
+    erc721: [] as string[],
+    erc1155: [] as string[],
+    nonErc: [] as string[],
+    minimalErc20: [] as string[],
+    minimalErc721: [] as string[],
+  };
+  let sdkClient: NodeClient | null = null;
+
+  beforeEach(async () => {
+    const contractDeploymentRequirements =
+      testHelper.prepareContractDeployRequirements(
+        totalExpectedDeploymentsForEachContractType
+      );
+    sdkClient = testHelper.buildSdkClient();
+    deployedAddresses = await testHelper.deployRequiredContracts(
+      sdkClient,
+      contractDeploymentRequirements
+    );
+
+    // Sort all contract addresses to identify the earliest deployed contract
+    const allDeployedAddresses = testHelper.sortAddresses([
+      ...deployedAddresses.erc20,
+      ...deployedAddresses.minimalErc20,
+      ...deployedAddresses.erc721,
+      ...deployedAddresses.minimalErc721,
+      ...deployedAddresses.nonErc,
+      ...deployedAddresses.erc1155,
+    ]);
+
+    const totalExpectedDeployments =
+      totalExpectedDeploymentsForEachContractType *
+      contractDeploymentRequirements.length;
+
+    expect(allDeployedAddresses.length).toEqual(totalExpectedDeployments);
+
+    // Start the indexing process from the earliest contract in the batch, avoiding indexing from genesis.
+    process.env.STARTING_POINT = allDeployedAddresses[0];
+  });
+
+  afterEach(() => {
+    // Close or clean up any resources after all test
+    if (sdkClient) {
+      sdkClient.close(); // Or any appropriate cleanup method
+    }
+  });
+
+  it('should execute the main ERC registry runner method and correctly record the number of detected ERC contracts in registry', async () => {
+    // run the actual tool to start indexing the network and write to registry
+    await ercRegistryRunner().then();
+
+    // wait for 500ms for all the asynchronous tasks to finish
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // retrieve the newest erc contracts added to the registry
+    const latestErc20sWrittenToRegistry = JSON.parse(
+      testHelper.readContentsFromFile(erc20JsonFilePath)
+    ).slice(totalExpectedDeploymentsForEachContractType * 2 * -1);
+    const latestErc721sWrittenToRegistry = JSON.parse(
+      testHelper.readContentsFromFile(erc721JsonFilePath)
+    ).slice(totalExpectedDeploymentsForEachContractType * 2 * -1);
+
+    const latestErc1155sWrittenToRegistry = JSON.parse(
+      testHelper.readContentsFromFile(erc1155JsonFilePath)
+    ).slice(totalExpectedDeploymentsForEachContractType * -1);
+
+    // assertion
+    latestErc20sWrittenToRegistry.forEach((object: any) => {
+      expect(
+        deployedAddresses.erc20.includes(object.address) ||
+          deployedAddresses.minimalErc20.includes(object.address)
+      ).toBe(true);
+
+      if (deployedAddresses.erc20.includes(object.address)) {
+        expect(object.name).toEqual(
+          testConstants.ERC_CONSTRUCTOR_PARAMS.erc20.tokenName
+        );
+        expect(object.symbol).toEqual(
+          testConstants.ERC_CONSTRUCTOR_PARAMS.erc20.tokenSymbol
+        );
+      }
+
+      if (deployedAddresses.minimalErc20.includes(object.address)) {
+        expect(object.name).toBeNull;
+        expect(object.symbol).toBeNull;
+        expect(object.decimals).toBeNull;
+        expect(object.totalSupply).toBeNull;
+      }
+    });
+
+    latestErc721sWrittenToRegistry.forEach((object: any) => {
+      expect(
+        deployedAddresses.erc721.includes(object.address) ||
+          deployedAddresses.minimalErc721.includes(object.address)
+      ).toBe(true);
+
+      if (deployedAddresses.erc721.includes(object.address)) {
+        expect(object.name).toEqual(
+          testConstants.ERC_CONSTRUCTOR_PARAMS.erc721.tokenName
+        );
+        expect(object.symbol).toEqual(
+          testConstants.ERC_CONSTRUCTOR_PARAMS.erc721.tokenSymbol
+        );
+      }
+
+      if (deployedAddresses.minimalErc721.includes(object.address)) {
+        expect(object.name).toBeNull;
+        expect(object.symbol).toBeNull;
+      }
+    });
+
+    latestErc1155sWrittenToRegistry.forEach((object: any) => {
+      expect(deployedAddresses.erc1155.includes(object.address)).toBe(true);
+    });
+  });
+
+  it('should not update registry when ENABLE_DETECTION_ONLY is set to true', async () => {
+    // Enable detection-only mode
+    process.env.ENABLE_DETECTION_ONLY = 'true';
+
+    // Backup current registry
+    const currentErc20Registry = JSON.parse(
+      testHelper.readContentsFromFile(erc20JsonFilePath) || '[]'
+    );
+    const currentErc721Registry = JSON.parse(
+      testHelper.readContentsFromFile(erc721JsonFilePath) || '[]'
+    );
+
+    const currentErc1155Registry = JSON.parse(
+      testHelper.readContentsFromFile(erc1155JsonFilePath) || '[]'
+    );
+
+    // Run the tool to index the network and potentially update the registry
+    await ercRegistryRunner();
+
+    // Wait for asynchronous tasks to complete
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Read updated registry
+    const updatedErc20Registry = JSON.parse(
+      testHelper.readContentsFromFile(erc20JsonFilePath) || '[]'
+    );
+    const updatedErc721Registry = JSON.parse(
+      testHelper.readContentsFromFile(erc721JsonFilePath) || '[]'
+    );
+
+    const updatedErc1155Registry = JSON.parse(
+      testHelper.readContentsFromFile(erc1155JsonFilePath) || '[]'
+    );
+
+    // Verify that the registry was not updated
+    expect(updatedErc20Registry).toEqual(currentErc20Registry);
+    expect(updatedErc721Registry).toEqual(currentErc721Registry);
+    expect(updatedErc1155Registry).toEqual(currentErc1155Registry);
+  });
+});
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/utils/constants.ts
+// SPDX-License-Identifier: Apache-2.0
+
+export default {
+  ERC_CONSTRUCTOR_PARAMS: {
+    erc20: {
+      tokenName: 'ERC Registry Fungible',
+      tokenSymbol: 'ERFT',
+    },
+    erc721: {
+      tokenName: 'ERC Registry Non-Fungible',
+      tokenSymbol: 'ERNFT',
+    },
+    erc1155: {
+      tokenUri: 'test-uri',
+    },
+  },
+};
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/utils/helper.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import {
+  Client,
+  ContractCreateFlow,
+  ContractFunctionParameters,
+} from '@hashgraph/sdk';
+import fs from 'fs';
+import testConstants from '../utils/constants';
+import OZERC20Artifacts from '../contracts/erc-20/OZERC20Mock.json';
+import MinimalOZERC20Artifacts from '../contracts/erc-20/MinimalERC20.json';
+import OZERC721Artifacts from '../contracts/erc-721/OZERC721Mock.json';
+import MinimalOZERC721Artifacts from '../contracts/erc-721/MinimalERC721.json';
+import OZERC1155Artifacts from '../contracts/erc-1155/ERC1155Mock.json';
+import BasicArtifacts from '../contracts/non-ercs/Basic.json';
+import NodeClient from '@hashgraph/sdk/lib/client/NodeClient';
+
+export interface ContractDeploymentRequirements {
+  contractType: string;
+  totalDeployments: number;
+  bytecode: string;
+  ercConstructorParams: ContractFunctionParameters | null;
+}
+
+export default class Helper {
+  /**
+   * Builds and returns an SDK client configured with the Hedera network and operator credentials.
+   * @returns {Client} The configured Hedera SDK client.
+   */
+  static buildSdkClient(): Client {
+    const HEDERA_NETWORK = process.env.HEDERA_NETWORK || '';
+    const SDK_OPERATOR_ID = process.env.SDK_OPERATOR_ID || '';
+    const SDK_OPERATOR_KEY = process.env.SDK_OPERATOR_KEY || '';
+
+    const sdkClient = Client.forName(HEDERA_NETWORK).setOperator(
+      SDK_OPERATOR_ID,
+      SDK_OPERATOR_KEY
+    );
+
+    console.log(
+      `SDK Client succesfully setup for acceptance test: network=${HEDERA_NETWORK}, operatorAccountId=${SDK_OPERATOR_ID}`
+    );
+    return sdkClient;
+  }
+
+  /**
+   * Deploys a smart contract to the Hedera network using the provided SDK client.
+   * @param {Client} sdkClient - The Hedera SDK client.
+   * @param {string} bytecode - The bytecode of the smart contract to deploy.
+   * @param {ContractFunctionParameters|null} params - Constructor parameters for the smart contract (optional).
+   * @returns {Promise<string>} The deployed contract's Ethereum address.
+   */
+  static async deploySmartContractsViaSdk(
+    sdkClient: Client,
+    bytecode: string,
+    params: ContractFunctionParameters | null,
+    contractType: string
+  ): Promise<string> {
+    const contractCreateFlow = new ContractCreateFlow()
+      .setGas(1_000_000)
+      .setBytecode(bytecode);
+
+    if (params) {
+      contractCreateFlow.setConstructorParameters(params);
+    }
+
+    const txResponse = await contractCreateFlow.execute(sdkClient);
+    const receipt = await txResponse.getReceipt(sdkClient);
+
+    console.log(
+      `New contract successfully deployed: contractId=${receipt.contractId}, contractType=${contractType}, contractEvmAddress=0x${receipt.contractId?.toSolidityAddress()}, contractEvmAddress=0x${receipt.contractId?.toSolidityAddress()}`
+    );
+
+    return `0x${receipt.contractId!.toSolidityAddress()}`;
+  }
+
+  /**
+   * Reads the contents of a file from the given file path.
+   * @param {string} filePath - The path to the file.
+   * @returns {string} The file contents, or an empty string if the file does not exist.
+   */
+  static readContentsFromFile(filePath: string): string {
+    if (!fs.existsSync(filePath)) {
+      return '';
+    }
+    return fs.readFileSync(filePath, 'utf8');
+  }
+
+  /**
+   * Sorts an array of Ethereum addresses in ascending order.
+   * @param {string[]} addresses - An array of Ethereum addresses to sort.
+   * @returns {string[]} The sorted array of addresses.
+   */
+  static sortAddresses(addresses: string[]): string[] {
+    return addresses.sort((a, b) => {
+      const diff = BigInt(a) - BigInt(b);
+      return diff < 0n ? -1 : 1;
+    });
+  }
+
+  /**
+   * Prepares contract deployment requirements for ERC20, ERC721, and non-ERC contracts.
+   * @param {number} totalExpectedDeploymentsForEachContractType - The total expected deployments for each contract type
+   * @returns {ContractDeploymentRequirements[]} An array of contract deployment requirements.
+   */
+  static prepareContractDeployRequirements(
+    totalExpectedDeploymentsForEachContractType: number
+  ): ContractDeploymentRequirements[] {
+    return [
+      {
+        contractType: 'erc20',
+        totalDeployments: totalExpectedDeploymentsForEachContractType,
+        bytecode: OZERC20Artifacts.bytecode,
+        ercConstructorParams: new ContractFunctionParameters()
+          .addString(testConstants.ERC_CONSTRUCTOR_PARAMS.erc20.tokenName)
+          .addString(testConstants.ERC_CONSTRUCTOR_PARAMS.erc20.tokenSymbol),
+      },
+      {
+        contractType: 'erc721',
+        totalDeployments: totalExpectedDeploymentsForEachContractType,
+        bytecode: OZERC721Artifacts.bytecode,
+        ercConstructorParams: new ContractFunctionParameters()
+          .addString(testConstants.ERC_CONSTRUCTOR_PARAMS.erc721.tokenName)
+          .addString(testConstants.ERC_CONSTRUCTOR_PARAMS.erc721.tokenSymbol),
+      },
+      {
+        contractType: 'minimalErc20',
+        totalDeployments: totalExpectedDeploymentsForEachContractType,
+        bytecode: MinimalOZERC20Artifacts.bytecode,
+        ercConstructorParams: null,
+      },
+      {
+        contractType: 'minimalErc721',
+        totalDeployments: totalExpectedDeploymentsForEachContractType,
+        bytecode: MinimalOZERC721Artifacts.bytecode,
+        ercConstructorParams: null,
+      },
+      {
+        contractType: 'erc1155',
+        totalDeployments: totalExpectedDeploymentsForEachContractType,
+        bytecode: OZERC1155Artifacts.bytecode,
+        ercConstructorParams: new ContractFunctionParameters().addString(
+          testConstants.ERC_CONSTRUCTOR_PARAMS.erc1155.tokenUri
+        ),
+      },
+      {
+        contractType: 'nonErc',
+        totalDeployments: totalExpectedDeploymentsForEachContractType,
+        bytecode: BasicArtifacts.bytecode,
+        ercConstructorParams: null,
+      },
+    ];
+  }
+
+  /**
+   * Deploys the required contracts to the Hedera network.
+   * @param {NodeClient} sdkClient - The Hedera SDK client.
+   * @param {ContractDeploymentRequirements[]} contractDeploymentRequirements - An array of contract deployment requirements.
+   * @returns {Promise<{erc20: string[], erc721: string[], nonErc: string[]}>} An object containing arrays of deployed contract addresses categorized by type.
+   */
+  static async deployRequiredContracts(
+    sdkClient: NodeClient,
+    contractDeploymentRequirements: ContractDeploymentRequirements[]
+  ): Promise<{
+    erc20: string[];
+    erc721: string[];
+    erc1155: string[];
+    nonErc: string[];
+    minimalErc20: string[];
+    minimalErc721: string[];
+  }> {
+    const deployedAddresses = {
+      erc20: [] as any,
+      minimalErc20: [] as any,
+      erc721: [] as any,
+      minimalErc721: [] as any,
+      nonErc: [] as any,
+      erc1155: [] as any,
+    };
+
+    for (const contractObject of contractDeploymentRequirements) {
+      for (let i = 0; i < contractObject.totalDeployments; i++) {
+        deployedAddresses[
+          contractObject.contractType as
+            | 'erc20'
+            | 'minimalErc20'
+            | 'erc721'
+            | 'minimalErc721'
+            | 'nonErc'
+            | 'erc1155'
+        ].push(
+          Helper.deploySmartContractsViaSdk(
+            sdkClient,
+            contractObject.bytecode,
+            contractObject.ercConstructorParams,
+            contractObject.contractType
+          )
+        );
+      }
+    }
+
+    deployedAddresses.erc20 = await Promise.all(deployedAddresses.erc20);
+    deployedAddresses.erc721 = await Promise.all(deployedAddresses.erc721);
+    deployedAddresses.erc1155 = await Promise.all(deployedAddresses.erc1155);
+    deployedAddresses.nonErc = await Promise.all(deployedAddresses.nonErc);
+    deployedAddresses.minimalErc20 = await Promise.all(
+      deployedAddresses.minimalErc20
+    );
+    deployedAddresses.minimalErc721 = await Promise.all(
+      deployedAddresses.minimalErc721
+    );
+
+    await new Promise((r) => setTimeout(r, 500));
+
+    return deployedAddresses;
+  }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/unit/services/byteCodeAnalyzer.test.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import {
+  MirrorNodeContract,
+  MirrorNodeContractResponse,
+  ContractCallData,
+} from '../../../src/schemas/MirrorNodeSchemas';
+import { ByteCodeAnalyzer } from '../../../src/services/byteCodeAnalyzer';
+import { ContractScannerService } from '../../../src/services/contractScanner';
+import constants from '../../../src/utils/constants';
+import testConstants from '../utils/constants';
+import { jest } from '@jest/globals';
+
+describe('ByteCodeAnalyzer', () => {
+  let byteCodeAnalyzer: ByteCodeAnalyzer;
+  let contractScannerService: ContractScannerService;
+  const mockContracts: MirrorNodeContract[] = testConstants.MOCK_MN_CONTRACTS;
+  const mockContractCallResponse = testConstants.MOCK_CONTRACT_CALL_RESPONSE;
+  const mockValidMirrorNodeUrl = 'mock-mirror-node.com';
+  const mockValidMirrorNodeUrlWeb3 = 'mock-mirror-node-web3.com';
+  const mockScanningLimit = 39;
+
+  beforeEach(() => {
+    byteCodeAnalyzer = new ByteCodeAnalyzer();
+    contractScannerService = new ContractScannerService(
+      mockValidMirrorNodeUrl,
+      mockValidMirrorNodeUrlWeb3,
+      mockScanningLimit
+    );
+  });
+
+  describe('categorizeERCContracts', () => {
+    it('should categorize contracts into ERC20, ERC721, and ERC1155', async () => {
+      const expectedErc20Object = {
+        contractId: mockContracts[0].contract_id,
+        address: mockContracts[0].evm_address,
+        name: mockContractCallResponse.erc20.name.decodedValue,
+        symbol: mockContractCallResponse.erc20.symbol.decodedValue,
+        decimals: mockContractCallResponse.erc20.decimals.decodedValue,
+        totalSupply: mockContractCallResponse.erc20.totalSupply.decodedValue,
+      };
+      const expectedErc721Object = {
+        contractId: mockContracts[1].contract_id,
+        address: mockContracts[1].evm_address,
+        name: mockContractCallResponse.erc721.name.decodedValue,
+        symbol: mockContractCallResponse.erc721.symbol.decodedValue,
+      };
+      const expectedErc1155Object = {
+        contractId: mockContracts[2].contract_id,
+        address: mockContracts[2].evm_address,
+      };
+
+      jest
+        .spyOn(contractScannerService, 'fetchContractObject')
+        .mockImplementation(async (contractId) => {
+          if (contractId === '0.0.1013') {
+            return {
+              ...mockContracts[0],
+              bytecode: testConstants.ERC_20_BYTECODE_EXAMPLE,
+              runtime_bytecode: testConstants.ERC_20_BYTECODE_EXAMPLE,
+            };
+          } else if (contractId === '0.0.1014') {
+            return {
+              ...mockContracts[1],
+              bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+              runtime_bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+            };
+          } else if (contractId === '0.0.1015') {
+            return {
+              ...mockContracts[2],
+              bytecode: testConstants.ERC_1155_BYTECODE_EXAMPLE,
+              runtime_bytecode: testConstants.ERC_1155_BYTECODE_EXAMPLE,
+            };
+          }
+          return null;
+        });
+
+      jest
+        .spyOn(byteCodeAnalyzer, 'analyzeErcContract' as any)
+        .mockImplementation(async (ercId) => {
+          if (ercId === 'ERC20') {
+            return expectedErc20Object;
+          } else if (ercId === 'ERC721') {
+            return expectedErc721Object;
+          } else if (ercId === 'ERC1155') {
+            return expectedErc1155Object;
+          }
+          return null;
+        });
+
+      const result = await byteCodeAnalyzer.categorizeERCContracts(
+        contractScannerService,
+        mockContracts
+      );
+
+      expect(result.erc20Contracts).toHaveLength(1);
+      expect(result.erc721Contracts).toHaveLength(1);
+      expect(result.erc1155Contracts).toHaveLength(1);
+      expect(result.erc20Contracts[0]).toEqual(expectedErc20Object);
+      expect(result.erc721Contracts[0]).toEqual(expectedErc721Object);
+      expect(result.erc1155Contracts[0]).toEqual(expectedErc1155Object);
+    });
+
+    it('should skip contracts with missing data', async () => {
+      // Mock the fetchContractObject method to return null
+      jest
+        .spyOn(contractScannerService, 'fetchContractObject')
+        .mockResolvedValue(null);
+      const result = await byteCodeAnalyzer.categorizeERCContracts(
+        contractScannerService,
+        mockContracts
+      );
+      expect(result.erc20Contracts).toHaveLength(0);
+      expect(result.erc721Contracts).toHaveLength(0);
+    });
+
+    it('should handle errors gracefully', async () => {
+      jest
+        .spyOn(contractScannerService, 'fetchContractObject')
+        .mockImplementation(async () => {
+          throw new Error('Fetch error');
+        });
+      const result = await byteCodeAnalyzer.categorizeERCContracts(
+        contractScannerService,
+        mockContracts
+      );
+      expect(result.erc20Contracts).toHaveLength(0);
+      expect(result.erc721Contracts).toHaveLength(0);
+    });
+  });
+
+  describe('analyzeErcContract', () => {
+    it('should return ERC20 token info for ERC20 contracts', async () => {
+      const expectedTokenInfoObject = {
+        contractId: mockContracts[0].contract_id,
+        address: mockContracts[0].evm_address,
+        name: mockContractCallResponse.erc20.name.decodedValue,
+        symbol: mockContractCallResponse.erc20.symbol.decodedValue,
+        decimals: mockContractCallResponse.erc20.decimals.decodedValue,
+        totalSupply: mockContractCallResponse.erc20.totalSupply.decodedValue,
+      };
+
+      jest
+        .spyOn(byteCodeAnalyzer, 'getErcTokenInfo' as any)
+        .mockResolvedValueOnce(expectedTokenInfoObject);
+
+      const mockContractResponse: MirrorNodeContractResponse = {
+        ...mockContracts[0],
+        bytecode: testConstants.ERC_20_BYTECODE_EXAMPLE,
+        runtime_bytecode: testConstants.ERC_20_BYTECODE_EXAMPLE,
+      };
+
+      const result = await (byteCodeAnalyzer as any).analyzeErcContract(
+        'ERC20',
+        mockContractResponse,
+        contractScannerService,
+        constants.ERC20_TOKEN_INFO_SELECTORS
+      );
+
+      expect(result).toEqual(expectedTokenInfoObject);
+    });
+
+    it('should return ERC721 token info for ERC721 contracts', async () => {
+      const expectedTokenInfoObject = {
+        contractId: mockContracts[1].contract_id,
+        address: mockContracts[1].evm_address,
+        name: mockContractCallResponse.erc721.name.decodedValue,
+        symbol: mockContractCallResponse.erc721.symbol.decodedValue,
+      };
+
+      jest
+        .spyOn(byteCodeAnalyzer, 'getErcTokenInfo' as any)
+        .mockResolvedValueOnce(expectedTokenInfoObject);
+
+      const mockContractResponse: MirrorNodeContractResponse = {
+        ...mockContracts[1],
+        bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+        runtime_bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+      };
+
+      const result = await (byteCodeAnalyzer as any).analyzeErcContract(
+        'ERC721',
+        mockContractResponse,
+        contractScannerService,
+        constants.ERC721_TOKEN_INFO_SELECTORS
+      );
+
+      expect(result).toEqual(expectedTokenInfoObject);
+    });
+
+    it('should return ERC1155 token info for ERC1155 contracts', async () => {
+      const expectedTokenInfoObject = {
+        contractId: mockContracts[2].contract_id,
+        address: mockContracts[2].evm_address,
+      };
+
+      jest
+        .spyOn(byteCodeAnalyzer, 'getErcTokenInfo' as any)
+        .mockResolvedValueOnce(expectedTokenInfoObject);
+
+      const mockContractResponse: MirrorNodeContractResponse = {
+        ...mockContracts[2],
+        bytecode: testConstants.ERC_1155_BYTECODE_EXAMPLE,
+        runtime_bytecode: testConstants.ERC_1155_BYTECODE_EXAMPLE,
+      };
+
+      const result = await (byteCodeAnalyzer as any).analyzeErcContract(
+        'ERC1155',
+        mockContractResponse,
+        contractScannerService,
+        []
+      );
+
+      expect(result).toEqual(expectedTokenInfoObject);
+    });
+
+    it('should return null if the fails to get token info', async () => {
+      jest
+        .spyOn(byteCodeAnalyzer, 'getErcTokenInfo' as any)
+        .mockRejectedValue(new Error('Mocked Error'));
+
+      const mockContractResponse: MirrorNodeContractResponse = {
+        ...mockContracts[1],
+        bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+        runtime_bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+      };
+
+      const result = await (byteCodeAnalyzer as any).analyzeErcContract(
+        'ERC721',
+        mockContractResponse,
+        contractScannerService,
+        constants.ERC721_TOKEN_INFO_SELECTORS
+      );
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getErcTokenInfo', () => {
+    it('should return ERC20 token info for ERC20 contracts', async () => {
+      jest
+        .spyOn(contractScannerService, 'contractCallRequest')
+        .mockImplementation(async (callData: ContractCallData) => {
+          for (const field of [
+            'name',
+            'symbol',
+            'decimals',
+            'totalSupply',
+          ] as const) {
+            if (
+              callData.data === mockContractCallResponse.erc20[field].sighash
+            ) {
+              return mockContractCallResponse.erc20[field].value;
+            }
+          }
+
+          return null;
+        });
+
+      const mockContractResponse: MirrorNodeContractResponse = {
+        ...mockContracts[0],
+        bytecode: testConstants.ERC_20_BYTECODE_EXAMPLE,
+        runtime_bytecode: testConstants.ERC_20_BYTECODE_EXAMPLE,
+      };
+
+      const result = await (byteCodeAnalyzer as any).getErcTokenInfo(
+        contractScannerService,
+        mockContractResponse,
+        constants.ERC20_TOKEN_INFO_SELECTORS
+      );
+
+      expect(result).toEqual({
+        contractId: mockContracts[0].contract_id,
+        address: mockContracts[0].evm_address,
+        name: mockContractCallResponse.erc20.name.decodedValue,
+        symbol: mockContractCallResponse.erc20.symbol.decodedValue,
+        decimals: mockContractCallResponse.erc20.decimals.decodedValue,
+        totalSupply: mockContractCallResponse.erc20.totalSupply.decodedValue,
+      });
+    });
+
+    it('should return ERC721 token info for ERC721 contracts', async () => {
+      jest
+        .spyOn(contractScannerService, 'contractCallRequest')
+        .mockImplementation(async (callData: ContractCallData) => {
+          for (const field of ['name', 'symbol'] as const) {
+            if (
+              callData.data === mockContractCallResponse.erc721[field].sighash
+            ) {
+              return mockContractCallResponse.erc721[field].value;
+            }
+          }
+          return null;
+        });
+
+      const mockContractResponse: MirrorNodeContractResponse = {
+        ...mockContracts[1],
+        bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+        runtime_bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+      };
+
+      const result = await (byteCodeAnalyzer as any).getErcTokenInfo(
+        contractScannerService,
+        mockContractResponse,
+        constants.ERC721_TOKEN_INFO_SELECTORS
+      );
+
+      expect(result).toEqual({
+        contractId: mockContracts[1].contract_id,
+        address: mockContracts[1].evm_address,
+        name: mockContractCallResponse.erc721.name.decodedValue,
+        symbol: mockContractCallResponse.erc721.symbol.decodedValue,
+      });
+    });
+
+    it('should NOT throw an error if the contractCallRequest return null tokenInfoResponse', async () => {
+      jest
+        .spyOn(contractScannerService, 'contractCallRequest')
+        .mockResolvedValue(null);
+
+      const mockContractResponse: MirrorNodeContractResponse = {
+        ...mockContracts[1],
+        bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+        runtime_bytecode: testConstants.ERC_721_BYTECODE_EXAMPLE,
+      };
+
+      const tokenInfo = await (byteCodeAnalyzer as any).getErcTokenInfo(
+        contractScannerService,
+        mockContractResponse,
+        constants.ERC721_TOKEN_INFO_SELECTORS
+      );
+
+      expect(tokenInfo).toEqual({
+        contractId: mockContracts[1].contract_id,
+        address: mockContracts[1].evm_address,
+        name: null,
+        symbol: null,
+      });
+    });
+  });
+
+  describe('isErc', () => {
+    enum ERCID {
+      ERC20 = 'ERC20',
+      ERC721 = 'ERC721',
+      ERC1155 = 'ERC1155',
+    }
+    const legitimateErc20Bytecode = testConstants.ERC_20_BYTECODE_EXAMPLE;
+    const legitimateErc721Bytecode = testConstants.ERC_721_BYTECODE_EXAMPLE;
+    const legitimateErc1155Bytecode = testConstants.ERC_1155_BYTECODE_EXAMPLE;
+    const nonErcBytecode =
+      '0x6080604081815260048036101561001557600080fd5b600092833560e01c90816301';
+
+    it('should correctly identify ERC-20 contract bytecode based on the presence of the required ERC-20 selectors and events', () => {
+      const shouldBeErc20 = (byteCodeAnalyzer as any).isErc(
+        ERCID.ERC20,
+        legitimateErc20Bytecode
+      );
+
+      const shouldNotBeErc20WithErc721Bytecode = (
+        byteCodeAnalyzer as any
+      ).isErc(ERCID.ERC20, legitimateErc721Bytecode);
+
+      const shouldNotBeErc20WithNonErcBytecode = (
+        byteCodeAnalyzer as any
+      ).isErc(ERCID.ERC20, nonErcBytecode);
+
+      expect(shouldBeErc20).toBe(true);
+      expect(shouldNotBeErc20WithErc721Bytecode).toBe(false);
+      expect(shouldNotBeErc20WithNonErcBytecode).toBe(false);
+    });
+
+    it('should correctly identify ERC-721 contract bytecode based on the presence of the required ERC-721 selectors and events', () => {
+      const shouldBeErc721 = (byteCodeAnalyzer as any).isErc(
+        ERCID.ERC721,
+        legitimateErc721Bytecode
+      );
+
+      const shouldNotBeErc20WithErc20Bytecode = (byteCodeAnalyzer as any).isErc(
+        ERCID.ERC721,
+        legitimateErc20Bytecode
+      );
+
+      const shouldNotBeErc721WithNonErcBytecode = (
+        byteCodeAnalyzer as any
+      ).isErc(ERCID.ERC721, nonErcBytecode);
+
+      expect(shouldBeErc721).toBe(true);
+      expect(shouldNotBeErc20WithErc20Bytecode).toBe(false);
+      expect(shouldNotBeErc721WithNonErcBytecode).toBe(false);
+    });
+
+    it('should correctly identify ERC-1155 contract bytecode based on the presence of the required ERC-1155 selectors and events', () => {
+      const shouldBeErc1155 = (byteCodeAnalyzer as any).isErc(
+        ERCID.ERC1155,
+        legitimateErc1155Bytecode
+      );
+
+      const shouldNotBeErc721WithNonErcBytecode = (
+        byteCodeAnalyzer as any
+      ).isErc(ERCID.ERC1155, nonErcBytecode);
+
+      expect(shouldBeErc1155).toBe(true);
+      expect(shouldNotBeErc721WithNonErcBytecode).toBe(false);
+    });
+
+    it('should perform isErc method within a very small time threshold compared to regular regex-based searching', () => {
+      // official isErc() method with Aho-Corasick algorithm
+      const startTime = performance.now();
+      const largeByteCode = '0x' + '00'.repeat(41120); // ~20KB
+
+      // perform signature matching through official isErc() method
+      (byteCodeAnalyzer as any).isErc(ERCID.ERC20, largeByteCode);
+
+      const endTime = performance.now();
+      const elapsedTime = endTime - startTime;
+      const performanceThreshold = 3; // 3 milliseconds
+      expect(elapsedTime).toBeLessThan(performanceThreshold);
+
+      // regex-based approach
+      const startTimeRegex = performance.now();
+      const exampleErc721RegexPattern =
+        /(?=.*dd62ed3e)(?=.*095ea7b3)(?=.*70a08231)(?=.*18160ddd)(?=.*a9059cbb)(?=.*23b872dd)(?=.*8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925)(?=.*ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef)/;
+      exampleErc721RegexPattern.test(largeByteCode);
+      const endTimeRegex = performance.now();
+      const elapsedTimeRegex = endTimeRegex - startTimeRegex;
+      const performanceThresholdRegex = 3600; // 3600 milliseconds
+      expect(elapsedTimeRegex).toBeGreaterThan(performanceThresholdRegex);
+    });
+  });
+});
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/unit/services/config.test.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import { AxiosInstance } from 'axios';
+import { ConfigService } from '../../../src/services/config';
+import testConstants from '../utils/constants';
+import { RegistryGenerator } from '../../../src/services/registryGenerator';
+import { Helper } from '../../../src/utils/helper';
+import constants from '../../../src/utils/constants';
+
+describe('ConfigService', () => {
+  let configService: ConfigService;
+  const mockValidHederaNetwork = `testnet`;
+  const mockValidMirrorNodeUrl = 'https://testnet.mirrornode.hedera.com';
+  const mockContractId = testConstants.MOCK_MN_CONTRACTS[0].contract_id;
+  const mockContractEvmAddress = testConstants.MOCK_MN_CONTRACTS[0].evm_address;
+  const mockStartingPoint = `/api/v1/contracts?limit=100&order=asc&contract.id=gte:${mockContractId}`;
+  const registryGenerator = new RegistryGenerator();
+
+  beforeEach(() => {
+    // Reset environment variables before each test
+    delete process.env.HEDERA_NETWORK;
+    delete process.env.STARTING_POINT;
+    delete process.env.MIRROR_NODE_URL;
+
+    jest.spyOn(Helper, 'buildAxiosClient').mockReturnValue({
+      mirrorNodeRestClient: {
+        get: jest
+          .fn()
+          .mockResolvedValue({ data: { contract_id: mockContractId } }),
+      } as any,
+      mirrorNodeWeb3Client: {} as jest.Mocked<AxiosInstance>,
+    });
+  });
+
+  it('should get the correct configurations', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.MIRROR_NODE_URL_WEB3 = mockValidMirrorNodeUrl;
+    const configService = new ConfigService();
+
+    expect(configService.getNetwork()).toEqual(mockValidHederaNetwork);
+    expect(configService.getMirrorNodeUrl()).toEqual(mockValidMirrorNodeUrl);
+    expect(configService.getMirrorNodeUrlWeb3()).toEqual(
+      mockValidMirrorNodeUrl
+    );
+  });
+
+  it('should not throw error even if MIRROR_NODE_URL_WEB3 is not set', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    delete process.env.MIRROR_NODE_URL_WEB3;
+
+    const configService = new ConfigService();
+
+    expect(configService.getMirrorNodeUrlWeb3()).toEqual('');
+  });
+
+  it('should throw an error when HEDERA_NETWORK is not configured', () => {
+    expect(() => {
+      configService = new ConfigService();
+    }).toThrow(/HEDERA_NETWORK Is Not Properly Configured/);
+  });
+
+  it('should throw an error if HEDERA_NETWORK is invalid', () => {
+    process.env.HEDERA_NETWORK = 'invalid_network';
+    expect(() => {
+      configService = new ConfigService();
+    }).toThrow(/HEDERA_NETWORK Is Not Properly Configured/);
+  });
+
+  it('should throw an error if MIRROR_NODE_URL is not configured', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    expect(() => {
+      configService = new ConfigService();
+    }).toThrow(/MIRROR_NODE_URL Is Not Properly Configured/);
+  });
+
+  it('should throw an error if MIRROR_NODE_URL is invalid', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = 'invalid_url';
+    expect(() => {
+      configService = new ConfigService();
+    }).toThrow(/MIRROR_NODE_URL Is Not Properly Configured/);
+  });
+
+  it('should not throw an error if MIRROR_NODE_URL is invalid when network is not one of the PRODUCTION_NETWORKS', () => {
+    const localnode = 'local-node';
+    expect(constants.PRODUCTION_NETWORKS.includes(localnode)).toBeFalsy;
+
+    const invalid_url = 'invalid_url';
+    process.env.HEDERA_NETWORK = localnode;
+    process.env.MIRROR_NODE_URL = invalid_url;
+    const configService = new ConfigService();
+    expect(configService.getMirrorNodeUrl()).toEqual(invalid_url);
+  });
+
+  it('should not throw an error if HEDERA_NETWORK and MIRROR_NODE_URL are valid', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    configService = new ConfigService();
+    expect(configService.getNetwork()).toBe(mockValidHederaNetwork);
+  });
+
+  it('should throw an error if STARTING_POINT is invalid', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.STARTING_POINT = 'invalid_starting_point';
+    expect(() => {
+      configService = new ConfigService();
+    }).toThrow(/STARTING_POINT Is Not Properly Configured/);
+  });
+
+  it('should resolve starting point from contract ID', async () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.STARTING_POINT = mockContractId;
+
+    configService = new ConfigService();
+    const startingPoint =
+      await configService.resolveStartingPoint(registryGenerator);
+    expect(startingPoint).toBe(mockStartingPoint);
+  });
+
+  it('should resolve starting point from EVM address', async () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.STARTING_POINT = mockContractEvmAddress;
+
+    configService = new ConfigService();
+    const startingPoint =
+      await configService.resolveStartingPoint(registryGenerator);
+    expect(startingPoint).toBe(mockStartingPoint);
+  });
+
+  it('should resolve starting point from get contracts list next pointer', async () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.STARTING_POINT = mockStartingPoint;
+
+    configService = new ConfigService();
+    const startingPoint =
+      await configService.resolveStartingPoint(registryGenerator);
+
+    expect(startingPoint).toBe(process.env.STARTING_POINT);
+  });
+
+  it('should resolve starting point from storage if available', async () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.STARTING_POINT = '';
+
+    // Mock the retrieveNextPointer method to return a valid pointer
+    const mockRetrieveNextPointer = jest
+      .spyOn(registryGenerator, 'retrieveNextPointer')
+      .mockResolvedValue(mockStartingPoint);
+
+    configService = new ConfigService();
+    const startingPoint =
+      await configService.resolveStartingPoint(registryGenerator);
+
+    expect(startingPoint).toBe(mockStartingPoint);
+    expect(mockRetrieveNextPointer).toHaveBeenCalled();
+  });
+  it('should return default value for detectionOnly, false, if ENABLE_DETECTION_ONLY is not set', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    delete process.env.ENABLE_DETECTION_ONLY;
+
+    const configService = new ConfigService();
+    expect(configService.getDetectionOnly()).toEqual(false);
+  });
+
+  it('should return preconfigured value for detectionOnly if ENABLE_DETECTION_ONLY is provided', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.ENABLE_DETECTION_ONLY = 'true';
+
+    const configService = new ConfigService();
+    expect(configService.getDetectionOnly()).toEqual(true);
+  });
+
+  it('should return false for detectionOnly when ENABLE_DETECTION_ONLY is not explicitly set to true', () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    process.env.ENABLE_DETECTION_ONLY = 'not a boolean value';
+
+    const configService = new ConfigService();
+    expect(configService.getDetectionOnly()).toEqual(false);
+  });
+
+  it('should return default value, 100, if SCAN_CONTRACT_LIMIT is undefined', async () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+    delete process.env.SCAN_CONTRACT_LIMIT;
+
+    const configService = new ConfigService();
+
+    expect(configService.getScanContractLimit()).toEqual(100);
+  });
+
+  it('should return dynamic SCAN_CONTRACT_LIMIT value', async () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+
+    const expectedLimit = 36;
+    process.env.SCAN_CONTRACT_LIMIT = expectedLimit.toString();
+
+    const configService = new ConfigService();
+
+    expect(configService.getScanContractLimit()).toEqual(expectedLimit);
+  });
+
+  it('should throw an error if SCAN_CONTRACT_LIMIT is set to invalid values', async () => {
+    process.env.HEDERA_NETWORK = mockValidHederaNetwork;
+    process.env.MIRROR_NODE_URL = mockValidMirrorNodeUrl;
+
+    const invalidLimits = ['-3', '369', 'not a number'];
+    invalidLimits.forEach((limit) => {
+      process.env.SCAN_CONTRACT_LIMIT = limit;
+
+      expect(() => {
+        configService = new ConfigService();
+      }).toThrow(/SCAN_CONTRACT_LIMIT Is Not Properly Configured/);
+    });
+  });
+});
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/unit/services/contractScanner.test.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import axios from 'axios';
+import constants from '../../../src/utils/constants';
+import testConstants from '../utils/constants';
+import { MirrorNodeContract } from '../../../src/schemas/MirrorNodeSchemas';
+import { ContractScannerService } from '../../../src/services/contractScanner';
+import { Helper } from '../../../src/utils/helper';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from '@jest/globals';
+
+jest.mock('axios');
+jest.mock('../../../src/utils/helper');
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedHelper = Helper as jest.Mocked<typeof Helper>;
+
+describe('ContractScannerService', () => {
+  const mockValidMirrorNodeUrl = 'mock-mirror-node.com';
+  const mockValidMirrorNodeUrlWeb3 = 'mock-mirror-node-web3.com';
+  const mockScanningLimit = 39;
+
+  let contractScannerService: ContractScannerService;
+
+  beforeEach(() => {
+    mockedHelper.buildAxiosClient.mockReturnValue({
+      mirrorNodeRestClient: mockedAxios,
+      mirrorNodeWeb3Client: mockedAxios,
+    });
+
+    contractScannerService = new ContractScannerService(
+      mockValidMirrorNodeUrl,
+      mockValidMirrorNodeUrlWeb3,
+      mockScanningLimit
+    );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('fetchContracts', () => {
+    const mockContracts: MirrorNodeContract[] = testConstants.MOCK_MN_CONTRACTS;
+
+    it('should fetch contracts successfully', async () => {
+      mockedAxios.get.mockResolvedValueOnce({
+        data: { contracts: mockContracts },
+      });
+
+      const contracts = await contractScannerService.fetchContracts();
+      expect(contracts?.contracts).toEqual(mockContracts);
+      expect(axios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return null when there is an error', async () => {
+      mockedAxios.get.mockRejectedValue(new Error('Network Error'));
+      const contracts = await contractScannerService.fetchContracts();
+      expect(contracts).toBeNull();
+      expect(axios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should retry fetching contracts on rate limit error', async () => {
+      mockedAxios.get
+        .mockRejectedValueOnce({ response: { status: 429 } }) // First call returns rate limit error
+        .mockResolvedValueOnce({ data: { contracts: mockContracts } }); // Second call succeeds
+
+      mockedHelper.wait.mockResolvedValueOnce(undefined);
+      const contractsPromise = contractScannerService.fetchContracts();
+      const contracts = await contractsPromise;
+
+      expect(contracts?.contracts).toEqual(mockContracts);
+      expect(axios.get).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('fetchContractObject', () => {
+    const contractId = '0.0.1013';
+    const mockBytecode = '0x1234567890abcdef';
+
+    it('should fetch contract bytecode successfully', async () => {
+      mockedAxios.get.mockResolvedValue({
+        data: { runtime_bytecode: mockBytecode },
+      });
+
+      const contractObject =
+        await contractScannerService.fetchContractObject(contractId);
+
+      expect(contractObject?.runtime_bytecode).toEqual(mockBytecode);
+      expect(axios.get).toHaveBeenCalledWith(
+        constants.GET_CONTRACT_ENDPOINT + '/' + contractId
+      );
+    });
+
+    it('should return null when there is an error', async () => {
+      mockedAxios.get.mockRejectedValue(new Error('Network Error'));
+
+      const contractObject =
+        await contractScannerService.fetchContractObject(contractId);
+
+      expect(contractObject).toBeNull();
+      expect(axios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should retry fetching bytecode on rate limit error', async () => {
+      mockedAxios.get
+        .mockRejectedValueOnce({ response: { status: 429 } }) // First call returns rate limit error
+        .mockResolvedValueOnce({ data: { runtime_bytecode: mockBytecode } }); // Second call succeeds
+      mockedHelper.wait.mockResolvedValueOnce(undefined);
+
+      const contractObject =
+        await contractScannerService.fetchContractObject(contractId);
+
+      expect(contractObject?.runtime_bytecode).toEqual(mockBytecode);
+      expect(axios.get).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('contractCallRequest', () => {
+    const callData = {
+      data: testConstants.MOCK_CONTRACT_CALL_RESPONSE.erc20.name.sighash,
+      to: testConstants.MOCK_MN_CONTRACTS[0].evm_address,
+    };
+
+    it('should send a contract call request successfully', async () => {
+      const mockResponse = { result: '0xabcdef' };
+      mockedAxios.post.mockResolvedValueOnce({ data: mockResponse });
+
+      const result = await contractScannerService.contractCallRequest(callData);
+
+      expect(result).toEqual(mockResponse.result);
+      expect(axios.post).toHaveBeenCalledWith(
+        constants.CONTRACT_CALL_ENDPOINT,
+        callData
+      );
+    });
+
+    it('should return null when there is an error', async () => {
+      mockedAxios.post.mockRejectedValue(new Error('Network Error'));
+
+      const result = await contractScannerService.contractCallRequest(callData);
+
+      expect(result).toBeNull();
+      expect(axios.post).toHaveBeenCalledTimes(1);
+    });
+
+    it('should retry on rate limit error', async () => {
+      mockedAxios.post
+        .mockRejectedValueOnce({ response: { status: 429 } }) // First call returns rate limit error
+        .mockResolvedValueOnce({ data: { result: '0xabcdef' } }); // Second call succeeds
+
+      mockedHelper.wait.mockResolvedValueOnce(undefined);
+      const result = await contractScannerService.contractCallRequest(callData);
+
+      expect(result).toEqual('0xabcdef');
+      expect(axios.post).toHaveBeenCalledTimes(2);
+    });
+  });
+});
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/unit/services/registryGenerator.test.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import fs from 'fs';
+import path from 'path';
+import { RegistryGenerator } from '../../../src/services/registryGenerator';
+import { ERCOutputInterface } from '../../../src/schemas/ERCRegistrySchemas';
+import constants from '../../../src/utils/constants';
+
+jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
+  existsSync: jest.fn(),
+  readFileSync: jest.fn(),
+  promises: {
+    mkdir: jest.fn(),
+    writeFile: jest.fn(),
+  },
+}));
+
+const mockedFs = fs as jest.Mocked<typeof fs>;
+
+describe('RegistryGenerator', () => {
+  let registry: RegistryGenerator;
+  const mockERC20Path = constants.ERC_20_JSON_FILE_NAME;
+
+  const mockContractA: ERCOutputInterface[] = [
+    { contractId: '123', address: '0x123' },
+  ];
+  const mockContractB: ERCOutputInterface[] = [
+    { contractId: '456', address: '0x456' },
+  ];
+  const mockContractC: ERCOutputInterface[] = [
+    { contractId: '789', address: '0x789' },
+  ];
+  const mockNextPointerPath =
+    constants.GET_CONTRACTS_LIST_NEXT_POINTER_JSON_FILE_NAME;
+
+  beforeEach(() => {
+    registry = new RegistryGenerator();
+
+    jest.clearAllMocks();
+    (fs.existsSync as jest.Mock).mockReturnValue(true);
+    (fs.readFileSync as jest.Mock).mockReturnValue(
+      JSON.stringify(mockContractA)
+    );
+    (fs.promises.mkdir as jest.Mock).mockResolvedValue(undefined);
+    (fs.promises.writeFile as jest.Mock).mockResolvedValue(undefined);
+  });
+
+  describe('generateErcRegistry', () => {
+    it('should call updateRegistry for ERC20, ERC721, and ERC1155 paths', async () => {
+      const updateRegistrySpy = jest.spyOn<any, any>(
+        registry,
+        'updateRegistry'
+      );
+
+      await registry.generateErcRegistry(
+        mockContractA,
+        mockContractB,
+        mockContractC
+      );
+
+      expect(updateRegistrySpy).toHaveBeenCalledTimes(3);
+      expect(updateRegistrySpy).toHaveBeenCalledWith(
+        registry['erc20JsonFilePath'],
+        mockContractA
+      );
+      expect(updateRegistrySpy).toHaveBeenCalledWith(
+        registry['erc721JsonFilePath'],
+        mockContractB
+      );
+      expect(updateRegistrySpy).toHaveBeenCalledWith(
+        registry['erc1155JsonFilePath'],
+        mockContractC
+      );
+    });
+
+    it('should not call updateRegistry if no contracts are provided', async () => {
+      const updateRegistrySpy = jest.spyOn<any, any>(
+        registry,
+        'updateRegistry'
+      );
+
+      await registry.generateErcRegistry([], [], []);
+
+      expect(updateRegistrySpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('readContentsFromFile', () => {
+    it('should return an empty array if file does not exist', () => {
+      mockedFs.existsSync.mockReturnValue(false);
+
+      const result = registry['readContentsFromFile'](mockERC20Path);
+
+      expect(result).toEqual('');
+    });
+
+    it('should parse JSON from file successfully', () => {
+      const mockData = mockContractA;
+      mockedFs.readFileSync.mockReturnValue(JSON.stringify(mockData));
+
+      const result = registry['readContentsFromFile'](mockERC20Path);
+
+      expect(JSON.parse(result)).toEqual(mockData);
+    });
+
+    it('should throw error when file read fails', () => {
+      mockedFs.readFileSync.mockImplementation(() => {
+        throw new Error('Read error');
+      });
+
+      expect(() => registry['readContentsFromFile'](mockERC20Path)).toThrow(
+        'Read error'
+      );
+    });
+  });
+
+  describe('writeContentsToFile', () => {
+    it('should create directories and write contracts to file', async () => {
+      const mockContracts: ERCOutputInterface[] = mockContractA;
+
+      await registry['writeContentsToFile'](mockERC20Path, mockContracts);
+
+      expect(mockedFs.promises.mkdir).toHaveBeenCalledWith(
+        path.dirname(mockERC20Path),
+        { recursive: true }
+      );
+      expect(mockedFs.promises.writeFile).toHaveBeenCalledWith(
+        mockERC20Path,
+        JSON.stringify(mockContracts, null, 2)
+      );
+    });
+
+    it('should throw error when write fails', async () => {
+      jest
+        .spyOn(mockedFs.promises, 'writeFile')
+        .mockRejectedValue(new Error('Write error'));
+
+      await expect(
+        registry['writeContentsToFile'](mockERC20Path, mockContractA)
+      ).rejects.toThrow('Write error');
+    });
+  });
+
+  describe('updateRegistry', () => {
+    it('should remove duplicates and write unique contracts to file', async () => {
+      const existingContracts: ERCOutputInterface[] = mockContractA;
+      const newContracts: ERCOutputInterface[] = [
+        mockContractA[0],
+        mockContractB[0],
+      ];
+
+      mockedFs.readFileSync.mockReturnValue(JSON.stringify(existingContracts));
+
+      await registry['updateRegistry'](mockERC20Path, newContracts);
+
+      const expectedContracts = [mockContractA[0], mockContractB[0]];
+      expect(mockedFs.promises.writeFile).toHaveBeenCalledWith(
+        mockERC20Path,
+        JSON.stringify(expectedContracts, null, 2)
+      );
+    });
+  });
+
+  describe('updateNextPointer', () => {
+    it('should write the next pointer to the file if it is not null', async () => {
+      await registry.updateNextPointer(mockNextPointerPath);
+
+      expect(mockedFs.promises.writeFile).toHaveBeenCalledWith(
+        registry['nextPointerFilePath'],
+        JSON.stringify(mockNextPointerPath, null, 2)
+      );
+    });
+
+    it('should not write to the file if the next pointer is null', async () => {
+      await registry.updateNextPointer(null);
+
+      expect(mockedFs.promises.writeFile).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('retrieveNextPointer', () => {
+    it('should return null if the file does not exist', async () => {
+      mockedFs.existsSync.mockReturnValue(false);
+
+      const result = await registry.retrieveNextPointer();
+
+      expect(result).toBeNull();
+    });
+
+    it('should return the next pointer from the file', async () => {
+      mockedFs.readFileSync.mockReturnValue(
+        JSON.stringify(mockNextPointerPath)
+      );
+
+      const result = await registry.retrieveNextPointer();
+
+      expect(result).toBe(mockNextPointerPath);
+    });
+
+    it('should return null if the file is empty', async () => {
+      mockedFs.readFileSync.mockReturnValue('');
+
+      const result = await registry.retrieveNextPointer();
+
+      expect(result).toBeNull();
+    });
+  });
+});
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/unit/utils/constants.ts
+// SPDX-License-Identifier: Apache-2.0
+
+export default {
+  MOCK_HEDERA_NETWORK: 'MOCK_HEDERA_NETWORK',
+  MOCK_MN_CONTRACTS: [
+    {
+      admin_key: {},
+      auto_renew_account: null,
+      auto_renew_period: 7776000,
+      contract_id: '0.0.1013',
+      created_timestamp: '1732323370.357439918',
+      deleted: false,
+      evm_address: '0x00000000000000000000000000000000000003f5',
+      expiration_timestamp: '1740099370.357439918',
+      file_id: '0.0.1012',
+      max_automatic_token_associations: 0,
+      memo: 'cellar door',
+      nonce: 1,
+      obtainer_id: null,
+      permanent_removal: null,
+      proxy_account_id: null,
+      timestamp: {},
+    },
+    {
+      admin_key: {},
+      auto_renew_account: null,
+      auto_renew_period: 7776000,
+      contract_id: '0.0.1014',
+      created_timestamp: '1732323370.357439918',
+      deleted: false,
+      evm_address: '0x00000000000000000000000000000000000003f6',
+      expiration_timestamp: '1740099370.357439918',
+      file_id: '0.0.1012',
+      max_automatic_token_associations: 0,
+      memo: 'cellar door',
+      nonce: 1,
+      obtainer_id: null,
+      permanent_removal: null,
+      proxy_account_id: null,
+      timestamp: {},
+    },
+    {
+      admin_key: {},
+      auto_renew_account: null,
+      auto_renew_period: 7776000,
+      contract_id: '0.0.1015',
+      created_timestamp: '1732323370.357439918',
+      deleted: false,
+      evm_address: '0x00000000000000000000000000000000000003f7',
+      expiration_timestamp: '1740099370.357439918',
+      file_id: '0.0.1012',
+      max_automatic_token_associations: 0,
+      memo: 'cellar door',
+      nonce: 1,
+      obtainer_id: null,
+      permanent_removal: null,
+      proxy_account_id: null,
+      timestamp: {},
+    },
+  ],
+  ERC_20_BYTECODE_EXAMPLE:
+    '0x608060405234801561001057600080fd5b50600436106100f55760003560e01c806340c10f19116100975780639dc29fac116100665780639dc29fac146101ee578063a457c2d714610201578063a9059cbb14610214578063dd62ed3e1461022757600080fd5b806340c10f191461019757806356189cb4146101aa57806370a08231146101bd57806395d89b41146101e657600080fd5b8063222f5be0116100d3578063222f5be01461014d57806323b872dd14610162578063313ce56714610175578063395093511461018457600080fd5b806306fdde03146100fa578063095ea7b31461011857806318160ddd1461013b575b600080fd5b61010261023a565b60405161010f91906109ba565b60405180910390f35b61012b610126366004610a2b565b6102cc565b604051901515815260200161010f565b6002545b60405190815260200161010f565b61016061015b366004610a55565b6102e4565b005b61012b610170366004610a55565b6102f4565b6040516012815260200161010f565b61012b610192366004610a2b565b610318565b6101606101a5366004610a2b565b61033a565b6101606101b8366004610a55565b610348565b61013f6101cb366004610a91565b6001600160a01b031660009081526020819052604090205490565b610102610353565b6101606101fc366004610a2b565b610362565b61012b61020f366004610a2b565b61036c565b61012b610222366004610a2b565b6103ec565b61013f610235366004610ab3565b6103fa565b60606003805461024990610ae6565b80601f016020809104026020016040519081016040528092919081815260200182805461027590610ae6565b80156102c25780601f10610297576101008083540402835291602001916102c2565b820191906000526020600020905b8154815290600101906020018083116102a557829003601f168201915b5050505050905090565b6000336102da818585610425565b5060019392505050565b6102ef838383610549565b505050565b600033610302858285610719565b61030d858585610549565b506001949350505050565b6000336102da81858561032b83836103fa565b6103359190610b36565b610425565b610344828261078d565b5050565b6102ef838383610425565b60606004805461024990610ae6565b610344828261086c565b6000338161037a82866103fa565b9050838110156103df5760405162461bcd60e51b815260206004820152602560248201527f45524332303a2064656372656173656420616c6c6f77616e63652062656c6f77604482015264207a65726f60d81b60648201526084015b60405180910390fd5b61030d8286868403610425565b6000336102da818585610549565b6001600160a01b03918216600090815260016020908152604080832093909416825291909152205490565b6001600160a01b0383166104875760405162461bcd60e51b8152602060048201526024808201527f45524332303a20617070726f76652066726f6d20746865207a65726f206164646044820152637265737360e01b60648201526084016103d6565b6001600160a01b0382166104e85760405162461bcd60e51b815260206004820152602260248201527f45524332303a20617070726f766520746f20746865207a65726f206164647265604482015261737360f01b60648201526084016103d6565b6001600160a01b0383811660008181526001602090815260408083209487168084529482529182902085905590518481527f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925910160405180910390a3505050565b6001600160a01b0383166105ad5760405162461bcd60e51b815260206004820152602560248201527f45524332303a207472616e736665722066726f6d20746865207a65726f206164604482015264647265737360d81b60648201526084016103d6565b6001600160a01b03821661060f5760405162461bcd60e51b815260206004820152602360248201527f45524332303a207472616e7366657220746f20746865207a65726f206164647260448201526265737360e81b60648201526084016103d6565b6001600160a01b038316600090815260208190526040902054818110156106875760405162461bcd60e51b815260206004820152602660248201527f45524332303a207472616e7366657220616d6f756e7420657863656564732062604482015265616c616e636560d01b60648201526084016103d6565b6001600160a01b038085166000908152602081905260408082208585039055918516815290812080548492906106be908490610b36565b92505081905550826001600160a01b0316846001600160a01b03167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef8460405161070a91815260200190565b60405180910390a35b50505050565b600061072584846103fa565b9050600019811461071357818110156107805760405162461bcd60e51b815260206004820152601d60248201527f45524332303a20696e73756666696369656e7420616c6c6f77616e636500000060448201526064016103d6565b6107138484848403610425565b6001600160a01b0382166107e35760405162461bcd60e51b815260206004820152601f60248201527f45524332303a206d696e7420746f20746865207a65726f20616464726573730060448201526064016103d6565b80600260008282546107f59190610b36565b90915550506001600160a01b03821660009081526020819052604081208054839290610822908490610b36565b90915550506040518181526001600160a01b038316906000907fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9060200160405180910390a35050565b6001600160a01b0382166108cc5760405162461bcd60e51b815260206004820152602160248201527f45524332303a206275726e2066726f6d20746865207a65726f206164647265736044820152607360f81b60648201526084016103d6565b6001600160a01b038216600090815260208190526040902054818110156109405760405162461bcd60e51b815260206004820152602260248201527f45524332303a206275726e20616d6f756e7420657863656564732062616c616e604482015261636560f01b60648201526084016103d6565b6001600160a01b038316600090815260208190526040812083830390556002805484929061096f908490610b4e565b90915550506040518281526000906001600160a01b038516907fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9060200160405180910390a3505050565b600060208083528351808285015260005b818110156109e7578581018301518582016040015282016109cb565b818111156109f9576000604083870101525b50601f01601f1916929092016040019392505050565b80356001600160a01b0381168114610a2657600080fd5b919050565b60008060408385031215610a3e57600080fd5b610a4783610a0f565b946020939093013593505050565b600080600060608486031215610a6a57600080fd5b610a7384610a0f565b9250610a8160208501610a0f565b9150604084013590509250925092565b600060208284031215610aa357600080fd5b610aac82610a0f565b9392505050565b60008060408385031215610ac657600080fd5b610acf83610a0f565b9150610add60208401610a0f565b90509250929050565b600181811c90821680610afa57607f821691505b602082108103610b1a57634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fd5b60008219821115610b4957610b49610b20565b500190565b600082821015610b6057610b60610b20565b50039056fea264697066735822122062e84cb8f44c4c035bb08b344b04b097859a13109c006676ce804cd4dee3465b64736f6c634300080d0033',
+  ERC_721_BYTECODE_EXAMPLE:
+    '0x608060405234801561000f575f80fd5b50600436106100e5575f3560e01c80636352211e11610088578063a22cb46511610063578063a22cb465146101db578063b88d4fde146101ee578063c87b56dd14610201578063e985e9c514610214575f80fd5b80636352211e1461019f57806370a08231146101b257806395d89b41146101d3575f80fd5b8063095ea7b3116100c3578063095ea7b31461015157806323b872dd1461016657806340c10f191461017957806342842e0e1461018c575f80fd5b806301ffc9a7146100e957806306fdde0314610111578063081812fc14610126575b5f80fd5b6100fc6100f7366004610c22565b61024f565b60405190151581526020015b60405180910390f35b6101196102a0565b6040516101089190610c8a565b610139610134366004610c9c565b61032f565b6040516001600160a01b039091168152602001610108565b61016461015f366004610cce565b610356565b005b610164610174366004610cf6565b610365565b610164610187366004610cce565b6103f3565b61016461019a366004610cf6565b6103fd565b6101396101ad366004610c9c565b61041c565b6101c56101c0366004610d2f565b610426565b604051908152602001610108565b61011961046b565b6101646101e9366004610d48565b61047a565b6101646101fc366004610d95565b610485565b61011961020f366004610c9c565b61049c565b6100fc610222366004610e6a565b6001600160a01b039182165f90815260056020908152604080832093909416825291909152205460ff1690565b5f6001600160e01b031982166380ac58cd60e01b148061027f57506001600160e01b03198216635b5e139f60e01b145b8061029a57506301ffc9a760e01b6001600160e01b03198316145b92915050565b60605f80546102ae90610e9b565b80601f01602080910402602001604051908101604052809291908181526020018280546102da90610e9b565b80156103255780601f106102fc57610100808354040283529160200191610325565b820191905f5260205f20905b81548152906001019060200180831161030857829003601f168201915b5050505050905090565b5f6103398261050d565b505f828152600460205260409020546001600160a01b031661029a565b610361828233610545565b5050565b6001600160a01b03821661039357604051633250574960e11b81525f60048201526024015b60405180910390fd5b5f61039f838333610552565b9050836001600160a01b0316816001600160a01b0316146103ed576040516364283d7b60e01b81526001600160a01b038086166004830152602482018490528216604482015260640161038a565b50505050565b6103618282610651565b61041783838360405180602001604052805f815250610485565b505050565b5f61029a8261050d565b5f6001600160a01b038216610450576040516322718ad960e21b81525f600482015260240161038a565b506001600160a01b03165f9081526003602052604090205490565b6060600180546102ae90610e9b565b6103613383836106b2565b610490848484610365565b6103ed84848484610750565b60606104a78261050d565b505f6104bd60408051602081019091525f815290565b90505f8151116104db5760405180602001604052805f815250610506565b806104e584610876565b6040516020016104f6929190610ed3565b6040516020818303038152906040525b9392505050565b5f818152600260205260408120546001600160a01b03168061029a57604051637e27328960e01b81526004810184905260240161038a565b6104178383836001610913565b5f828152600260205260408120546001600160a01b039081169083161561057e5761057e818486610a42565b6001600160a01b038116156105b8576105995f855f80610913565b6001600160a01b0381165f90815260036020526040902080545f190190555b6001600160a01b038516156105e6576001600160a01b0385165f908152600360205260409020805460010190555b5f84815260026020526040808220805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0389811691821790925591518793918516917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef91a4949350505050565b6001600160a01b03821661067a57604051633250574960e11b81525f600482015260240161038a565b5f61068683835f610552565b90506001600160a01b03811615610417576040516339e3563760e11b81525f600482015260240161038a565b6001600160a01b0382166106e457604051630b61174360e31b81526001600160a01b038316600482015260240161038a565b6001600160a01b038381165f81815260056020908152604080832094871680845294825291829020805460ff191686151590811790915591519182527f17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31910160405180910390a3505050565b6001600160a01b0383163b156103ed57604051630a85bd0160e11b81526001600160a01b0384169063150b7a0290610792903390889087908790600401610f01565b6020604051808303815f875af19250505080156107cc575060408051601f3d908101601f191682019092526107c991810190610f3c565b60015b610833573d8080156107f9576040519150601f19603f3d011682016040523d82523d5f602084013e6107fe565b606091505b5080515f0361082b57604051633250574960e11b81526001600160a01b038516600482015260240161038a565b805181602001fd5b6001600160e01b03198116630a85bd0160e11b1461086f57604051633250574960e11b81526001600160a01b038516600482015260240161038a565b5050505050565b60605f61088283610aa6565b60010190505f8167ffffffffffffffff8111156108a1576108a1610d81565b6040519080825280601f01601f1916602001820160405280156108cb576020820181803683370190505b5090508181016020015b5f19017f3031323334353637383961626364656600000000000000000000000000000000600a86061a8153600a85049450846108d557509392505050565b808061092757506001600160a01b03821615155b15610a06575f6109368461050d565b90506001600160a01b038316158015906109625750826001600160a01b0316816001600160a01b031614155b801561099357506001600160a01b038082165f9081526005602090815260408083209387168352929052205460ff16155b156109bc5760405163a9fbf51f60e01b81526001600160a01b038416600482015260240161038a565b8115610a045783856001600160a01b0316826001600160a01b03167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b92560405160405180910390a45b505b50505f908152600460205260409020805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0392909216919091179055565b610a4d838383610b87565b610417576001600160a01b038316610a7b57604051637e27328960e01b81526004810182905260240161038a565b60405163177e802f60e01b81526001600160a01b03831660048201526024810182905260440161038a565b5f807a184f03e93ff9f4daa797ed6e38ed64bf6a1f0100000000000000008310610aee577a184f03e93ff9f4daa797ed6e38ed64bf6a1f010000000000000000830492506040015b6d04ee2d6d415b85acef81000000008310610b1a576d04ee2d6d415b85acef8100000000830492506020015b662386f26fc100008310610b3857662386f26fc10000830492506010015b6305f5e1008310610b50576305f5e100830492506008015b6127108310610b6457612710830492506004015b60648310610b76576064830492506002015b600a831061029a5760010192915050565b5f6001600160a01b03831615801590610c025750826001600160a01b0316846001600160a01b03161480610bdf57506001600160a01b038085165f9081526005602090815260408083209387168352929052205460ff165b80610c0257505f828152600460205260409020546001600160a01b038481169116145b949350505050565b6001600160e01b031981168114610c1f575f80fd5b50565b5f60208284031215610c32575f80fd5b813561050681610c0a565b5f5b83811015610c57578181015183820152602001610c3f565b50505f910152565b5f8151808452610c76816020860160208601610c3d565b601f01601f19169290920160200192915050565b602081525f6105066020830184610c5f565b5f60208284031215610cac575f80fd5b5035919050565b80356001600160a01b0381168114610cc9575f80fd5b919050565b5f8060408385031215610cdf575f80fd5b610ce883610cb3565b946020939093013593505050565b5f805f60608486031215610d08575f80fd5b610d1184610cb3565b9250610d1f60208501610cb3565b9150604084013590509250925092565b5f60208284031215610d3f575f80fd5b61050682610cb3565b5f8060408385031215610d59575f80fd5b610d6283610cb3565b915060208301358015158114610d76575f80fd5b809150509250929050565b634e487b7160e01b5f52604160045260245ffd5b5f805f8060808587031215610da8575f80fd5b610db185610cb3565b9350610dbf60208601610cb3565b925060408501359150606085013567ffffffffffffffff80821115610de2575f80fd5b818701915087601f830112610df5575f80fd5b813581811115610e0757610e07610d81565b604051601f8201601f19908116603f01168101908382118183101715610e2f57610e2f610d81565b816040528281528a6020848701011115610e47575f80fd5b826020860160208301375f60208483010152809550505050505092959194509250565b5f8060408385031215610e7b575f80fd5b610e8483610cb3565b9150610e9260208401610cb3565b90509250929050565b600181811c90821680610eaf57607f821691505b602082108103610ecd57634e487b7160e01b5f52602260045260245ffd5b50919050565b5f8351610ee4818460208801610c3d565b835190830190610ef8818360208801610c3d565b01949350505050565b5f6001600160a01b03808716835280861660208401525083604083015260806060830152610f326080830184610c5f565b9695505050505050565b5f60208284031215610f4c575f80fd5b815161050681610c0a56fea26469706673582212201c3f43711bdbae92c86c5f31bc94cb0310652d089b0efba65e34230f0d67962d64736f6c63430008180033',
+  ERC_1155_BYTECODE_EXAMPLE:
+    '0x608060405234801561000f575f80fd5b506004361061009a575f3560e01c80634e1273f4116100635780634e1273f41461012f578063731133e91461014f578063a22cb46514610162578063e985e9c514610175578063f242432a146101b0575f80fd5b8062fdd58e1461009e57806301ffc9a7146100c45780630e89341c146100e75780631f7fdffa146101075780632eb2c2d61461011c575b5f80fd5b6100b16100ac366004610b65565b6101c3565b6040519081526020015b60405180910390f35b6100d76100d2366004610ba5565b6101ea565b60405190151581526020016100bb565b6100fa6100f5366004610bc7565b610239565b6040516100bb9190610c21565b61011a610115366004610d73565b6102cb565b005b61011a61012a366004610e06565b6102dd565b61014261013d366004610ea9565b610367565b6040516100bb9190610f9d565b61011a61015d366004610faf565b610432565b61011a610170366004611000565b61043e565b6100d7610183366004611039565b6001600160a01b039182165f90815260016020908152604080832093909416825291909152205460ff1690565b61011a6101be36600461106a565b61044d565b5f818152602081815260408083206001600160a01b03861684529091529020545b92915050565b5f6001600160e01b03198216636cdb3d1360e11b148061021a57506001600160e01b031982166303a24d0760e21b145b806101e457506301ffc9a760e01b6001600160e01b03198316146101e4565b606060028054610248906110ca565b80601f0160208091040260200160405190810160405280929190818152602001828054610274906110ca565b80156102bf5780601f10610296576101008083540402835291602001916102bf565b820191905f5260205f20905b8154815290600101906020018083116102a257829003601f168201915b50505050509050919050565b6102d7848484846104ca565b50505050565b336001600160a01b038616811480159061031c57506001600160a01b038087165f9081526001602090815260408083209385168352929052205460ff16155b156103525760405163711bec9160e11b81526001600160a01b038083166004830152871660248201526044015b60405180910390fd5b61035f8686868686610500565b505050505050565b606081518351146103985781518351604051635b05999160e01b815260048101929092526024820152604401610349565b5f835167ffffffffffffffff8111156103b3576103b3610c33565b6040519080825280602002602001820160405280156103dc578160200160208202803683370190505b5090505f5b845181101561042a57602080820286010151610405906020808402870101516101c3565b82828151811061041757610417611102565b60209081029190910101526001016103e1565b509392505050565b6102d784848484610565565b6104493383836105c0565b5050565b336001600160a01b038616811480159061048c57506001600160a01b038087165f9081526001602090815260408083209385168352929052205460ff16155b156104bd5760405163711bec9160e11b81526001600160a01b03808316600483015287166024820152604401610349565b61035f8686868686610654565b6001600160a01b0384166104f357604051632bfa23e760e11b81525f6004820152602401610349565b6102d75f858585856106e0565b6001600160a01b03841661052957604051632bfa23e760e11b81525f6004820152602401610349565b6001600160a01b03851661055157604051626a0d4560e21b81525f6004820152602401610349565b61055e85858585856106e0565b5050505050565b6001600160a01b03841661058e57604051632bfa23e760e11b81525f6004820152602401610349565b6040805160018082526020820186905281830190815260608201859052608082019092529061035f5f878484876106e0565b6001600160a01b0382166105e85760405162ced3e160e81b81525f6004820152602401610349565b6001600160a01b038381165f81815260016020908152604080832094871680845294825291829020805460ff191686151590811790915591519182527f17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31910160405180910390a3505050565b6001600160a01b03841661067d57604051632bfa23e760e11b81525f6004820152602401610349565b6001600160a01b0385166106a557604051626a0d4560e21b81525f6004820152602401610349565b604080516001808252602082018690528183019081526060820185905260808201909252906106d787878484876106e0565b50505050505050565b6106ec85858585610733565b6001600160a01b0384161561055e5782513390600103610725576020848101519084015161071e838989858589610942565b505061035f565b61035f818787878787610a63565b80518251146107625781518151604051635b05999160e01b815260048101929092526024820152604401610349565b335f5b8351811015610864576020818102858101820151908501909101516001600160a01b03881615610816575f828152602081815260408083206001600160a01b038c168452909152902054818110156107f0576040516303dee4c560e01b81526001600160a01b038a166004820152602481018290526044810183905260648101849052608401610349565b5f838152602081815260408083206001600160a01b038d16845290915290209082900390555b6001600160a01b0387161561085a575f828152602081815260408083206001600160a01b038b16845290915281208054839290610854908490611116565b90915550505b5050600101610765565b5082516001036108e45760208301515f906020840151909150856001600160a01b0316876001600160a01b0316846001600160a01b03167fc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f6285856040516108d5929190918252602082015260400190565b60405180910390a4505061055e565b836001600160a01b0316856001600160a01b0316826001600160a01b03167f4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb8686604051610933929190611135565b60405180910390a45050505050565b6001600160a01b0384163b1561035f5760405163f23a6e6160e01b81526001600160a01b0385169063f23a6e61906109869089908990889088908890600401611162565b6020604051808303815f875af19250505080156109c0575060408051601f3d908101601f191682019092526109bd918101906111a4565b60015b610a27573d8080156109ed576040519150601f19603f3d011682016040523d82523d5f602084013e6109f2565b606091505b5080515f03610a1f57604051632bfa23e760e11b81526001600160a01b0386166004820152602401610349565b805181602001fd5b6001600160e01b0319811663f23a6e6160e01b146106d757604051632bfa23e760e11b81526001600160a01b0386166004820152602401610349565b6001600160a01b0384163b1561035f5760405163bc197c8160e01b81526001600160a01b0385169063bc197c8190610aa790899089908890889088906004016111bf565b6020604051808303815f875af1925050508015610ae1575060408051601f3d908101601f19168201909252610ade918101906111a4565b60015b610b0e573d8080156109ed576040519150601f19603f3d011682016040523d82523d5f602084013e6109f2565b6001600160e01b0319811663bc197c8160e01b146106d757604051632bfa23e760e11b81526001600160a01b0386166004820152602401610349565b80356001600160a01b0381168114610b60575f80fd5b919050565b5f8060408385031215610b76575f80fd5b610b7f83610b4a565b946020939093013593505050565b6001600160e01b031981168114610ba2575f80fd5b50565b5f60208284031215610bb5575f80fd5b8135610bc081610b8d565b9392505050565b5f60208284031215610bd7575f80fd5b5035919050565b5f81518084525f5b81811015610c0257602081850181015186830182015201610be6565b505f602082860101526020601f19601f83011685010191505092915050565b602081525f610bc06020830184610bde565b634e487b7160e01b5f52604160045260245ffd5b604051601f8201601f1916810167ffffffffffffffff81118282101715610c7057610c70610c33565b604052919050565b5f67ffffffffffffffff821115610c9157610c91610c33565b5060051b60200190565b5f82601f830112610caa575f80fd5b81356020610cbf610cba83610c78565b610c47565b8083825260208201915060208460051b870101935086841115610ce0575f80fd5b602086015b84811015610cfc5780358352918301918301610ce5565b509695505050505050565b5f82601f830112610d16575f80fd5b813567ffffffffffffffff811115610d3057610d30610c33565b610d43601f8201601f1916602001610c47565b818152846020838601011115610d57575f80fd5b816020850160208301375f918101602001919091529392505050565b5f805f8060808587031215610d86575f80fd5b610d8f85610b4a565b9350602085013567ffffffffffffffff80821115610dab575f80fd5b610db788838901610c9b565b94506040870135915080821115610dcc575f80fd5b610dd888838901610c9b565b93506060870135915080821115610ded575f80fd5b50610dfa87828801610d07565b91505092959194509250565b5f805f805f60a08688031215610e1a575f80fd5b610e2386610b4a565b9450610e3160208701610b4a565b9350604086013567ffffffffffffffff80821115610e4d575f80fd5b610e5989838a01610c9b565b94506060880135915080821115610e6e575f80fd5b610e7a89838a01610c9b565b93506080880135915080821115610e8f575f80fd5b50610e9c88828901610d07565b9150509295509295909350565b5f8060408385031215610eba575f80fd5b823567ffffffffffffffff80821115610ed1575f80fd5b818501915085601f830112610ee4575f80fd5b81356020610ef4610cba83610c78565b82815260059290921b84018101918181019089841115610f12575f80fd5b948201945b83861015610f3757610f2886610b4a565b82529482019490820190610f17565b96505086013592505080821115610f4c575f80fd5b50610f5985828601610c9b565b9150509250929050565b5f815180845260208085019450602084015f5b83811015610f9257815187529582019590820190600101610f76565b509495945050505050565b602081525f610bc06020830184610f63565b5f805f8060808587031215610fc2575f80fd5b610fcb85610b4a565b93506020850135925060408501359150606085013567ffffffffffffffff811115610ff4575f80fd5b610dfa87828801610d07565b5f8060408385031215611011575f80fd5b61101a83610b4a565b91506020830135801515811461102e575f80fd5b809150509250929050565b5f806040838503121561104a575f80fd5b61105383610b4a565b915061106160208401610b4a565b90509250929050565b5f805f805f60a0868803121561107e575f80fd5b61108786610b4a565b945061109560208701610b4a565b93506040860135925060608601359150608086013567ffffffffffffffff8111156110be575f80fd5b610e9c88828901610d07565b600181811c908216806110de57607f821691505b6020821081036110fc57634e487b7160e01b5f52602260045260245ffd5b50919050565b634e487b7160e01b5f52603260045260245ffd5b808201808211156101e457634e487b7160e01b5f52601160045260245ffd5b604081525f6111476040830185610f63565b82810360208401526111598185610f63565b95945050505050565b5f6001600160a01b03808816835280871660208401525084604083015283606083015260a0608083015261119960a0830184610bde565b979650505050505050565b5f602082840312156111b4575f80fd5b8151610bc081610b8d565b5f6001600160a01b03808816835280871660208401525060a060408301526111ea60a0830186610f63565b82810360608401526111fc8186610f63565b905082810360808401526112108185610bde565b9897505050505050505056fea264697066735822122011343dae5e93506137cb628a2bf7bcd34ac03dff38732ca9d81195626a87540864736f6c63430008180033',
+  MOCK_CONTRACT_CALL_RESPONSE: {
+    erc20: {
+      name: {
+        sighash: '0x06fdde03',
+        decodedValue: 'HbarToken',
+        value:
+          '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000948626172546f6b656e0000000000000000000000000000000000000000000000',
+      },
+      symbol: {
+        sighash: '0x95d89b41',
+        decodedValue: 'HT',
+        value:
+          '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000024854000000000000000000000000000000000000000000000000000000000000',
+      },
+      totalSupply: {
+        sighash: '0x18160ddd',
+        decodedValue: 10000000,
+        value:
+          '0x0000000000000000000000000000000000000000000000000000000000989680',
+      },
+
+      decimals: {
+        sighash: '0x313ce567',
+        decodedValue: 8,
+        value:
+          '0x0000000000000000000000000000000000000000000000000000000000000008',
+      },
+    },
+    erc721: {
+      name: {
+        sighash: '0x06fdde03',
+        decodedValue: 'HbarToken',
+        value:
+          '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000948626172546f6b656e0000000000000000000000000000000000000000000000',
+      },
+      symbol: {
+        sighash: '0x95d89b41',
+        decodedValue: 'HT',
+        value:
+          '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000024854000000000000000000000000000000000000000000000000000000000000',
+      },
+    },
+  },
+};
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/unit/utils/helper.spec.ts
+// SPDX-License-Identifier: Apache-2.0
+
+import { Helper } from '../../../src/utils/helper';
+
+describe('Helper', () => {
+  describe('buildUrl', () => {
+    const mockNext =
+      '/api/v1/contracts?limit=100&order=asc&contract.id=gt:0.0.5294198';
+    const mockScanningLimit = 39;
+
+    it('Should build a default next url', () => {
+      const expectedDefaultNext = '/api/v1/contracts?limit=100&order=asc';
+      const defaultNext = Helper.buildUrl(null);
+      expect(defaultNext).toEqual(expectedDefaultNext);
+    });
+
+    it('Should return next link if provided', () => {
+      const nextLink = Helper.buildUrl(mockNext);
+      expect(nextLink).toEqual(mockNext);
+    });
+
+    it('Should return next link modified with scanningLimit if provided', () => {
+      const expectedNextLink = mockNext.replace(
+        '100',
+        mockScanningLimit.toString()
+      );
+
+      const nextLink = Helper.buildUrl(mockNext, mockScanningLimit);
+      expect(nextLink).toEqual(expectedNextLink);
+    });
+  });
+});

@@ -900,7 +900,11 @@ library LibDiamond {
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
-contract Sample {}
+contract Sample {
+    function selfDestructSample() external {
+        selfdestruct(payable(msg.sender));
+    }
+}
 
 contract InternalCallee {
     uint calledTimes = 0;
@@ -910,12 +914,10 @@ contract InternalCallee {
     }
 
     function externalFunction() external returns (uint) {
-        // mutate state to maintain non-view function status
         return ++calledTimes;
     }
 
     function revertWithRevertReason() public returns (bool) {
-        // mutate state to maintain non-view function status
         ++calledTimes;
         revert("RevertReason");
     }
@@ -926,6 +928,24 @@ contract InternalCallee {
 
     function selfDestruct(address payable _addr) external {
         selfdestruct(_addr);
+    }
+
+    function selfdestructSample(address payable sampleAddress) external {
+        Sample(sampleAddress).selfDestructSample();
+    }
+
+    function internalTransfer(address payable _contract, address payable _receiver) payable external {
+        (bool success,) = _contract.call(abi.encodeWithSignature("transferTo(address)", _receiver));
+        require(success, "Function call failed");
+    }
+
+    event DeployedContractAddress(address);
+
+    function deployViaCreate2(uint256 _salt) external returns (address) {
+        Sample temp = new Sample{salt : bytes32(_salt)}();
+        emit DeployedContractAddress(address(temp));
+
+        return address(temp);
     }
 }
 // Filename: contracts/discrepancies/nonce/InternalCaller.sol
@@ -1827,6 +1847,29 @@ contract ERC20VotesTest is ERC20, ERC20Permit, ERC20Votes {
     {
         return super.nonces(owner);
     }
+
+    /// @notice Returns the current consensus timestamp
+    /// @dev Overrides the default block number-based implementation to use timestamps instead
+    /// @dev This modification is specific to Hedera's architecture where:
+    /// @dev - block.number refers to record file indices which don't reflect transaction timing
+    /// @dev - block.timestamp provides the actual consensus timestamp when the transaction executed
+    /// @return The current consensus timestamp as a uint48
+    function clock() public view override returns (uint48) {
+        return uint48(block.timestamp);
+    }
+
+    /// @notice Returns a machine-readable description of the timestamp-based clock implementation
+    /// @dev Overrides the default implementation to reflect the use of timestamps instead of block numbers
+    /// @return A string describing the clock mode configuration
+    // solhint-disable-next-line func-name-mixedcase
+    function CLOCK_MODE() public view override returns (string memory) {
+        // Check that the clock was not modified
+        if (clock() != block.timestamp) {
+            revert ERC6372InconsistentClock();
+        }
+        return "mode=blocknumber&from=default";
+    }
+
 }
 // Filename: contracts/openzeppelin/ERC-20/ERC20Mock.sol
 // SPDX-License-Identifier: Apache-2.0
@@ -5467,6 +5510,13 @@ contract Target {
     function setMessage(string calldata _message) external {
         message = _message;
     }
+
+    event WithdrawResponse(bool, bytes);
+
+    function tryToWithdraw(address to, uint wad) external {
+        (bool success, bytes memory res) = to.call(abi.encodeWithSignature("withdraw(uint256)", wad));
+        emit WithdrawResponse(success, res);
+    }
 }
 
 contract TargetWithConstructor {
@@ -5590,6 +5640,163 @@ contract OpcodeLogger {
         callsCounter[msg.sender]++;
 
         return isSuccess;
+    }
+
+    function executeHtsMintTokenRevertingCalls(address contractAddress, address tokenAddress, int64[] memory amounts, bytes[] memory metadata) external returns (bool success) {
+        for (uint i = 0; i < amounts.length; i++) {
+            if (amounts[i] < 0){
+                // reverts with 'Minting reverted with INVALID_TOKEN_ID'
+                (success,) = address(contractAddress).call(abiEncodeMintTokenPublic(contractAddress, 0, metadata));
+            } else {
+                // reverts with 'Minting <amount> tokens reverted with TOKEN_MAX_SUPPLY_REACHED'
+                (success,) = address(contractAddress).call(abiEncodeMintTokenPublic(tokenAddress, amounts[i], metadata));
+            }
+        }
+    }
+
+    function executeHtsMintTokenRevertingCallsAndFailToAssociate(address contractAddress, address tokenAddress, int64[] memory amounts, bytes[] memory metadata) external returns (bool success) {
+        for (uint i = 0; i < amounts.length; i++) {
+            if (amounts[i] < 0){
+                (success,) = address(contractAddress).call(abiEncodeMintTokenPublic(contractAddress, 0, metadata));
+            } else {
+                (success,) = address(contractAddress).call(abiEncodeMintTokenPublic(tokenAddress, amounts[i], metadata));
+            }
+        }
+
+        // reverts with 'Association reverted with TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT'
+        (success,) = address(contractAddress).call(abiEncodeAssociateTokenPublic(contractAddress, tokenAddress));
+    }
+
+    function nestEverySecondHtsMintTokenCall(address contractAddress, address token, int64[] memory amounts, bytes[] memory metadata) external returns (bool success) {
+        for (uint i = 0; i < amounts.length; i++) {
+            if (i % 2 == 0){
+                (success,) = address(contractAddress).call(abiEncodeMintTokenPublic(token, amounts[i], metadata));
+            } else {
+                this.mintTokenExternalCall(contractAddress, token, amounts[i], metadata);
+            }
+        }
+    }
+
+    function mintTokenExternalCall(address contractAddress, address token, int64 amount, bytes[] memory metadata) external returns (bool success) {
+        (success,) = address(contractAddress).call(abiEncodeMintTokenPublic(token, amount, metadata));
+    }
+
+    function abiEncodeMintTokenPublic(address token, int64 amount, bytes[] memory metadata) internal pure returns (bytes memory abiEncodedData) {
+        return abi.encodeWithSignature("mintTokenPublic(address,int64,bytes[])", token, amount, metadata);
+    }
+
+    function abiEncodeAssociateTokenPublic(address account, address token) internal pure returns (bytes memory abiEncodedData) {
+        return abi.encodeWithSignature("associateTokenPublic(address,address)", account, token);
+    }
+}
+// Filename: contracts/solidity/opcode-logger/TokenCreateOpcodeLogger.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+import "contracts/system-contracts/hedera-token-service/HederaTokenService.sol";
+import "contracts/system-contracts/hedera-token-service/ExpiryHelper.sol";
+import "contracts/system-contracts/hedera-token-service/KeyHelper.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+
+contract TokenCreateOpcodeLogger is HederaTokenService, ExpiryHelper, KeyHelper {
+
+    string name = "tokenName";
+    string symbol = "tokenSymbol";
+    string memo = "memo";
+    int64 initialTotalSupply = 10000;
+    int64 maxSupply = 10000;
+    int32 decimals = 8;
+    bool freezeDefaultStatus = false;
+
+    event ResponseCode(int responseCode);
+    event CreatedToken(address tokenAddress);
+    event MintedToken(int64 newTotalSupply, int64[] serialNumbers);
+    event KycGranted(bool kycGranted);
+
+    function createFungibleTokenPublic(
+        address treasury
+    ) public payable {
+        IHederaTokenService.TokenKey[] memory keys = new IHederaTokenService.TokenKey[](5);
+        keys[0] = getSingleKey(KeyType.ADMIN, KeyType.PAUSE, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[1] = getSingleKey(KeyType.KYC, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[2] = getSingleKey(KeyType.FREEZE, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[3] = getSingleKey(KeyType.WIPE, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[4] = getSingleKey(KeyType.SUPPLY, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+
+        IHederaTokenService.Expiry memory expiry = IHederaTokenService.Expiry(
+            0, treasury, 8000000
+        );
+
+        IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
+            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+        );
+
+        (int responseCode, address tokenAddress) =
+        HederaTokenService.createFungibleToken(token, initialTotalSupply, decimals);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert ();
+        }
+
+        emit CreatedToken(tokenAddress);
+    }
+
+
+    function createNonFungibleTokenPublic(
+        address treasury
+    ) public payable {
+        IHederaTokenService.TokenKey[] memory keys = new IHederaTokenService.TokenKey[](5);
+        keys[0] = getSingleKey(KeyType.ADMIN, KeyType.PAUSE, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[1] = getSingleKey(KeyType.KYC, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[2] = getSingleKey(KeyType.FREEZE, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[3] = getSingleKey(KeyType.SUPPLY, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+        keys[4] = getSingleKey(KeyType.WIPE, KeyValueType.INHERIT_ACCOUNT_KEY, bytes(""));
+
+        IHederaTokenService.Expiry memory expiry = IHederaTokenService.Expiry(
+            0, treasury, 8000000
+        );
+
+        IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
+            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+        );
+
+        (int responseCode, address tokenAddress) = HederaTokenService.createNonFungibleToken(token);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert ();
+        }
+
+        emit CreatedToken(tokenAddress);
+    }
+
+    function mintTokenPublic(address token, int64 amount, bytes[] memory metadata) public
+    returns (int responseCode, int64 newTotalSupply, int64[] memory serialNumbers)  {
+        (responseCode, newTotalSupply, serialNumbers) = HederaTokenService.mintToken(token, amount, metadata);
+        emit ResponseCode(responseCode);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            if (responseCode == HederaResponseCodes.INVALID_TOKEN_ID) {
+                revert(string(abi.encodePacked("Minting reverted with INVALID_TOKEN_ID")));
+            } else if (responseCode == HederaResponseCodes.TOKEN_MAX_SUPPLY_REACHED) {
+                revert(string(abi.encodePacked("Minting ", Strings.toString((uint256(uint64(amount)))), " tokens reverted with TOKEN_MAX_SUPPLY_REACHED")));
+            }
+
+            revert (string(abi.encodePacked("Minting was reverted with responseCode: ", Strings.toString(uint256(responseCode)))));
+        }
+        emit MintedToken(newTotalSupply, serialNumbers);
+    }
+
+    function associateTokenPublic(address account, address token) public returns (int responseCode) {
+        responseCode = HederaTokenService.associateToken(account, token);
+        emit ResponseCode(responseCode);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            if (responseCode == HederaResponseCodes.TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT) {
+                revert(string(abi.encodePacked("Association reverted with TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT")));
+            }
+            revert ("Default associateTokenPublic() revert reason");
+        }
     }
 }
 // Filename: contracts/solidity/payment-channel/PaymentChannel.sol
@@ -6935,313 +7142,1048 @@ contract StateRegistry {
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity >=0.4.9 <0.9.0;
 
+// this contract is auto-generated by a manual triggered script in utils/hedera-response-codes-protobuf-parser.js
+// the generated contract is using hedera response codes from services version 0.59.0-SNAPSHOT
+// https://github.com/hashgraph/hedera-services/blob/main/hapi/hedera-protobufs/services/response_code.proto
+
 library HederaResponseCodes {
+    /// The transaction passed the precheck validations.
+    int32 internal constant OK = 0;
 
-    // response codes
-    int32 internal constant OK = 0; // The transaction passed the precheck validations.
-    int32 internal constant INVALID_TRANSACTION = 1; // For any error not handled by specific error codes listed below.
-    int32 internal constant PAYER_ACCOUNT_NOT_FOUND = 2; //Payer account does not exist.
-    int32 internal constant INVALID_NODE_ACCOUNT = 3; //Node Account provided does not match the node account of the node the transaction was submitted to.
-    int32 internal constant TRANSACTION_EXPIRED = 4; // Pre-Check error when TransactionValidStart + transactionValidDuration is less than current consensus time.
-    int32 internal constant INVALID_TRANSACTION_START = 5; // Transaction start time is greater than current consensus time
-    int32 internal constant INVALID_TRANSACTION_DURATION = 6; //valid transaction duration is a positive non zero number that does not exceed 120 seconds
-    int32 internal constant INVALID_SIGNATURE = 7; // The transaction signature is not valid
-    int32 internal constant MEMO_TOO_LONG = 8; //Transaction memo size exceeded 100 bytes
-    int32 internal constant INSUFFICIENT_TX_FEE = 9; // The fee provided in the transaction is insufficient for this type of transaction
-    int32 internal constant INSUFFICIENT_PAYER_BALANCE = 10; // The payer account has insufficient cryptocurrency to pay the transaction fee
-    int32 internal constant DUPLICATE_TRANSACTION = 11; // This transaction ID is a duplicate of one that was submitted to this node or reached consensus in the last 180 seconds (receipt period)
-    int32 internal constant BUSY = 12; //If API is throttled out
-    int32 internal constant NOT_SUPPORTED = 13; //The API is not currently supported
+    /// For any error not handled by specific error codes listed below.
+    int32 internal constant INVALID_TRANSACTION = 1;
 
-    int32 internal constant INVALID_FILE_ID = 14; //The file id is invalid or does not exist
-    int32 internal constant INVALID_ACCOUNT_ID = 15; //The account id is invalid or does not exist
-    int32 internal constant INVALID_CONTRACT_ID = 16; //The contract id is invalid or does not exist
-    int32 internal constant INVALID_TRANSACTION_ID = 17; //Transaction id is not valid
-    int32 internal constant RECEIPT_NOT_FOUND = 18; //Receipt for given transaction id does not exist
-    int32 internal constant RECORD_NOT_FOUND = 19; //Record for given transaction id does not exist
-    int32 internal constant INVALID_SOLIDITY_ID = 20; //The solidity id is invalid or entity with this solidity id does not exist
+    /// Payer account does not exist.
+    int32 internal constant PAYER_ACCOUNT_NOT_FOUND = 2;
 
-    int32 internal constant UNKNOWN = 21; // The responding node has submitted the transaction to the network. Its final status is still unknown.
-    int32 internal constant SUCCESS = 22; // The transaction succeeded
-    int32 internal constant FAIL_INVALID = 23; // There was a system error and the transaction failed because of invalid request parameters.
-    int32 internal constant FAIL_FEE = 24; // There was a system error while performing fee calculation, reserved for future.
-    int32 internal constant FAIL_BALANCE = 25; // There was a system error while performing balance checks, reserved for future.
+    /// Node Account provided does not match the node account of the node the transaction was submitted to.
+    int32 internal constant INVALID_NODE_ACCOUNT = 3;
 
-    int32 internal constant KEY_REQUIRED = 26; //Key not provided in the transaction body
-    int32 internal constant BAD_ENCODING = 27; //Unsupported algorithm/encoding used for keys in the transaction
-    int32 internal constant INSUFFICIENT_ACCOUNT_BALANCE = 28; //When the account balance is not sufficient for the transfer
-    int32 internal constant INVALID_SOLIDITY_ADDRESS = 29; //During an update transaction when the system is not able to find the Users Solidity address
+    /// Pre-Check error when TransactionValidStart + transactionValidDuration is less than current consensus time.
+    int32 internal constant TRANSACTION_EXPIRED = 4;
 
-    int32 internal constant INSUFFICIENT_GAS = 30; //Not enough gas was supplied to execute transaction
-    int32 internal constant CONTRACT_SIZE_LIMIT_EXCEEDED = 31; //contract byte code size is over the limit
-    int32 internal constant LOCAL_CALL_MODIFICATION_EXCEPTION = 32; //local execution (query) is requested for a function which changes state
-    int32 internal constant CONTRACT_REVERT_EXECUTED = 33; //Contract REVERT OPCODE executed
-    int32 internal constant CONTRACT_EXECUTION_EXCEPTION = 34; //For any contract execution related error not handled by specific error codes listed above.
-    int32 internal constant INVALID_RECEIVING_NODE_ACCOUNT = 35; //In Query validation, account with +ve(amount) value should be Receiving node account, the receiver account should be only one account in the list
-    int32 internal constant MISSING_QUERY_HEADER = 36; // Header is missing in Query request
+    /// Transaction start time is greater than current consensus time
+    int32 internal constant INVALID_TRANSACTION_START = 5;
 
-    int32 internal constant ACCOUNT_UPDATE_FAILED = 37; // The update of the account failed
-    int32 internal constant INVALID_KEY_ENCODING = 38; // Provided key encoding was not supported by the system
-    int32 internal constant NULL_SOLIDITY_ADDRESS = 39; // null solidity address
+    /// The given transactionValidDuration was either non-positive, or greater than the maximum valid duration of 180 secs.
+    int32 internal constant INVALID_TRANSACTION_DURATION = 6;
 
-    int32 internal constant CONTRACT_UPDATE_FAILED = 40; // update of the contract failed
-    int32 internal constant INVALID_QUERY_HEADER = 41; // the query header is invalid
+    /// The transaction signature is not valid
+    int32 internal constant INVALID_SIGNATURE = 7;
 
-    int32 internal constant INVALID_FEE_SUBMITTED = 42; // Invalid fee submitted
-    int32 internal constant INVALID_PAYER_SIGNATURE = 43; // Payer signature is invalid
+    /// Transaction memo size exceeded 100 bytes
+    int32 internal constant MEMO_TOO_LONG = 8;
 
-    int32 internal constant KEY_NOT_PROVIDED = 44; // The keys were not provided in the request.
-    int32 internal constant INVALID_EXPIRATION_TIME = 45; // Expiration time provided in the transaction was invalid.
-    int32 internal constant NO_WACL_KEY = 46; //WriteAccess Control Keys are not provided for the file
-    int32 internal constant FILE_CONTENT_EMPTY = 47; //The contents of file are provided as empty.
-    int32 internal constant INVALID_ACCOUNT_AMOUNTS = 48; // The crypto transfer credit and debit do not sum equal to 0
-    int32 internal constant EMPTY_TRANSACTION_BODY = 49; // Transaction body provided is empty
-    int32 internal constant INVALID_TRANSACTION_BODY = 50; // Invalid transaction body provided
+    /// The fee provided in the transaction is insufficient for this type of transaction
+    int32 internal constant INSUFFICIENT_TX_FEE = 9;
 
-    int32 internal constant INVALID_SIGNATURE_TYPE_MISMATCHING_KEY = 51; // the type of key (base ed25519 key, KeyList, or ThresholdKey) does not match the type of signature (base ed25519 signature, SignatureList, or ThresholdKeySignature)
-    int32 internal constant INVALID_SIGNATURE_COUNT_MISMATCHING_KEY = 52; // the number of key (KeyList, or ThresholdKey) does not match that of signature (SignatureList, or ThresholdKeySignature). e.g. if a keyList has 3 base keys, then the corresponding signatureList should also have 3 base signatures.
+    /// The payer account has insufficient cryptocurrency to pay the transaction fee
+    int32 internal constant INSUFFICIENT_PAYER_BALANCE = 10;
 
-    int32 internal constant EMPTY_LIVE_HASH_BODY = 53; // the livehash body is empty
-    int32 internal constant EMPTY_LIVE_HASH = 54; // the livehash data is missing
-    int32 internal constant EMPTY_LIVE_HASH_KEYS = 55; // the keys for a livehash are missing
-    int32 internal constant INVALID_LIVE_HASH_SIZE = 56; // the livehash data is not the output of a SHA-384 digest
+    /// This transaction ID is a duplicate of one that was submitted to this node or reached consensus in the last 180 seconds (receipt period)
+    int32 internal constant DUPLICATE_TRANSACTION = 11;
 
-    int32 internal constant EMPTY_QUERY_BODY = 57; // the query body is empty
-    int32 internal constant EMPTY_LIVE_HASH_QUERY = 58; // the crypto livehash query is empty
-    int32 internal constant LIVE_HASH_NOT_FOUND = 59; // the livehash is not present
-    int32 internal constant ACCOUNT_ID_DOES_NOT_EXIST = 60; // the account id passed has not yet been created.
-    int32 internal constant LIVE_HASH_ALREADY_EXISTS = 61; // the livehash already exists for a given account
+    /// If API is throttled out
+    int32 internal constant BUSY = 12;
 
-    int32 internal constant INVALID_FILE_WACL = 62; // File WACL keys are invalid
-    int32 internal constant SERIALIZATION_FAILED = 63; // Serialization failure
-    int32 internal constant TRANSACTION_OVERSIZE = 64; // The size of the Transaction is greater than transactionMaxBytes
-    int32 internal constant TRANSACTION_TOO_MANY_LAYERS = 65; // The Transaction has more than 50 levels
-    int32 internal constant CONTRACT_DELETED = 66; //Contract is marked as deleted
+    /// The API is not currently supported
+    int32 internal constant NOT_SUPPORTED = 13;
 
-    int32 internal constant PLATFORM_NOT_ACTIVE = 67; // the platform node is either disconnected or lagging behind.
-    int32 internal constant KEY_PREFIX_MISMATCH = 68; // one internal key matches more than one prefixes on the signature map
-    int32 internal constant PLATFORM_TRANSACTION_NOT_CREATED = 69; // transaction not created by platform due to large backlog
-    int32 internal constant INVALID_RENEWAL_PERIOD = 70; // auto renewal period is not a positive number of seconds
-    int32 internal constant INVALID_PAYER_ACCOUNT_ID = 71; // the response code when a smart contract id is passed for a crypto API request
-    int32 internal constant ACCOUNT_DELETED = 72; // the account has been marked as deleted
-    int32 internal constant FILE_DELETED = 73; // the file has been marked as deleted
-    int32 internal constant ACCOUNT_REPEATED_IN_ACCOUNT_AMOUNTS = 74; // same accounts repeated in the transfer account list
-    int32 internal constant SETTING_NEGATIVE_ACCOUNT_BALANCE = 75; // attempting to set negative balance value for crypto account
-    int32 internal constant OBTAINER_REQUIRED = 76; // when deleting smart contract that has crypto balance either transfer account or transfer smart contract is required
-    int32 internal constant OBTAINER_SAME_CONTRACT_ID = 77; //when deleting smart contract that has crypto balance you can not use the same contract id as transferContractId as the one being deleted
-    int32 internal constant OBTAINER_DOES_NOT_EXIST = 78; //transferAccountId or transferContractId specified for contract delete does not exist
-    int32 internal constant MODIFYING_IMMUTABLE_CONTRACT = 79; //attempting to modify (update or delete a immutable smart contract, i.e. one created without a admin key)
-    int32 internal constant FILE_SYSTEM_EXCEPTION = 80; //Unexpected exception thrown by file system functions
-    int32 internal constant AUTORENEW_DURATION_NOT_IN_RANGE = 81; // the duration is not a subset of [MINIMUM_AUTORENEW_DURATION,MAXIMUM_AUTORENEW_DURATION]
-    int32 internal constant ERROR_DECODING_BYTESTRING = 82; // Decoding the smart contract binary to a byte array failed. Check that the input is a valid hex string.
-    int32 internal constant CONTRACT_FILE_EMPTY = 83; // File to create a smart contract was of length zero
-    int32 internal constant CONTRACT_BYTECODE_EMPTY = 84; // Bytecode for smart contract is of length zero
-    int32 internal constant INVALID_INITIAL_BALANCE = 85; // Attempt to set negative initial balance
-    int32 internal constant INVALID_RECEIVE_RECORD_THRESHOLD = 86; // [Deprecated]. attempt to set negative receive record threshold
-    int32 internal constant INVALID_SEND_RECORD_THRESHOLD = 87; // [Deprecated]. attempt to set negative send record threshold
-    int32 internal constant ACCOUNT_IS_NOT_GENESIS_ACCOUNT = 88; // Special Account Operations should be performed by only Genesis account, return this code if it is not Genesis Account
-    int32 internal constant PAYER_ACCOUNT_UNAUTHORIZED = 89; // The fee payer account doesn't have permission to submit such Transaction
-    int32 internal constant INVALID_FREEZE_TRANSACTION_BODY = 90; // FreezeTransactionBody is invalid
-    int32 internal constant FREEZE_TRANSACTION_BODY_NOT_FOUND = 91; // FreezeTransactionBody does not exist
-    int32 internal constant TRANSFER_LIST_SIZE_LIMIT_EXCEEDED = 92; //Exceeded the number of accounts (both from and to) allowed for crypto transfer list
-    int32 internal constant RESULT_SIZE_LIMIT_EXCEEDED = 93; // Smart contract result size greater than specified maxResultSize
-    int32 internal constant NOT_SPECIAL_ACCOUNT = 94; //The payer account is not a special account(account 0.0.55)
-    int32 internal constant CONTRACT_NEGATIVE_GAS = 95; // Negative gas was offered in smart contract call
-    int32 internal constant CONTRACT_NEGATIVE_VALUE = 96; // Negative value / initial balance was specified in a smart contract call / create
-    int32 internal constant INVALID_FEE_FILE = 97; // Failed to update fee file
-    int32 internal constant INVALID_EXCHANGE_RATE_FILE = 98; // Failed to update exchange rate file
-    int32 internal constant INSUFFICIENT_LOCAL_CALL_GAS = 99; // Payment tendered for contract local call cannot cover both the fee and the gas
-    int32 internal constant ENTITY_NOT_ALLOWED_TO_DELETE = 100; // Entities with Entity ID below 1000 are not allowed to be deleted
-    int32 internal constant AUTHORIZATION_FAILED = 101; // Violating one of these rules: 1) treasury account can update all entities below 0.0.1000, 2) account 0.0.50 can update all entities from 0.0.51 - 0.0.80, 3) Network Function Master Account A/c 0.0.50 - Update all Network Function accounts & perform all the Network Functions listed below, 4) Network Function Accounts: i) A/c 0.0.55 - Update Address Book files (0.0.101/102), ii) A/c 0.0.56 - Update Fee schedule (0.0.111), iii) A/c 0.0.57 - Update Exchange Rate (0.0.112).
-    int32 internal constant FILE_UPLOADED_PROTO_INVALID = 102; // Fee Schedule Proto uploaded but not valid (append or update is required)
-    int32 internal constant FILE_UPLOADED_PROTO_NOT_SAVED_TO_DISK = 103; // Fee Schedule Proto uploaded but not valid (append or update is required)
-    int32 internal constant FEE_SCHEDULE_FILE_PART_UPLOADED = 104; // Fee Schedule Proto File Part uploaded
-    int32 internal constant EXCHANGE_RATE_CHANGE_LIMIT_EXCEEDED = 105; // The change on Exchange Rate exceeds Exchange_Rate_Allowed_Percentage
-    int32 internal constant MAX_CONTRACT_STORAGE_EXCEEDED = 106; // Contract permanent storage exceeded the currently allowable limit
-    int32 internal constant TRANSFER_ACCOUNT_SAME_AS_DELETE_ACCOUNT = 107; // Transfer Account should not be same as Account to be deleted
+    /// The file id is invalid or does not exist
+    int32 internal constant INVALID_FILE_ID = 14;
+
+    /// The account id is invalid or does not exist
+    int32 internal constant INVALID_ACCOUNT_ID = 15;
+
+    /// The contract id is invalid or does not exist
+    int32 internal constant INVALID_CONTRACT_ID = 16;
+
+    /// Transaction id is not valid
+    int32 internal constant INVALID_TRANSACTION_ID = 17;
+
+    /// Receipt for given transaction id does not exist
+    int32 internal constant RECEIPT_NOT_FOUND = 18;
+
+    /// Record for given transaction id does not exist
+    int32 internal constant RECORD_NOT_FOUND = 19;
+
+    /// The solidity id is invalid or entity with this solidity id does not exist
+    int32 internal constant INVALID_SOLIDITY_ID = 20;
+
+    /// The responding node has submitted the transaction to the network. Its final status is still unknown.
+    int32 internal constant UNKNOWN = 21;
+
+    /// The transaction succeeded
+    int32 internal constant SUCCESS = 22;
+
+    /// There was a system error and the transaction failed because of invalid request parameters.
+    int32 internal constant FAIL_INVALID = 23;
+
+    /// There was a system error while performing fee calculation, reserved for future.
+    int32 internal constant FAIL_FEE = 24;
+
+    /// There was a system error while performing balance checks, reserved for future.
+    int32 internal constant FAIL_BALANCE = 25;
+
+    /// Key not provided in the transaction body
+    int32 internal constant KEY_REQUIRED = 26;
+
+    /// Unsupported algorithm/encoding used for keys in the transaction
+    int32 internal constant BAD_ENCODING = 27;
+
+    /// When the account balance is not sufficient for the transfer
+    int32 internal constant INSUFFICIENT_ACCOUNT_BALANCE = 28;
+
+    /// During an update transaction when the system is not able to find the Users Solidity address
+    int32 internal constant INVALID_SOLIDITY_ADDRESS = 29;
+
+    /// Not enough gas was supplied to execute transaction
+    int32 internal constant INSUFFICIENT_GAS = 30;
+
+    /// contract byte code size is over the limit
+    int32 internal constant CONTRACT_SIZE_LIMIT_EXCEEDED = 31;
+
+    /// local execution (query) is requested for a function which changes state
+    int32 internal constant LOCAL_CALL_MODIFICATION_EXCEPTION = 32;
+
+    /// Contract REVERT OPCODE executed
+    int32 internal constant CONTRACT_REVERT_EXECUTED = 33;
+
+    /// For any contract execution related error not handled by specific error codes listed above.
+    int32 internal constant CONTRACT_EXECUTION_EXCEPTION = 34;
+
+    /// In Query validation, account with +ve(amount) value should be Receiving node account, the receiver account should be only one account in the list
+    int32 internal constant INVALID_RECEIVING_NODE_ACCOUNT = 35;
+
+    /// Header is missing in Query request
+    int32 internal constant MISSING_QUERY_HEADER = 36;
+
+    /// The update of the account failed
+    int32 internal constant ACCOUNT_UPDATE_FAILED = 37;
+
+    /// Provided key encoding was not supported by the system
+    int32 internal constant INVALID_KEY_ENCODING = 38;
+
+    /// null solidity address
+    int32 internal constant NULL_SOLIDITY_ADDRESS = 39;
+
+    /// update of the contract failed
+    int32 internal constant CONTRACT_UPDATE_FAILED = 40;
+
+    /// the query header is invalid
+    int32 internal constant INVALID_QUERY_HEADER = 41;
+
+    /// Invalid fee submitted
+    int32 internal constant INVALID_FEE_SUBMITTED = 42;
+
+    /// Payer signature is invalid
+    int32 internal constant INVALID_PAYER_SIGNATURE = 43;
+
+    /// The keys were not provided in the request.
+    int32 internal constant KEY_NOT_PROVIDED = 44;
+
+    /// Expiration time provided in the transaction was invalid.
+    int32 internal constant INVALID_EXPIRATION_TIME = 45;
+
+    /// WriteAccess Control Keys are not provided for the file
+    int32 internal constant NO_WACL_KEY = 46;
+
+    /// The contents of file are provided as empty.
+    int32 internal constant FILE_CONTENT_EMPTY = 47;
+
+    /// The crypto transfer credit and debit do not sum equal to 0
+    int32 internal constant INVALID_ACCOUNT_AMOUNTS = 48;
+
+    /// Transaction body provided is empty
+    int32 internal constant EMPTY_TRANSACTION_BODY = 49;
+
+    /// Invalid transaction body provided
+    int32 internal constant INVALID_TRANSACTION_BODY = 50;
+
+    /// the type of key (base ed25519 key, KeyList, or ThresholdKey) does not match the type of signature (base ed25519 signature, SignatureList, or ThresholdKeySignature)
+    int32 internal constant INVALID_SIGNATURE_TYPE_MISMATCHING_KEY = 51;
+
+    /// the number of key (KeyList, or ThresholdKey) does not match that of signature (SignatureList, or ThresholdKeySignature). e.g. if a keyList has 3 base keys, then the corresponding signatureList should also have 3 base signatures.
+    int32 internal constant INVALID_SIGNATURE_COUNT_MISMATCHING_KEY = 52;
+
+    /// the livehash body is empty
+    int32 internal constant EMPTY_LIVE_HASH_BODY = 53;
+
+    /// the livehash data is missing
+    int32 internal constant EMPTY_LIVE_HASH = 54;
+
+    /// the keys for a livehash are missing
+    int32 internal constant EMPTY_LIVE_HASH_KEYS = 55;
+
+    /// the livehash data is not the output of a SHA-384 digest
+    int32 internal constant INVALID_LIVE_HASH_SIZE = 56;
+
+    /// the query body is empty
+    int32 internal constant EMPTY_QUERY_BODY = 57;
+
+    /// the crypto livehash query is empty
+    int32 internal constant EMPTY_LIVE_HASH_QUERY = 58;
+
+    /// the livehash is not present
+    int32 internal constant LIVE_HASH_NOT_FOUND = 59;
+
+    /// the account id passed has not yet been created.
+    int32 internal constant ACCOUNT_ID_DOES_NOT_EXIST = 60;
+
+    /// the livehash already exists for a given account
+    int32 internal constant LIVE_HASH_ALREADY_EXISTS = 61;
+
+    /// File WACL keys are invalid
+    int32 internal constant INVALID_FILE_WACL = 62;
+
+    /// Serialization failure
+    int32 internal constant SERIALIZATION_FAILED = 63;
+
+    /// The size of the Transaction is greater than transactionMaxBytes
+    int32 internal constant TRANSACTION_OVERSIZE = 64;
+
+    /// The Transaction has more than 50 levels
+    int32 internal constant TRANSACTION_TOO_MANY_LAYERS = 65;
+
+    /// Contract is marked as deleted
+    int32 internal constant CONTRACT_DELETED = 66;
+
+    /// the platform node is either disconnected or lagging behind.
+    int32 internal constant PLATFORM_NOT_ACTIVE = 67;
+
+    /// one public key matches more than one prefixes on the signature map
+    int32 internal constant KEY_PREFIX_MISMATCH = 68;
+
+    /// transaction not created by platform due to large backlog
+    int32 internal constant PLATFORM_TRANSACTION_NOT_CREATED = 69;
+
+    /// auto renewal period is not a positive number of seconds
+    int32 internal constant INVALID_RENEWAL_PERIOD = 70;
+
+    /// the response code when a smart contract id is passed for a crypto API request
+    int32 internal constant INVALID_PAYER_ACCOUNT_ID = 71;
+
+    /// the account has been marked as deleted
+    int32 internal constant ACCOUNT_DELETED = 72;
+
+    /// the file has been marked as deleted
+    int32 internal constant FILE_DELETED = 73;
+
+    /// same accounts repeated in the transfer account list
+    int32 internal constant ACCOUNT_REPEATED_IN_ACCOUNT_AMOUNTS = 74;
+
+    /// attempting to set negative balance value for crypto account
+    int32 internal constant SETTING_NEGATIVE_ACCOUNT_BALANCE = 75;
+
+    /// when deleting smart contract that has crypto balance either transfer account or transfer smart contract is required
+    int32 internal constant OBTAINER_REQUIRED = 76;
+
+    /// when deleting smart contract that has crypto balance you can not use the same contract id as transferContractId as the one being deleted
+    int32 internal constant OBTAINER_SAME_CONTRACT_ID = 77;
+
+    /// transferAccountId or transferContractId specified for contract delete does not exist
+    int32 internal constant OBTAINER_DOES_NOT_EXIST = 78;
+
+    /// attempting to modify (update or delete a immutable smart contract, i.e. one created without a admin key)
+    int32 internal constant MODIFYING_IMMUTABLE_CONTRACT = 79;
+
+    /// Unexpected exception thrown by file system functions
+    int32 internal constant FILE_SYSTEM_EXCEPTION = 80;
+
+    /// the duration is not a subset of [MINIMUM_AUTORENEW_DURATION,MAXIMUM_AUTORENEW_DURATION]
+    int32 internal constant AUTORENEW_DURATION_NOT_IN_RANGE = 81;
+
+    /// Decoding the smart contract binary to a byte array failed. Check that the input is a valid hex string.
+    int32 internal constant ERROR_DECODING_BYTESTRING = 82;
+
+    /// File to create a smart contract was of length zero
+    int32 internal constant CONTRACT_FILE_EMPTY = 83;
+
+    /// Bytecode for smart contract is of length zero
+    int32 internal constant CONTRACT_BYTECODE_EMPTY = 84;
+
+    /// Attempt to set negative initial balance
+    int32 internal constant INVALID_INITIAL_BALANCE = 85;
+
+    /// Attempt to set negative receive record threshold
+    int32 internal constant INVALID_RECEIVE_RECORD_THRESHOLD = 86;
+
+    /// Attempt to set negative send record threshold
+    int32 internal constant INVALID_SEND_RECORD_THRESHOLD = 87;
+
+    /// Special Account Operations should be performed by only Genesis account, return this code if it is not Genesis Account
+    int32 internal constant ACCOUNT_IS_NOT_GENESIS_ACCOUNT = 88;
+
+    /// The fee payer account doesn't have permission to submit such Transaction
+    int32 internal constant PAYER_ACCOUNT_UNAUTHORIZED = 89;
+
+    /// FreezeTransactionBody is invalid
+    int32 internal constant INVALID_FREEZE_TRANSACTION_BODY = 90;
+
+    /// FreezeTransactionBody does not exist
+    int32 internal constant FREEZE_TRANSACTION_BODY_NOT_FOUND = 91;
+
+    /// Exceeded the number of accounts (both from and to) allowed for crypto transfer list
+    int32 internal constant TRANSFER_LIST_SIZE_LIMIT_EXCEEDED = 92;
+
+    /// Smart contract result size greater than specified maxResultSize
+    int32 internal constant RESULT_SIZE_LIMIT_EXCEEDED = 93;
+
+    /// The payer account is not a special account(account 0.0.55)
+    int32 internal constant NOT_SPECIAL_ACCOUNT = 94;
+
+    /// Negative gas was offered in smart contract call
+    int32 internal constant CONTRACT_NEGATIVE_GAS = 95;
+
+    /// Negative value / initial balance was specified in a smart contract call / create
+    int32 internal constant CONTRACT_NEGATIVE_VALUE = 96;
+
+    /// Failed to update fee file
+    int32 internal constant INVALID_FEE_FILE = 97;
+
+    /// Failed to update exchange rate file
+    int32 internal constant INVALID_EXCHANGE_RATE_FILE = 98;
+
+    /// Payment tendered for contract local call cannot cover both the fee and the gas
+    int32 internal constant INSUFFICIENT_LOCAL_CALL_GAS = 99;
+
+    /// Entities with Entity ID below 1000 are not allowed to be deleted
+    int32 internal constant ENTITY_NOT_ALLOWED_TO_DELETE = 100;
+
+    /// Violating one of these rules: 1) treasury account can update all entities below 0.0.1000, 2) account 0.0.50 can update all entities from 0.0.51 - 0.0.80, 3) Network Function Master Account A/c 0.0.50 - Update all Network Function accounts & perform all the Network Functions listed below, 4) Network Function Accounts: i) A/c 0.0.55 - Update Address Book files (0.0.101/102), ii) A/c 0.0.56 - Update Fee schedule (0.0.111), iii) A/c 0.0.57 - Update Exchange Rate (0.0.112).
+    int32 internal constant AUTHORIZATION_FAILED = 101;
+
+    /// Fee Schedule Proto uploaded but not valid (append or update is required)
+    int32 internal constant FILE_UPLOADED_PROTO_INVALID = 102;
+
+    /// Fee Schedule Proto uploaded but not valid (append or update is required)
+    int32 internal constant FILE_UPLOADED_PROTO_NOT_SAVED_TO_DISK = 103;
+
+    /// Fee Schedule Proto File Part uploaded
+    int32 internal constant FEE_SCHEDULE_FILE_PART_UPLOADED = 104;
+
+    /// The change on Exchange Rate exceeds Exchange_Rate_Allowed_Percentage
+    int32 internal constant EXCHANGE_RATE_CHANGE_LIMIT_EXCEEDED = 105;
+
+    /// Contract permanent storage exceeded the currently allowable limit
+    int32 internal constant MAX_CONTRACT_STORAGE_EXCEEDED = 106;
+
+    /// Transfer Account should not be same as Account to be deleted
+    int32 internal constant TRANSFER_ACCOUNT_SAME_AS_DELETE_ACCOUNT = 107;
+
     int32 internal constant TOTAL_LEDGER_BALANCE_INVALID = 108;
-    int32 internal constant EXPIRATION_REDUCTION_NOT_ALLOWED = 110; // The expiration date/time on a smart contract may not be reduced
-    int32 internal constant MAX_GAS_LIMIT_EXCEEDED = 111; //Gas exceeded currently allowable gas limit per transaction
-    int32 internal constant MAX_FILE_SIZE_EXCEEDED = 112; // File size exceeded the currently allowable limit
 
-    int32 internal constant INVALID_TOPIC_ID = 150; // The Topic ID specified is not in the system.
-    int32 internal constant INVALID_ADMIN_KEY = 155; // A provided admin key was invalid.
-    int32 internal constant INVALID_SUBMIT_KEY = 156; // A provided submit key was invalid.
-    int32 internal constant UNAUTHORIZED = 157; // An attempted operation was not authorized (ie - a deleteTopic for a topic with no adminKey).
-    int32 internal constant INVALID_TOPIC_MESSAGE = 158; // A ConsensusService message is empty.
-    int32 internal constant INVALID_AUTORENEW_ACCOUNT = 159; // The autoRenewAccount specified is not a valid, active account.
-    int32 internal constant AUTORENEW_ACCOUNT_NOT_ALLOWED = 160; // An adminKey was not specified on the topic, so there must not be an autoRenewAccount.
-    // The topic has expired, was not automatically renewed, and is in a 7 day grace period before the topic will be
-    // deleted unrecoverably. This error response code will not be returned until autoRenew functionality is supported
-    // by HAPI.
+    /// The expiration date/time on a smart contract may not be reduced
+    int32 internal constant EXPIRATION_REDUCTION_NOT_ALLOWED = 110;
+
+    /// Gas exceeded currently allowable gas limit per transaction
+    int32 internal constant MAX_GAS_LIMIT_EXCEEDED = 111;
+
+    /// File size exceeded the currently allowable limit
+    int32 internal constant MAX_FILE_SIZE_EXCEEDED = 112;
+
+    /// When a valid signature is not provided for operations on account with receiverSigRequired=true
+    int32 internal constant RECEIVER_SIG_REQUIRED = 113;
+
+    /// The Topic ID specified is not in the system.
+    int32 internal constant INVALID_TOPIC_ID = 150;
+
+    /// A provided admin key was invalid. Verify the bytes for an Ed25519 public key are exactly 32 bytes; and the bytes for a compressed ECDSA(secp256k1) key are exactly 33 bytes, with the first byte either 0x02 or 0x03..
+    int32 internal constant INVALID_ADMIN_KEY = 155;
+
+    /// A provided submit key was invalid.
+    int32 internal constant INVALID_SUBMIT_KEY = 156;
+
+    /// An attempted operation was not authorized (ie - a deleteTopic for a topic with no adminKey).
+    int32 internal constant UNAUTHORIZED = 157;
+
+    /// A ConsensusService message is empty.
+    int32 internal constant INVALID_TOPIC_MESSAGE = 158;
+
+    /// The autoRenewAccount specified is not a valid, active account.
+    int32 internal constant INVALID_AUTORENEW_ACCOUNT = 159;
+
+    /// An adminKey was not specified on the topic, so there must not be an autoRenewAccount.
+    int32 internal constant AUTORENEW_ACCOUNT_NOT_ALLOWED = 160;
+
+    /// The topic has expired, was not automatically renewed, and is in a 7 day grace period before the topic will be deleted unrecoverably. This error response code will not be returned until autoRenew functionality is supported by HAPI.
     int32 internal constant TOPIC_EXPIRED = 162;
-    int32 internal constant INVALID_CHUNK_NUMBER = 163; // chunk number must be from 1 to total (chunks) inclusive.
-    int32 internal constant INVALID_CHUNK_TRANSACTION_ID = 164; // For every chunk, the payer account that is part of initialTransactionID must match the Payer Account of this transaction. The entire initialTransactionID should match the transactionID of the first chunk, but this is not checked or enforced by Hedera except when the chunk number is 1.
-    int32 internal constant ACCOUNT_FROZEN_FOR_TOKEN = 165; // Account is frozen and cannot transact with the token
-    int32 internal constant TOKENS_PER_ACCOUNT_LIMIT_EXCEEDED = 166; // An involved account already has more than <tt>tokens.maxPerAccount</tt> associations with non-deleted tokens.
-    int32 internal constant INVALID_TOKEN_ID = 167; // The token is invalid or does not exist
-    int32 internal constant INVALID_TOKEN_DECIMALS = 168; // Invalid token decimals
-    int32 internal constant INVALID_TOKEN_INITIAL_SUPPLY = 169; // Invalid token initial supply
-    int32 internal constant INVALID_TREASURY_ACCOUNT_FOR_TOKEN = 170; // Treasury Account does not exist or is deleted
-    int32 internal constant INVALID_TOKEN_SYMBOL = 171; // Token Symbol is not UTF-8 capitalized alphabetical string
-    int32 internal constant TOKEN_HAS_NO_FREEZE_KEY = 172; // Freeze key is not set on token
-    int32 internal constant TRANSFERS_NOT_ZERO_SUM_FOR_TOKEN = 173; // Amounts in transfer list are not net zero
-    int32 internal constant MISSING_TOKEN_SYMBOL = 174; // A token symbol was not provided
-    int32 internal constant TOKEN_SYMBOL_TOO_LONG = 175; // The provided token symbol was too long
-    int32 internal constant ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN = 176; // KYC must be granted and account does not have KYC granted
-    int32 internal constant TOKEN_HAS_NO_KYC_KEY = 177; // KYC key is not set on token
-    int32 internal constant INSUFFICIENT_TOKEN_BALANCE = 178; // Token balance is not sufficient for the transaction
-    int32 internal constant TOKEN_WAS_DELETED = 179; // Token transactions cannot be executed on deleted token
-    int32 internal constant TOKEN_HAS_NO_SUPPLY_KEY = 180; // Supply key is not set on token
-    int32 internal constant TOKEN_HAS_NO_WIPE_KEY = 181; // Wipe key is not set on token
-    int32 internal constant INVALID_TOKEN_MINT_AMOUNT = 182; // The requested token mint amount would cause an invalid total supply
-    int32 internal constant INVALID_TOKEN_BURN_AMOUNT = 183; // The requested token burn amount would cause an invalid total supply
-    int32 internal constant TOKEN_NOT_ASSOCIATED_TO_ACCOUNT = 184; // A required token-account relationship is missing
-    int32 internal constant CANNOT_WIPE_TOKEN_TREASURY_ACCOUNT = 185; // The target of a wipe operation was the token treasury account
-    int32 internal constant INVALID_KYC_KEY = 186; // The provided KYC key was invalid.
-    int32 internal constant INVALID_WIPE_KEY = 187; // The provided wipe key was invalid.
-    int32 internal constant INVALID_FREEZE_KEY = 188; // The provided freeze key was invalid.
-    int32 internal constant INVALID_SUPPLY_KEY = 189; // The provided supply key was invalid.
-    int32 internal constant MISSING_TOKEN_NAME = 190; // Token Name is not provided
-    int32 internal constant TOKEN_NAME_TOO_LONG = 191; // Token Name is too long
-    int32 internal constant INVALID_WIPING_AMOUNT = 192; // The provided wipe amount must not be negative, zero or bigger than the token holder balance
-    int32 internal constant TOKEN_IS_IMMUTABLE = 193; // Token does not have Admin key set, thus update/delete transactions cannot be performed
-    int32 internal constant TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT = 194; // An <tt>associateToken</tt> operation specified a token already associated to the account
-    int32 internal constant TRANSACTION_REQUIRES_ZERO_TOKEN_BALANCES = 195; // An attempted operation is invalid until all token balances for the target account are zero
-    int32 internal constant ACCOUNT_IS_TREASURY = 196; // An attempted operation is invalid because the account is a treasury
-    int32 internal constant TOKEN_ID_REPEATED_IN_TOKEN_LIST = 197; // Same TokenIDs present in the token list
-    int32 internal constant TOKEN_TRANSFER_LIST_SIZE_LIMIT_EXCEEDED = 198; // Exceeded the number of token transfers (both from and to) allowed for token transfer list
-    int32 internal constant EMPTY_TOKEN_TRANSFER_BODY = 199; // TokenTransfersTransactionBody has no TokenTransferList
-    int32 internal constant EMPTY_TOKEN_TRANSFER_ACCOUNT_AMOUNTS = 200; // TokenTransfersTransactionBody has a TokenTransferList with no AccountAmounts
-    int32 internal constant INVALID_SCHEDULE_ID = 201; // The Scheduled entity does not exist; or has now expired, been deleted, or been executed
-    int32 internal constant SCHEDULE_IS_IMMUTABLE = 202; // The Scheduled entity cannot be modified. Admin key not set
-    int32 internal constant INVALID_SCHEDULE_PAYER_ID = 203; // The provided Scheduled Payer does not exist
-    int32 internal constant INVALID_SCHEDULE_ACCOUNT_ID = 204; // The Schedule Create Transaction TransactionID account does not exist
-    int32 internal constant NO_NEW_VALID_SIGNATURES = 205; // The provided sig map did not contain any new valid signatures from required signers of the scheduled transaction
-    int32 internal constant UNRESOLVABLE_REQUIRED_SIGNERS = 206; // The required signers for a scheduled transaction cannot be resolved, for example because they do not exist or have been deleted
-    int32 internal constant SCHEDULED_TRANSACTION_NOT_IN_WHITELIST = 207; // Only whitelisted transaction types may be scheduled
-    int32 internal constant SOME_SIGNATURES_WERE_INVALID = 208; // At least one of the signatures in the provided sig map did not represent a valid signature for any required signer
-    int32 internal constant TRANSACTION_ID_FIELD_NOT_ALLOWED = 209; // The scheduled field in the TransactionID may not be set to true
-    int32 internal constant IDENTICAL_SCHEDULE_ALREADY_CREATED = 210; // A schedule already exists with the same identifying fields of an attempted ScheduleCreate (that is, all fields other than scheduledPayerAccountID)
-    int32 internal constant INVALID_ZERO_BYTE_IN_STRING = 211; // A string field in the transaction has a UTF-8 encoding with the prohibited zero byte
-    int32 internal constant SCHEDULE_ALREADY_DELETED = 212; // A schedule being signed or deleted has already been deleted
-    int32 internal constant SCHEDULE_ALREADY_EXECUTED = 213; // A schedule being signed or deleted has already been executed
-    int32 internal constant MESSAGE_SIZE_TOO_LARGE = 214; // ConsensusSubmitMessage request's message size is larger than allowed.
-    int32 internal constant OPERATION_REPEATED_IN_BUCKET_GROUPS = 215; // An operation was assigned to more than one throttle group in a given bucket
-    int32 internal constant BUCKET_CAPACITY_OVERFLOW = 216; // The capacity needed to satisfy all opsPerSec groups in a bucket overflowed a signed 8-byte integral type
-    int32 internal constant NODE_CAPACITY_NOT_SUFFICIENT_FOR_OPERATION = 217; // Given the network size in the address book, the node-level capacity for an operation would never be enough to accept a single request; usually means a bucket burstPeriod should be increased
-    int32 internal constant BUCKET_HAS_NO_THROTTLE_GROUPS = 218; // A bucket was defined without any throttle groups
-    int32 internal constant THROTTLE_GROUP_HAS_ZERO_OPS_PER_SEC = 219; // A throttle group was granted zero opsPerSec
-    int32 internal constant SUCCESS_BUT_MISSING_EXPECTED_OPERATION = 220; // The throttle definitions file was updated, but some supported operations were not assigned a bucket
-    int32 internal constant UNPARSEABLE_THROTTLE_DEFINITIONS = 221; // The new contents for the throttle definitions system file were not valid protobuf
-    int32 internal constant INVALID_THROTTLE_DEFINITIONS = 222; // The new throttle definitions system file were invalid, and no more specific error could be divined
-    int32 internal constant ACCOUNT_EXPIRED_AND_PENDING_REMOVAL = 223; // The transaction references an account which has passed its expiration without renewal funds available, and currently remains in the ledger only because of the grace period given to expired entities
-    int32 internal constant INVALID_TOKEN_MAX_SUPPLY = 224; // Invalid token max supply
-    int32 internal constant INVALID_TOKEN_NFT_SERIAL_NUMBER = 225; // Invalid token nft serial number
-    int32 internal constant INVALID_NFT_ID = 226; // Invalid nft id
-    int32 internal constant METADATA_TOO_LONG = 227; // Nft metadata is too long
-    int32 internal constant BATCH_SIZE_LIMIT_EXCEEDED = 228; // Repeated operations count exceeds the limit
-    int32 internal constant INVALID_QUERY_RANGE = 229; // The range of data to be gathered is out of the set boundaries
-    int32 internal constant FRACTION_DIVIDES_BY_ZERO = 230; // A custom fractional fee set a denominator of zero
-    int32 internal constant INSUFFICIENT_PAYER_BALANCE_FOR_CUSTOM_FEE = 231; // The transaction payer could not afford a custom fee
-    int32 internal constant CUSTOM_FEES_LIST_TOO_LONG = 232; // More than 10 custom fees were specified
-    int32 internal constant INVALID_CUSTOM_FEE_COLLECTOR = 233; // Any of the feeCollector accounts for customFees is invalid
-    int32 internal constant INVALID_TOKEN_ID_IN_CUSTOM_FEES = 234; // Any of the token Ids in customFees is invalid
-    int32 internal constant TOKEN_NOT_ASSOCIATED_TO_FEE_COLLECTOR = 235; // Any of the token Ids in customFees are not associated to feeCollector
-    int32 internal constant TOKEN_MAX_SUPPLY_REACHED = 236; // A token cannot have more units minted due to its configured supply ceiling
-    int32 internal constant SENDER_DOES_NOT_OWN_NFT_SERIAL_NO = 237; // The transaction attempted to move an NFT serial number from an account other than its owner
-    int32 internal constant CUSTOM_FEE_NOT_FULLY_SPECIFIED = 238; // A custom fee schedule entry did not specify either a fixed or fractional fee
-    int32 internal constant CUSTOM_FEE_MUST_BE_POSITIVE = 239; // Only positive fees may be assessed at this time
-    int32 internal constant TOKEN_HAS_NO_FEE_SCHEDULE_KEY = 240; // Fee schedule key is not set on token
-    int32 internal constant CUSTOM_FEE_OUTSIDE_NUMERIC_RANGE = 241; // A fractional custom fee exceeded the range of a 64-bit signed integer
-    int32 internal constant ROYALTY_FRACTION_CANNOT_EXCEED_ONE = 242; // A royalty cannot exceed the total fungible value exchanged for an NFT
-    int32 internal constant FRACTIONAL_FEE_MAX_AMOUNT_LESS_THAN_MIN_AMOUNT = 243; // Each fractional custom fee must have its maximum_amount, if specified, at least its minimum_amount
-    int32 internal constant CUSTOM_SCHEDULE_ALREADY_HAS_NO_FEES = 244; // A fee schedule update tried to clear the custom fees from a token whose fee schedule was already empty
-    int32 internal constant CUSTOM_FEE_DENOMINATION_MUST_BE_FUNGIBLE_COMMON = 245; // Only tokens of type FUNGIBLE_COMMON can be used to as fee schedule denominations
-    int32 internal constant CUSTOM_FRACTIONAL_FEE_ONLY_ALLOWED_FOR_FUNGIBLE_COMMON = 246; // Only tokens of type FUNGIBLE_COMMON can have fractional fees
-    int32 internal constant INVALID_CUSTOM_FEE_SCHEDULE_KEY = 247; // The provided custom fee schedule key was invalid
-    int32 internal constant INVALID_TOKEN_MINT_METADATA = 248; // The requested token mint metadata was invalid
-    int32 internal constant INVALID_TOKEN_BURN_METADATA = 249; // The requested token burn metadata was invalid
-    int32 internal constant CURRENT_TREASURY_STILL_OWNS_NFTS = 250; // The treasury for a unique token cannot be changed until it owns no NFTs
-    int32 internal constant ACCOUNT_STILL_OWNS_NFTS = 251; // An account cannot be dissociated from a unique token if it owns NFTs for the token
-    int32 internal constant TREASURY_MUST_OWN_BURNED_NFT = 252; // A NFT can only be burned when owned by the unique token's treasury
-    int32 internal constant ACCOUNT_DOES_NOT_OWN_WIPED_NFT = 253; // An account did not own the NFT to be wiped
-    int32 internal constant ACCOUNT_AMOUNT_TRANSFERS_ONLY_ALLOWED_FOR_FUNGIBLE_COMMON = 254; // An AccountAmount token transfers list referenced a token type other than FUNGIBLE_COMMON
-    int32 internal constant MAX_NFTS_IN_PRICE_REGIME_HAVE_BEEN_MINTED = 255; // All the NFTs allowed in the current price regime have already been minted
-    int32 internal constant PAYER_ACCOUNT_DELETED = 256; // The payer account has been marked as deleted
-    int32 internal constant CUSTOM_FEE_CHARGING_EXCEEDED_MAX_RECURSION_DEPTH = 257; // The reference chain of custom fees for a transferred token exceeded the maximum length of 2
-    int32 internal constant CUSTOM_FEE_CHARGING_EXCEEDED_MAX_ACCOUNT_AMOUNTS = 258; // More than 20 balance adjustments were to satisfy a CryptoTransfer and its implied custom fee payments
-    int32 internal constant INSUFFICIENT_SENDER_ACCOUNT_BALANCE_FOR_CUSTOM_FEE = 259; // The sender account in the token transfer transaction could not afford a custom fee
-    int32 internal constant SERIAL_NUMBER_LIMIT_REACHED = 260; // Currently no more than 4,294,967,295 NFTs may be minted for a given unique token type
-    int32 internal constant CUSTOM_ROYALTY_FEE_ONLY_ALLOWED_FOR_NON_FUNGIBLE_UNIQUE = 261; // Only tokens of type NON_FUNGIBLE_UNIQUE can have royalty fees
-    int32 internal constant NO_REMAINING_AUTOMATIC_ASSOCIATIONS = 262; // The account has reached the limit on the automatic associations count.
-    int32 internal constant EXISTING_AUTOMATIC_ASSOCIATIONS_EXCEED_GIVEN_LIMIT = 263; // Already existing automatic associations are more than the new maximum automatic associations.
-    int32 internal constant REQUESTED_NUM_AUTOMATIC_ASSOCIATIONS_EXCEEDS_ASSOCIATION_LIMIT = 264; // Cannot set the number of automatic associations for an account more than the maximum allowed tokens.maxPerAccount.
-    int32 internal constant TOKEN_IS_PAUSED = 265; // Token is paused. This Token cannot be a part of any kind of Transaction until unpaused.
-    int32 internal constant TOKEN_HAS_NO_PAUSE_KEY = 266; // Pause key is not set on token
-    int32 internal constant INVALID_PAUSE_KEY = 267; // The provided pause key was invalid
-    int32 internal constant FREEZE_UPDATE_FILE_DOES_NOT_EXIST = 268; // The update file in a freeze transaction body must exist.
-    int32 internal constant FREEZE_UPDATE_FILE_HASH_DOES_NOT_MATCH = 269; // The hash of the update file in a freeze transaction body must match the in-memory hash.
-    int32 internal constant NO_UPGRADE_HAS_BEEN_PREPARED = 270; // A FREEZE_UPGRADE transaction was handled with no previous update prepared.
-    int32 internal constant NO_FREEZE_IS_SCHEDULED = 271; // A FREEZE_ABORT transaction was handled with no scheduled freeze.
-    int32 internal constant UPDATE_FILE_HASH_CHANGED_SINCE_PREPARE_UPGRADE = 272; // The update file hash when handling a FREEZE_UPGRADE transaction differs from the file hash at the time of handling the PREPARE_UPGRADE transaction.
-    int32 internal constant FREEZE_START_TIME_MUST_BE_FUTURE = 273; // The given freeze start time was in the (consensus) past.
-    int32 internal constant PREPARED_UPDATE_FILE_IS_IMMUTABLE = 274; // The prepared update file cannot be updated or appended until either the upgrade has been completed, or a FREEZE_ABORT has been handled.
-    int32 internal constant FREEZE_ALREADY_SCHEDULED = 275; // Once a freeze is scheduled, it must be aborted before any other type of freeze can be performed.
-    int32 internal constant FREEZE_UPGRADE_IN_PROGRESS = 276; // If an NMT upgrade has been prepared, the following operation must be a FREEZE_UPGRADE (To issue a FREEZE_ONLY, submit a FREEZE_ABORT first.)
-    int32 internal constant UPDATE_FILE_ID_DOES_NOT_MATCH_PREPARED = 277; // If an NMT upgrade has been prepared, the subsequent FREEZE_UPGRADE transaction must confirm the id of the file to be used in the upgrade.
-    int32 internal constant UPDATE_FILE_HASH_DOES_NOT_MATCH_PREPARED = 278; // If an NMT upgrade has been prepared, the subsequent FREEZE_UPGRADE transaction must confirm the hash of the file to be used in the upgrade.
-    int32 internal constant CONSENSUS_GAS_EXHAUSTED = 279; // Consensus throttle did not allow execution of this transaction. System is throttled at consensus level.
-    int32 internal constant REVERTED_SUCCESS = 280; // A precompiled contract succeeded, but was later reverted.
-    int32 internal constant MAX_STORAGE_IN_PRICE_REGIME_HAS_BEEN_USED = 281; // All contract storage allocated to the current price regime has been consumed.
-    int32 internal constant INVALID_ALIAS_KEY = 282; // An alias used in a CryptoTransfer transaction is not the serialization of a primitive Key message -- that is, a Key with a single Ed25519 or ECDSA(secp256k1) public key and no unknown protobuf fields.
-    int32 internal constant UNEXPECTED_TOKEN_DECIMALS = 283; // A fungible token transfer expected a different number of decimals than the involved type actually has.
-    int32 internal constant INVALID_PROXY_ACCOUNT_ID = 284; // [Deprecated] The proxy account id is invalid or does not exist.
-    int32 internal constant INVALID_TRANSFER_ACCOUNT_ID = 285; // The transfer account id in CryptoDelete transaction is invalid or does not exist.
-    int32 internal constant INVALID_FEE_COLLECTOR_ACCOUNT_ID = 286; // The fee collector account id in TokenFeeScheduleUpdate is invalid or does not exist.
-    int32 internal constant ALIAS_IS_IMMUTABLE = 287; // The alias already set on an account cannot be updated using CryptoUpdate transaction.
-    int32 internal constant SPENDER_ACCOUNT_SAME_AS_OWNER = 288; // An approved allowance specifies a spender account that is the same as the hbar/token owner account.
-    int32 internal constant AMOUNT_EXCEEDS_TOKEN_MAX_SUPPLY = 289; // The establishment or adjustment of an approved allowance cause the token allowance to exceed the token maximum supply.
-    int32 internal constant NEGATIVE_ALLOWANCE_AMOUNT = 290; // The specified amount for an approved allowance cannot be negative.
-    int32 internal constant CANNOT_APPROVE_FOR_ALL_FUNGIBLE_COMMON = 291; // [Deprecated] The approveForAll flag cannot be set for a fungible token.
-    int32 internal constant SPENDER_DOES_NOT_HAVE_ALLOWANCE = 292; // The spender does not have an existing approved allowance with the hbar/token owner.
-    int32 internal constant AMOUNT_EXCEEDS_ALLOWANCE = 293; // The transfer amount exceeds the current approved allowance for the spender account.
-    int32 internal constant MAX_ALLOWANCES_EXCEEDED = 294; // The payer account of an approveAllowances or adjustAllowance transaction is attempting to go beyond the maximum allowed number of allowances.
-    int32 internal constant EMPTY_ALLOWANCES = 295; // No allowances have been specified in the approval transaction.
-    int32 internal constant SPENDER_ACCOUNT_REPEATED_IN_ALLOWANCES = 296; // [Deprecated] Spender is repeated more than once in Crypto or Token or NFT allowance lists in a single CryptoApproveAllowance transaction.
-    int32 internal constant REPEATED_SERIAL_NUMS_IN_NFT_ALLOWANCES = 297; // [Deprecated] Serial numbers are repeated in nft allowance for a single spender account
-    int32 internal constant FUNGIBLE_TOKEN_IN_NFT_ALLOWANCES = 298; // Fungible common token used in NFT allowances
-    int32 internal constant NFT_IN_FUNGIBLE_TOKEN_ALLOWANCES = 299; // Non fungible token used in fungible token allowances
-    int32 internal constant INVALID_ALLOWANCE_OWNER_ID = 300; // The account id specified as the owner is invalid or does not exist.
-    int32 internal constant INVALID_ALLOWANCE_SPENDER_ID = 301; // The account id specified as the spender is invalid or does not exist.
-    int32 internal constant REPEATED_ALLOWANCES_TO_DELETE = 302; // [Deprecated] If the CryptoDeleteAllowance transaction has repeated crypto or token or Nft allowances to delete.
-    int32 internal constant INVALID_DELEGATING_SPENDER = 303; // If the account Id specified as the delegating spender is invalid or does not exist.
-    int32 internal constant DELEGATING_SPENDER_CANNOT_GRANT_APPROVE_FOR_ALL = 304; // The delegating Spender cannot grant approveForAll allowance on a NFT token type for another spender.
-    int32 internal constant DELEGATING_SPENDER_DOES_NOT_HAVE_APPROVE_FOR_ALL = 305; // The delegating Spender cannot grant allowance on a NFT serial for another spender as it doesnt not have approveForAll granted on token-owner.
-    int32 internal constant SCHEDULE_EXPIRATION_TIME_TOO_FAR_IN_FUTURE = 306; // The scheduled transaction could not be created because it's expiration_time was too far in the future.
-    int32 internal constant SCHEDULE_EXPIRATION_TIME_MUST_BE_HIGHER_THAN_CONSENSUS_TIME = 307; // The scheduled transaction could not be created because it's expiration_time was less than or equal to the consensus time.
-    int32 internal constant SCHEDULE_FUTURE_THROTTLE_EXCEEDED = 308; // The scheduled transaction could not be created because it would cause throttles to be violated on the specified expiration_time.
-    int32 internal constant SCHEDULE_FUTURE_GAS_LIMIT_EXCEEDED = 309; // The scheduled transaction could not be created because it would cause the gas limit to be violated on the specified expiration_time.
-    int32 internal constant INVALID_ETHEREUM_TRANSACTION = 310; // The ethereum transaction either failed parsing or failed signature validation, or some other EthereumTransaction error not covered by another response code.
-    int32 internal constant WRONG_CHAIN_ID = 311; // EthereumTransaction was signed against a chainId that this network does not support.
-    int32 internal constant WRONG_NONCE = 312; // This transaction specified an ethereumNonce that is not the current ethereumNonce of the account.
-    int32 internal constant ACCESS_LIST_UNSUPPORTED = 313; // The ethereum transaction specified an access list, which the network does not support.
-    int32 internal constant SCHEDULE_PENDING_EXPIRATION = 314; // A schedule being signed or deleted has passed it's expiration date and is pending execution if needed and then expiration.
-    int32 internal constant CONTRACT_IS_TOKEN_TREASURY = 315; // A selfdestruct or ContractDelete targeted a contract that is a token treasury.
-    int32 internal constant CONTRACT_HAS_NON_ZERO_TOKEN_BALANCES = 316; // A selfdestruct or ContractDelete targeted a contract with non-zero token balances.
-    int32 internal constant CONTRACT_EXPIRED_AND_PENDING_REMOVAL = 317; // A contract referenced by a transaction is "detached"; that is, expired and lacking any hbar funds for auto-renewal payment---but still within its post-expiry grace period.
-    int32 internal constant CONTRACT_HAS_NO_AUTO_RENEW_ACCOUNT = 318; // A ContractUpdate requested removal of a contract's auto-renew account, but that contract has no auto-renew account.
-    int32 internal constant PERMANENT_REMOVAL_REQUIRES_SYSTEM_INITIATION = 319; // A delete transaction submitted via HAPI set permanent_removal=true
-    int32 internal constant PROXY_ACCOUNT_ID_FIELD_IS_DEPRECATED = 320; // A CryptoCreate or ContractCreate used the deprecated proxyAccountID field.
-    int32 internal constant SELF_STAKING_IS_NOT_ALLOWED = 321; // An account set the staked_account_id to itself in CryptoUpdate or ContractUpdate transactions.
-    int32 internal constant INVALID_STAKING_ID = 322; // The staking account id or staking node id given is invalid or does not exist.
-    int32 internal constant STAKING_NOT_ENABLED = 323; // Native staking, while implemented, has not yet enabled by the council.
-    int32 internal constant INVALID_PRNG_RANGE = 324; // The range provided in UtilPrng transaction is negative.
-    int32 internal constant MAX_ENTITIES_IN_PRICE_REGIME_HAVE_BEEN_CREATED = 325; // The maximum number of entities allowed in the current price regime have been created.
-    int32 internal constant INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE = 326; // The full prefix signature for precompile is not valid
-    int32 internal constant INSUFFICIENT_BALANCES_FOR_STORAGE_RENT = 327; // The combined balances of a contract and its auto-renew account (if any) did not cover the rent charged for net new storage used in a transaction.
-    int32 internal constant MAX_CHILD_RECORDS_EXCEEDED = 328; // A contract transaction tried to use more than the allowed number of child records, via either system contract records or internal contract creations.
-    int32 internal constant INSUFFICIENT_BALANCES_FOR_RENEWAL_FEES = 329; // The combined balances of a contract and its auto-renew account (if any) or balance of an account did not cover the auto-renewal fees in a transaction.
+
+    /// chunk number must be from 1 to total (chunks) inclusive.
+    int32 internal constant INVALID_CHUNK_NUMBER = 163;
+
+    /// For every chunk, the payer account that is part of initialTransactionID must match the Payer Account of this transaction. The entire initialTransactionID should match the transactionID of the first chunk, but this is not checked or enforced by Hedera except when the chunk number is 1.
+    int32 internal constant INVALID_CHUNK_TRANSACTION_ID = 164;
+
+    /// Account is frozen and cannot transact with the token
+    int32 internal constant ACCOUNT_FROZEN_FOR_TOKEN = 165;
+
+    /// An involved account already has more than <tt>tokens.maxPerAccount</tt> associations with non-deleted tokens.
+    int32 internal constant TOKENS_PER_ACCOUNT_LIMIT_EXCEEDED = 166;
+
+    /// The token is invalid or does not exist
+    int32 internal constant INVALID_TOKEN_ID = 167;
+
+    /// Invalid token decimals
+    int32 internal constant INVALID_TOKEN_DECIMALS = 168;
+
+    /// Invalid token initial supply
+    int32 internal constant INVALID_TOKEN_INITIAL_SUPPLY = 169;
+
+    /// Treasury Account does not exist or is deleted
+    int32 internal constant INVALID_TREASURY_ACCOUNT_FOR_TOKEN = 170;
+
+    /// Token Symbol is not UTF-8 capitalized alphabetical string
+    int32 internal constant INVALID_TOKEN_SYMBOL = 171;
+
+    /// Freeze key is not set on token
+    int32 internal constant TOKEN_HAS_NO_FREEZE_KEY = 172;
+
+    /// Amounts in transfer list are not net zero
+    int32 internal constant TRANSFERS_NOT_ZERO_SUM_FOR_TOKEN = 173;
+
+    /// A token symbol was not provided
+    int32 internal constant MISSING_TOKEN_SYMBOL = 174;
+
+    /// The provided token symbol was too long
+    int32 internal constant TOKEN_SYMBOL_TOO_LONG = 175;
+
+    /// KYC must be granted and account does not have KYC granted
+    int32 internal constant ACCOUNT_KYC_NOT_GRANTED_FOR_TOKEN = 176;
+
+    /// KYC key is not set on token
+    int32 internal constant TOKEN_HAS_NO_KYC_KEY = 177;
+
+    /// Token balance is not sufficient for the transaction
+    int32 internal constant INSUFFICIENT_TOKEN_BALANCE = 178;
+
+    /// Token transactions cannot be executed on deleted token
+    int32 internal constant TOKEN_WAS_DELETED = 179;
+
+    /// Supply key is not set on token
+    int32 internal constant TOKEN_HAS_NO_SUPPLY_KEY = 180;
+
+    /// Wipe key is not set on token
+    int32 internal constant TOKEN_HAS_NO_WIPE_KEY = 181;
+
+    /// The requested token mint amount would cause an invalid total supply
+    int32 internal constant INVALID_TOKEN_MINT_AMOUNT = 182;
+
+    /// The requested token burn amount would cause an invalid total supply
+    int32 internal constant INVALID_TOKEN_BURN_AMOUNT = 183;
+
+    /// A required token-account relationship is missing
+    int32 internal constant TOKEN_NOT_ASSOCIATED_TO_ACCOUNT = 184;
+
+    /// The target of a wipe operation was the token treasury account
+    int32 internal constant CANNOT_WIPE_TOKEN_TREASURY_ACCOUNT = 185;
+
+    /// The provided KYC key was invalid.
+    int32 internal constant INVALID_KYC_KEY = 186;
+
+    /// The provided wipe key was invalid.
+    int32 internal constant INVALID_WIPE_KEY = 187;
+
+    /// The provided freeze key was invalid.
+    int32 internal constant INVALID_FREEZE_KEY = 188;
+
+    /// The provided supply key was invalid.
+    int32 internal constant INVALID_SUPPLY_KEY = 189;
+
+    /// Token Name is not provided
+    int32 internal constant MISSING_TOKEN_NAME = 190;
+
+    /// Token Name is too long
+    int32 internal constant TOKEN_NAME_TOO_LONG = 191;
+
+    /// The provided wipe amount must not be negative, zero or bigger than the token holder balance
+    int32 internal constant INVALID_WIPING_AMOUNT = 192;
+
+    /// Token does not have Admin key set, thus update/delete transactions cannot be performed
+    int32 internal constant TOKEN_IS_IMMUTABLE = 193;
+
+    /// An <tt>associateToken</tt> operation specified a token already associated to the account
+    int32 internal constant TOKEN_ALREADY_ASSOCIATED_TO_ACCOUNT = 194;
+
+    /// An attempted operation is invalid until all token balances for the target account are zero
+    int32 internal constant TRANSACTION_REQUIRES_ZERO_TOKEN_BALANCES = 195;
+
+    /// An attempted operation is invalid because the account is a treasury
+    int32 internal constant ACCOUNT_IS_TREASURY = 196;
+
+    /// Same TokenIDs present in the token list
+    int32 internal constant TOKEN_ID_REPEATED_IN_TOKEN_LIST = 197;
+
+    /// Exceeded the number of token transfers (both from and to) allowed for token transfer list
+    int32 internal constant TOKEN_TRANSFER_LIST_SIZE_LIMIT_EXCEEDED = 198;
+
+    /// TokenTransfersTransactionBody has no TokenTransferList
+    int32 internal constant EMPTY_TOKEN_TRANSFER_BODY = 199;
+
+    /// TokenTransfersTransactionBody has a TokenTransferList with no AccountAmounts
+    int32 internal constant EMPTY_TOKEN_TRANSFER_ACCOUNT_AMOUNTS = 200;
+
+    /// The Scheduled entity does not exist; or has now expired, been deleted, or been executed
+    int32 internal constant INVALID_SCHEDULE_ID = 201;
+
+    /// The Scheduled entity cannot be modified. Admin key not set
+    int32 internal constant SCHEDULE_IS_IMMUTABLE = 202;
+
+    /// The provided Scheduled Payer does not exist
+    int32 internal constant INVALID_SCHEDULE_PAYER_ID = 203;
+
+    /// The Schedule Create Transaction TransactionID account does not exist
+    int32 internal constant INVALID_SCHEDULE_ACCOUNT_ID = 204;
+
+    /// The provided sig map did not contain any new valid signatures from required signers of the scheduled transaction
+    int32 internal constant NO_NEW_VALID_SIGNATURES = 205;
+
+    /// The required signers for a scheduled transaction cannot be resolved, for example because they do not exist or have been deleted
+    int32 internal constant UNRESOLVABLE_REQUIRED_SIGNERS = 206;
+
+    /// Only whitelisted transaction types may be scheduled
+    int32 internal constant SCHEDULED_TRANSACTION_NOT_IN_WHITELIST = 207;
+
+    /// At least one of the signatures in the provided sig map did not represent a valid signature for any required signer
+    int32 internal constant SOME_SIGNATURES_WERE_INVALID = 208;
+
+    /// The scheduled field in the TransactionID may not be set to true
+    int32 internal constant TRANSACTION_ID_FIELD_NOT_ALLOWED = 209;
+
+    /// A schedule already exists with the same identifying fields of an attempted ScheduleCreate (that is, all fields other than scheduledPayerAccountID)
+    int32 internal constant IDENTICAL_SCHEDULE_ALREADY_CREATED = 210;
+
+    /// A string field in the transaction has a UTF-8 encoding with the prohibited zero byte
+    int32 internal constant INVALID_ZERO_BYTE_IN_STRING = 211;
+
+    /// A schedule being signed or deleted has already been deleted
+    int32 internal constant SCHEDULE_ALREADY_DELETED = 212;
+
+    /// A schedule being signed or deleted has already been executed
+    int32 internal constant SCHEDULE_ALREADY_EXECUTED = 213;
+
+    /// ConsensusSubmitMessage request's message size is larger than allowed.
+    int32 internal constant MESSAGE_SIZE_TOO_LARGE = 214;
+
+    /// An operation was assigned to more than one throttle group in a given bucket
+    int32 internal constant OPERATION_REPEATED_IN_BUCKET_GROUPS = 215;
+
+    /// The capacity needed to satisfy all opsPerSec groups in a bucket overflowed a signed 8-byte integral type
+    int32 internal constant BUCKET_CAPACITY_OVERFLOW = 216;
+
+    /// Given the network size in the address book, the node-level capacity for an operation would never be enough to accept a single request; usually means a bucket burstPeriod should be increased
+    int32 internal constant NODE_CAPACITY_NOT_SUFFICIENT_FOR_OPERATION = 217;
+
+    /// A bucket was defined without any throttle groups
+    int32 internal constant BUCKET_HAS_NO_THROTTLE_GROUPS = 218;
+
+    /// A throttle group was granted zero opsPerSec
+    int32 internal constant THROTTLE_GROUP_HAS_ZERO_OPS_PER_SEC = 219;
+
+    /// The throttle definitions file was updated, but some supported operations were not assigned a bucket
+    int32 internal constant SUCCESS_BUT_MISSING_EXPECTED_OPERATION = 220;
+
+    /// The new contents for the throttle definitions system file were not valid protobuf
+    int32 internal constant UNPARSEABLE_THROTTLE_DEFINITIONS = 221;
+
+    /// The new throttle definitions system file were invalid, and no more specific error could be divined
+    int32 internal constant INVALID_THROTTLE_DEFINITIONS = 222;
+
+    /// The transaction references an account which has passed its expiration without renewal funds available, and currently remains in the ledger only because of the grace period given to expired entities
+    int32 internal constant ACCOUNT_EXPIRED_AND_PENDING_REMOVAL = 223;
+
+    /// Invalid token max supply
+    int32 internal constant INVALID_TOKEN_MAX_SUPPLY = 224;
+
+    /// Invalid token nft serial number
+    int32 internal constant INVALID_TOKEN_NFT_SERIAL_NUMBER = 225;
+
+    /// Invalid nft id
+    int32 internal constant INVALID_NFT_ID = 226;
+
+    /// Nft metadata is too long
+    int32 internal constant METADATA_TOO_LONG = 227;
+
+    /// Repeated operations count exceeds the limit
+    int32 internal constant BATCH_SIZE_LIMIT_EXCEEDED = 228;
+
+    /// The range of data to be gathered is out of the set boundaries
+    int32 internal constant INVALID_QUERY_RANGE = 229;
+
+    /// A custom fractional fee set a denominator of zero
+    int32 internal constant FRACTION_DIVIDES_BY_ZERO = 230;
+
+    /// The transaction payer could not afford a custom fee
+    int32 internal constant INSUFFICIENT_PAYER_BALANCE_FOR_CUSTOM_FEE = 231;
+
+    /// More than 10 custom fees were specified
+    int32 internal constant CUSTOM_FEES_LIST_TOO_LONG = 232;
+
+    /// Any of the feeCollector accounts for customFees is invalid
+    int32 internal constant INVALID_CUSTOM_FEE_COLLECTOR = 233;
+
+    /// Any of the token Ids in customFees is invalid
+    int32 internal constant INVALID_TOKEN_ID_IN_CUSTOM_FEES = 234;
+
+    /// Any of the token Ids in customFees are not associated to feeCollector
+    int32 internal constant TOKEN_NOT_ASSOCIATED_TO_FEE_COLLECTOR = 235;
+
+    /// A token cannot have more units minted due to its configured supply ceiling
+    int32 internal constant TOKEN_MAX_SUPPLY_REACHED = 236;
+
+    /// The transaction attempted to move an NFT serial number from an account other than its owner
+    int32 internal constant SENDER_DOES_NOT_OWN_NFT_SERIAL_NO = 237;
+
+    /// A custom fee schedule entry did not specify either a fixed or fractional fee
+    int32 internal constant CUSTOM_FEE_NOT_FULLY_SPECIFIED = 238;
+
+    /// Only positive fees may be assessed at this time
+    int32 internal constant CUSTOM_FEE_MUST_BE_POSITIVE = 239;
+
+    /// Fee schedule key is not set on token
+    int32 internal constant TOKEN_HAS_NO_FEE_SCHEDULE_KEY = 240;
+
+    /// A fractional custom fee exceeded the range of a 64-bit signed integer
+    int32 internal constant CUSTOM_FEE_OUTSIDE_NUMERIC_RANGE = 241;
+
+    /// A royalty cannot exceed the total fungible value exchanged for an NFT
+    int32 internal constant ROYALTY_FRACTION_CANNOT_EXCEED_ONE = 242;
+
+    /// Each fractional custom fee must have its maximum_amount, if specified, at least its minimum_amount
+    int32 internal constant FRACTIONAL_FEE_MAX_AMOUNT_LESS_THAN_MIN_AMOUNT = 243;
+
+    /// A fee schedule update tried to clear the custom fees from a token whose fee schedule was already empty
+    int32 internal constant CUSTOM_SCHEDULE_ALREADY_HAS_NO_FEES = 244;
+
+    /// Only tokens of type FUNGIBLE_COMMON can be used to as fee schedule denominations
+    int32 internal constant CUSTOM_FEE_DENOMINATION_MUST_BE_FUNGIBLE_COMMON = 245;
+
+    /// Only tokens of type FUNGIBLE_COMMON can have fractional fees
+    int32 internal constant CUSTOM_FRACTIONAL_FEE_ONLY_ALLOWED_FOR_FUNGIBLE_COMMON = 246;
+
+    /// The provided custom fee schedule key was invalid
+    int32 internal constant INVALID_CUSTOM_FEE_SCHEDULE_KEY = 247;
+
+    /// The requested token mint metadata was invalid
+    int32 internal constant INVALID_TOKEN_MINT_METADATA = 248;
+
+    /// The requested token burn metadata was invalid
+    int32 internal constant INVALID_TOKEN_BURN_METADATA = 249;
+
+    /// The treasury for a unique token cannot be changed until it owns no NFTs
+    int32 internal constant CURRENT_TREASURY_STILL_OWNS_NFTS = 250;
+
+    /// An account cannot be dissociated from a unique token if it owns NFTs for the token
+    int32 internal constant ACCOUNT_STILL_OWNS_NFTS = 251;
+
+    /// A NFT can only be burned when owned by the unique token's treasury
+    int32 internal constant TREASURY_MUST_OWN_BURNED_NFT = 252;
+
+    /// An account did not own the NFT to be wiped
+    int32 internal constant ACCOUNT_DOES_NOT_OWN_WIPED_NFT = 253;
+
+    /// An AccountAmount token transfers list referenced a token type other than FUNGIBLE_COMMON
+    int32 internal constant ACCOUNT_AMOUNT_TRANSFERS_ONLY_ALLOWED_FOR_FUNGIBLE_COMMON = 254;
+
+    /// All the NFTs allowed in the current price regime have already been minted
+    int32 internal constant MAX_NFTS_IN_PRICE_REGIME_HAVE_BEEN_MINTED = 255;
+
+    /// The payer account has been marked as deleted
+    int32 internal constant PAYER_ACCOUNT_DELETED = 256;
+
+    /// The reference chain of custom fees for a transferred token exceeded the maximum length of 2
+    int32 internal constant CUSTOM_FEE_CHARGING_EXCEEDED_MAX_RECURSION_DEPTH = 257;
+
+    /// More than 20 balance adjustments were to satisfy a CryptoTransfer and its implied custom fee payments
+    int32 internal constant CUSTOM_FEE_CHARGING_EXCEEDED_MAX_ACCOUNT_AMOUNTS = 258;
+
+    /// The sender account in the token transfer transaction could not afford a custom fee
+    int32 internal constant INSUFFICIENT_SENDER_ACCOUNT_BALANCE_FOR_CUSTOM_FEE = 259;
+
+    /// Currently no more than 4,294,967,295 NFTs may be minted for a given unique token type
+    int32 internal constant SERIAL_NUMBER_LIMIT_REACHED = 260;
+
+    /// Only tokens of type NON_FUNGIBLE_UNIQUE can have royalty fees
+    int32 internal constant CUSTOM_ROYALTY_FEE_ONLY_ALLOWED_FOR_NON_FUNGIBLE_UNIQUE = 261;
+
+    /// The account has reached the limit on the automatic associations count.
+    int32 internal constant NO_REMAINING_AUTOMATIC_ASSOCIATIONS = 262;
+
+    /// Already existing automatic associations are more than the new maximum automatic associations.
+    int32 internal constant EXISTING_AUTOMATIC_ASSOCIATIONS_EXCEED_GIVEN_LIMIT = 263;
+
+    /// Cannot set the number of automatic associations for an account more than the maximum allowed token associations <tt>tokens.maxPerAccount</tt>.
+    int32 internal constant REQUESTED_NUM_AUTOMATIC_ASSOCIATIONS_EXCEEDS_ASSOCIATION_LIMIT = 264;
+
+    /// Token is paused. This Token cannot be a part of any kind of Transaction until unpaused.
+    int32 internal constant TOKEN_IS_PAUSED = 265;
+
+    /// Pause key is not set on token
+    int32 internal constant TOKEN_HAS_NO_PAUSE_KEY = 266;
+
+    /// The provided pause key was invalid
+    int32 internal constant INVALID_PAUSE_KEY = 267;
+
+    /// The update file in a freeze transaction body must exist.
+    int32 internal constant FREEZE_UPDATE_FILE_DOES_NOT_EXIST = 268;
+
+    /// The hash of the update file in a freeze transaction body must match the in-memory hash.
+    int32 internal constant FREEZE_UPDATE_FILE_HASH_DOES_NOT_MATCH = 269;
+
+    /// A FREEZE_UPGRADE transaction was handled with no previous update prepared.
+    int32 internal constant NO_UPGRADE_HAS_BEEN_PREPARED = 270;
+
+    /// A FREEZE_ABORT transaction was handled with no scheduled freeze.
+    int32 internal constant NO_FREEZE_IS_SCHEDULED = 271;
+
+    /// The update file hash when handling a FREEZE_UPGRADE transaction differs from the file hash at the time of handling the PREPARE_UPGRADE transaction.
+    int32 internal constant UPDATE_FILE_HASH_CHANGED_SINCE_PREPARE_UPGRADE = 272;
+
+    /// The given freeze start time was in the (consensus) past.
+    int32 internal constant FREEZE_START_TIME_MUST_BE_FUTURE = 273;
+
+    /// The prepared update file cannot be updated or appended until either the upgrade has been completed, or a FREEZE_ABORT has been handled.
+    int32 internal constant PREPARED_UPDATE_FILE_IS_IMMUTABLE = 274;
+
+    /// Once a freeze is scheduled, it must be aborted before any other type of freeze can can be performed.
+    int32 internal constant FREEZE_ALREADY_SCHEDULED = 275;
+
+    /// If an NMT upgrade has been prepared, the following operation must be a FREEZE_UPGRADE. (To issue a FREEZE_ONLY, submit a FREEZE_ABORT first.)
+    int32 internal constant FREEZE_UPGRADE_IN_PROGRESS = 276;
+
+    /// If an NMT upgrade has been prepared, the subsequent FREEZE_UPGRADE transaction must confirm the id of the file to be used in the upgrade.
+    int32 internal constant UPDATE_FILE_ID_DOES_NOT_MATCH_PREPARED = 277;
+
+    /// If an NMT upgrade has been prepared, the subsequent FREEZE_UPGRADE transaction must confirm the hash of the file to be used in the upgrade.
+    int32 internal constant UPDATE_FILE_HASH_DOES_NOT_MATCH_PREPARED = 278;
+
+    /// Consensus throttle did not allow execution of this transaction. System is throttled at consensus level.
+    int32 internal constant CONSENSUS_GAS_EXHAUSTED = 279;
+
+    /// A precompiled contract succeeded, but was later reverted.
+    int32 internal constant REVERTED_SUCCESS = 280;
+
+    /// All contract storage allocated to the current price regime has been consumed.
+    int32 internal constant MAX_STORAGE_IN_PRICE_REGIME_HAS_BEEN_USED = 281;
+
+    /// An alias used in a CryptoTransfer transaction is not the serialization of a primitive Key message--that is, a Key with a single Ed25519 or ECDSA(secp256k1) public key and no unknown protobuf fields.
+    int32 internal constant INVALID_ALIAS_KEY = 282;
+
+    /// A fungible token transfer expected a different number of decimals than the involved type actually has.
+    int32 internal constant UNEXPECTED_TOKEN_DECIMALS = 283;
+
+    /// The proxy account id is invalid or does not exist.
+    int32 internal constant INVALID_PROXY_ACCOUNT_ID = 284;
+
+    /// The transfer account id in CryptoDelete transaction is invalid or does not exist.
+    int32 internal constant INVALID_TRANSFER_ACCOUNT_ID = 285;
+
+    /// The fee collector account id in TokenFeeScheduleUpdate is invalid or does not exist.
+    int32 internal constant INVALID_FEE_COLLECTOR_ACCOUNT_ID = 286;
+
+    /// The alias already set on an account cannot be updated using CryptoUpdate transaction.
+    int32 internal constant ALIAS_IS_IMMUTABLE = 287;
+
+    /// An approved allowance specifies a spender account that is the same as the hbar/token owner account.
+    int32 internal constant SPENDER_ACCOUNT_SAME_AS_OWNER = 288;
+
+    /// The establishment or adjustment of an approved allowance cause the token allowance to exceed the token maximum supply.
+    int32 internal constant AMOUNT_EXCEEDS_TOKEN_MAX_SUPPLY = 289;
+
+    /// The specified amount for an approved allowance cannot be negative.
+    int32 internal constant NEGATIVE_ALLOWANCE_AMOUNT = 290;
+
+    /// The approveForAll flag cannot be set for a fungible token.
+    int32 internal constant CANNOT_APPROVE_FOR_ALL_FUNGIBLE_COMMON = 291;
+
+    /// The spender does not have an existing approved allowance with the hbar/token owner.
+    int32 internal constant SPENDER_DOES_NOT_HAVE_ALLOWANCE = 292;
+
+    /// The transfer amount exceeds the current approved allowance for the spender account.
+    int32 internal constant AMOUNT_EXCEEDS_ALLOWANCE = 293;
+
+    /// The payer account of an approveAllowances or adjustAllowance transaction is attempting to go beyond the maximum allowed number of allowances.
+    int32 internal constant MAX_ALLOWANCES_EXCEEDED = 294;
+
+    /// No allowances have been specified in the approval transaction.
+    int32 internal constant EMPTY_ALLOWANCES = 295;
+
+    /// Spender is repeated more than once in Crypto or Token or NFT allowance lists in a single CryptoApproveAllowance transaction.
+    int32 internal constant SPENDER_ACCOUNT_REPEATED_IN_ALLOWANCES = 296;
+
+    /// Serial numbers are repeated in nft allowance for a single spender account
+    int32 internal constant REPEATED_SERIAL_NUMS_IN_NFT_ALLOWANCES = 297;
+
+    /// Fungible common token used in NFT allowances
+    int32 internal constant FUNGIBLE_TOKEN_IN_NFT_ALLOWANCES = 298;
+
+    /// Non fungible token used in fungible token allowances
+    int32 internal constant NFT_IN_FUNGIBLE_TOKEN_ALLOWANCES = 299;
+
+    /// The account id specified as the owner is invalid or does not exist.
+    int32 internal constant INVALID_ALLOWANCE_OWNER_ID = 300;
+
+    /// The account id specified as the spender is invalid or does not exist.
+    int32 internal constant INVALID_ALLOWANCE_SPENDER_ID = 301;
+
+    /// [Deprecated] If the CryptoDeleteAllowance transaction has repeated crypto or token or Nft allowances to delete.
+    int32 internal constant REPEATED_ALLOWANCES_TO_DELETE = 302;
+
+    /// If the account Id specified as the delegating spender is invalid or does not exist.
+    int32 internal constant INVALID_DELEGATING_SPENDER = 303;
+
+    /// The delegating Spender cannot grant approveForAll allowance on a NFT token type for another spender.
+    int32 internal constant DELEGATING_SPENDER_CANNOT_GRANT_APPROVE_FOR_ALL = 304;
+
+    /// The delegating Spender cannot grant allowance on a NFT serial for another spender as it doesnt not have approveForAll granted on token-owner.
+    int32 internal constant DELEGATING_SPENDER_DOES_NOT_HAVE_APPROVE_FOR_ALL = 305;
+
+    /// The scheduled transaction could not be created because it's expiration_time was too far in the future.
+    int32 internal constant SCHEDULE_EXPIRATION_TIME_TOO_FAR_IN_FUTURE = 306;
+
+    /// The scheduled transaction could not be created because it's expiration_time was less than or equal to the consensus time.
+    int32 internal constant SCHEDULE_EXPIRATION_TIME_MUST_BE_HIGHER_THAN_CONSENSUS_TIME = 307;
+
+    /// The scheduled transaction could not be created because it would cause throttles to be violated on the specified expiration_time.
+    int32 internal constant SCHEDULE_FUTURE_THROTTLE_EXCEEDED = 308;
+
+    /// The scheduled transaction could not be created because it would cause the gas limit to be violated on the specified expiration_time.
+    int32 internal constant SCHEDULE_FUTURE_GAS_LIMIT_EXCEEDED = 309;
+
+    /// The ethereum transaction either failed parsing or failed signature validation, or some other EthereumTransaction error not covered by another response code.
+    int32 internal constant INVALID_ETHEREUM_TRANSACTION = 310;
+
+    /// EthereumTransaction was signed against a chainId that this network does not support.
+    int32 internal constant WRONG_CHAIN_ID = 311;
+
+    /// This transaction specified an ethereumNonce that is not the current ethereumNonce of the account.
+    int32 internal constant WRONG_NONCE = 312;
+
+    /// The ethereum transaction specified an access list, which the network does not support.
+    int32 internal constant ACCESS_LIST_UNSUPPORTED = 313;
+
+    /// A schedule being signed or deleted has passed it's expiration date and is pending execution if needed and then expiration.
+    int32 internal constant SCHEDULE_PENDING_EXPIRATION = 314;
+
+    /// A selfdestruct or ContractDelete targeted a contract that is a token treasury.
+    int32 internal constant CONTRACT_IS_TOKEN_TREASURY = 315;
+
+    /// A selfdestruct or ContractDelete targeted a contract with non-zero token balances.
+    int32 internal constant CONTRACT_HAS_NON_ZERO_TOKEN_BALANCES = 316;
+
+    /// A contract referenced by a transaction is "detached"; that is, expired and lacking any hbar funds for auto-renewal payment---but still within its post-expiry grace period.
+    int32 internal constant CONTRACT_EXPIRED_AND_PENDING_REMOVAL = 317;
+
+    /// A ContractUpdate requested removal of a contract's auto-renew account, but that contract has no auto-renew account.
+    int32 internal constant CONTRACT_HAS_NO_AUTO_RENEW_ACCOUNT = 318;
+
+    /// A delete transaction submitted via HAPI set permanent_removal=true
+    int32 internal constant PERMANENT_REMOVAL_REQUIRES_SYSTEM_INITIATION = 319;
+
+    /// A CryptoCreate or ContractCreate used the deprecated proxyAccountID field.
+    int32 internal constant PROXY_ACCOUNT_ID_FIELD_IS_DEPRECATED = 320;
+
+    /// An account set the staked_account_id to itself in CryptoUpdate or ContractUpdate transactions.
+    int32 internal constant SELF_STAKING_IS_NOT_ALLOWED = 321;
+
+    /// The staking account id or staking node id given is invalid or does not exist.
+    int32 internal constant INVALID_STAKING_ID = 322;
+
+    /// Native staking, while implemented, has not yet enabled by the council.
+    int32 internal constant STAKING_NOT_ENABLED = 323;
+
+    /// The range provided in UtilPrng transaction is negative.
+    int32 internal constant INVALID_PRNG_RANGE = 324;
+
+    /// The maximum number of entities allowed in the current price regime have been created.
+    int32 internal constant MAX_ENTITIES_IN_PRICE_REGIME_HAVE_BEEN_CREATED = 325;
+
+    /// The full prefix signature for precompile is not valid
+    int32 internal constant INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE = 326;
+
+    /// The combined balances of a contract and its auto-renew account (if any) did not cover the rent charged for net new storage used in a transaction.
+    int32 internal constant INSUFFICIENT_BALANCES_FOR_STORAGE_RENT = 327;
+
+    /// A contract transaction tried to use more than the allowed number of child records, via either system contract records or internal contract creations.
+    int32 internal constant MAX_CHILD_RECORDS_EXCEEDED = 328;
+
+    /// The combined balances of a contract and its auto-renew account (if any) or balance of an account did not cover the auto-renewal fees in a transaction.
+    int32 internal constant INSUFFICIENT_BALANCES_FOR_RENEWAL_FEES = 329;
+
+    /// A transaction's protobuf message includes unknown fields; could mean that a client expects not-yet-released functionality to be available.
+    int32 internal constant TRANSACTION_HAS_UNKNOWN_FIELDS = 330;
+
+    /// The account cannot be modified. Account's key is not set
+    int32 internal constant ACCOUNT_IS_IMMUTABLE = 331;
+
+    /// An alias that is assigned to an account or contract cannot be assigned to another account or contract.
+    int32 internal constant ALIAS_ALREADY_ASSIGNED = 332;
+
+    /// A provided metadata key was invalid. Verification includes, for example, checking the size of Ed25519 and ECDSA(secp256k1) public keys.
+    int32 internal constant INVALID_METADATA_KEY = 333;
+
+    /// Metadata key is not set on token
+    int32 internal constant TOKEN_HAS_NO_METADATA_KEY = 334;
+
+    /// Token Metadata is not provided
+    int32 internal constant MISSING_TOKEN_METADATA = 335;
+
+    /// NFT serial numbers are missing in the TokenUpdateNftsTransactionBody
+    int32 internal constant MISSING_SERIAL_NUMBERS = 336;
+
+    /// Admin key is not set on token
+    int32 internal constant TOKEN_HAS_NO_ADMIN_KEY = 337;
+
+    /// A transaction failed because the consensus node identified is deleted from the address book.
+    int32 internal constant NODE_DELETED = 338;
+
+    /// A transaction failed because the consensus node identified is not valid or does not exist in state.
+    int32 internal constant INVALID_NODE_ID = 339;
+
+    /// A transaction failed because one or more entries in the list of service endpoints for the `gossip_endpoint` field is invalid.<br/> The most common cause for this response is a service endpoint that has the domain name (DNS) set rather than address and port.
+    int32 internal constant INVALID_GOSSIP_ENDPOINT = 340;
+
+    /// A transaction failed because the node account identifier provided does not exist or is not valid.<br/> One common source of this error is providing a node account identifier using the "alias" form rather than "numeric" form.
+    int32 internal constant INVALID_NODE_ACCOUNT_ID = 341;
+
+    /// A transaction failed because the description field cannot be encoded as UTF-8 or is more than 100 bytes when encoded.
+    int32 internal constant INVALID_NODE_DESCRIPTION = 342;
+
+    /// A transaction failed because one or more entries in the list of service endpoints for the `service_endpoint` field is invalid.<br/> The most common cause for this response is a service endpoint that has the domain name (DNS) set rather than address and port.
+    int32 internal constant INVALID_SERVICE_ENDPOINT = 343;
+
+    /// A transaction failed because the TLS certificate provided for the node is missing or invalid. <p> #### Probable Causes The certificate MUST be a TLS certificate of a type permitted for gossip signatures.<br/> The value presented MUST be a UTF-8 NFKD encoding of the TLS certificate.<br/> The certificate encoded MUST be in PEM format.<br/> The `gossip_ca_certificate` field is REQUIRED and MUST NOT be empty.
+    int32 internal constant INVALID_GOSSIP_CA_CERTIFICATE = 344;
+
+    /// A transaction failed because the hash provided for the gRPC certificate is present but invalid. <p> #### Probable Causes The `grpc_certificate_hash` MUST be a SHA-384 hash.<br/> The input hashed MUST be a UTF-8 NFKD encoding of the actual TLS certificate.<br/> The certificate to be encoded MUST be in PEM format.
+    int32 internal constant INVALID_GRPC_CERTIFICATE = 345;
+
+    /// The maximum automatic associations value is not valid.<br/> The most common cause for this error is a value less than `-1`.
+    int32 internal constant INVALID_MAX_AUTO_ASSOCIATIONS = 346;
+
+    /// The maximum number of nodes allowed in the address book have been created.
+    int32 internal constant MAX_NODES_CREATED = 347;
+
+    /// In ServiceEndpoint, domain_name and ipAddressV4 are mutually exclusive
+    int32 internal constant IP_FQDN_CANNOT_BE_SET_FOR_SAME_ENDPOINT = 348;
+
+    /// Fully qualified domain name is not allowed in gossip_endpoint
+    int32 internal constant GOSSIP_ENDPOINT_CANNOT_HAVE_FQDN = 349;
+
+    /// In ServiceEndpoint, domain_name size too large
+    int32 internal constant FQDN_SIZE_TOO_LARGE = 350;
+
+    /// ServiceEndpoint is invalid
+    int32 internal constant INVALID_ENDPOINT = 351;
+
+    /// The number of gossip endpoints exceeds the limit
+    int32 internal constant GOSSIP_ENDPOINTS_EXCEEDED_LIMIT = 352;
+
+    /// The transaction attempted to use duplicate `TokenReference`.<br/> This affects `TokenReject` attempting to reject same token reference more than once.
+    int32 internal constant TOKEN_REFERENCE_REPEATED = 353;
+
+    /// The account id specified as the owner in `TokenReject` is invalid or does not exist.
+    int32 internal constant INVALID_OWNER_ID = 354;
+
+    /// The transaction attempted to use more than the allowed number of `TokenReference`.
+    int32 internal constant TOKEN_REFERENCE_LIST_SIZE_LIMIT_EXCEEDED = 355;
+
+    /// The number of service endpoints exceeds the limit
+    int32 internal constant SERVICE_ENDPOINTS_EXCEEDED_LIMIT = 356;
+
+    /// The IPv4 address is invalid
+    int32 internal constant INVALID_IPV4_ADDRESS = 357;
+
+    /// The transaction attempted to use empty `TokenReference` list.
+    int32 internal constant EMPTY_TOKEN_REFERENCE_LIST = 358;
+
+    /// The node account is not allowed to be updated
+    int32 internal constant UPDATE_NODE_ACCOUNT_NOT_ALLOWED = 359;
+
+    /// The token has no metadata or supply key
+    int32 internal constant TOKEN_HAS_NO_METADATA_OR_SUPPLY_KEY = 360;
+
+    /// The list of `PendingAirdropId`s is empty and MUST NOT be empty.
+    int32 internal constant EMPTY_PENDING_AIRDROP_ID_LIST = 361;
+
+    /// A `PendingAirdropId` is repeated in a `claim` or `cancel` transaction.
+    int32 internal constant PENDING_AIRDROP_ID_REPEATED = 362;
+
+    /// The number of `PendingAirdropId` values in the list exceeds the maximum allowable number.
+    int32 internal constant PENDING_AIRDROP_ID_LIST_TOO_LONG = 363;
+
+    /// A pending airdrop already exists for the specified NFT.
+    int32 internal constant PENDING_NFT_AIRDROP_ALREADY_EXISTS = 364;
+
+    /// The identified account is sender for one or more pending airdrop(s) and cannot be deleted. <p> The requester SHOULD cancel all pending airdrops before resending this transaction.
+    int32 internal constant ACCOUNT_HAS_PENDING_AIRDROPS = 365;
+
+    /// Consensus throttle did not allow execution of this transaction.<br/> The transaction should be retried after a modest delay.
+    int32 internal constant THROTTLED_AT_CONSENSUS = 366;
+
+    /// The provided pending airdrop id is invalid.<br/> This pending airdrop MAY already be claimed or cancelled. <p> The client SHOULD query a mirror node to determine the current status of the pending airdrop.
+    int32 internal constant INVALID_PENDING_AIRDROP_ID = 367;
+
+    /// The token to be airdropped has a fallback royalty fee and cannot be sent or claimed via an airdrop transaction.
+    int32 internal constant TOKEN_AIRDROP_WITH_FALLBACK_ROYALTY = 368;
+
+    /// This airdrop claim is for a pending airdrop with an invalid token.<br/> The token might be deleted, or the sender may not have enough tokens to fulfill the offer. <p> The client SHOULD query mirror node to determine the status of the pending airdrop and whether the sender can fulfill the offer.
+    int32 internal constant INVALID_TOKEN_IN_PENDING_AIRDROP = 369;
+
+    /// A scheduled transaction configured to wait for expiry to execute was given an expiry time at which there is already too many transactions scheduled to expire; its creation must be retried with a different expiry.
+    int32 internal constant SCHEDULE_EXPIRY_IS_BUSY = 370;
+
+    /// The provided gRPC certificate hash is invalid.
+    int32 internal constant INVALID_GRPC_CERTIFICATE_HASH = 371;
+
+    /// A scheduled transaction configured to wait for expiry to execute was not given an explicit expiration time.
+    int32 internal constant MISSING_EXPIRY_TIME = 372;
+
+    /// A contract operation attempted to schedule another transaction after it had already scheduled a recursive contract call.
+    int32 internal constant NO_SCHEDULING_ALLOWED_AFTER_SCHEDULED_RECURSION = 373;
+
+    /// A contract can schedule recursive calls a finite number of times (this is approximately four million times with typical network configuration.)
+    int32 internal constant RECURSIVE_SCHEDULING_LIMIT_REACHED = 374;
+
+    /// The target network is waiting for the ledger ID to be set, which is a side effect of finishing the network's TSS construction.
+    int32 internal constant WAITING_FOR_LEDGER_ID = 375;
+
+    /// The provided fee exempt key list size exceeded the limit.
+    int32 internal constant MAX_ENTRIES_FOR_FEE_EXEMPT_KEY_LIST_EXCEEDED = 376;
+
+    /// The provided fee exempt key list contains duplicated keys.
+    int32 internal constant FEE_EXEMPT_KEY_LIST_CONTAINS_DUPLICATED_KEYS = 377;
+
+    /// The provided fee exempt key list contains an invalid key.
+    int32 internal constant INVALID_KEY_IN_FEE_EXEMPT_KEY_LIST = 378;
+
+    /// The provided fee schedule key contains an invalid key.
+    int32 internal constant INVALID_FEE_SCHEDULE_KEY = 379;
+
+    /// If a fee schedule key is not set when we create a topic we cannot add it on update.
+    int32 internal constant FEE_SCHEDULE_KEY_CANNOT_BE_UPDATED = 380;
+
+    /// If the topic's custom fees are updated the topic SHOULD have a fee schedule key
+    int32 internal constant FEE_SCHEDULE_KEY_NOT_SET = 381;
+
+    /// The fee amount is exceeding the amount that the payer is willing to pay.
+    int32 internal constant MAX_CUSTOM_FEE_LIMIT_EXCEEDED = 382;
+
+    /// There are no corresponding custom fees.
+    int32 internal constant NO_VALID_MAX_CUSTOM_FEE = 383;
+
+    /// The provided list contains invalid max custom fee.
+    int32 internal constant INVALID_MAX_CUSTOM_FEES = 384;
+
+    /// The provided max custom fee list contains fees with duplicate denominations.
+    int32 internal constant DUPLICATE_DENOMINATION_IN_MAX_CUSTOM_FEE_LIST = 385;
+
+    /// The provided max custom fee list contains fees with duplicate account id.
+    int32 internal constant DUPLICATE_ACCOUNT_ID_IN_MAX_CUSTOM_FEE_LIST = 386;
+
+    /// Max custom fees list is not supported for this operation.
+    int32 internal constant MAX_CUSTOM_FEES_IS_NOT_SUPPORTED = 387;
+
 }
 // Filename: contracts/system-contracts/exchange-rate/ExchangeRateMock.sol
 // SPDX-License-Identifier: Apache-2.0
@@ -7390,31 +8332,192 @@ abstract contract HederaAccountService {
         responseCode = success ? abi.decode(result, (int32)) : HederaResponseCodes.UNKNOWN;
     }
 
+    /// Returns the EVM address alias for a given Hedera account.
+    /// @param accountNumAlias The Hedera account number alias to lookup. Must satisfy all of the following:
+    ///                         - Must be in long-zero format (0x000...0<account_num>)
+    ///                         - Must reference an existing Hedera account
+    ///                         - Referenced account must have an associated EVM address alias
+    /// @return responseCode The response code indicating the status of the request:
+    ///                         - SUCCESS (22) if successful
+    ///                         - INVALID_ACCOUNT_ID (15) if any validation of the accountNumAlias fails
+    ///                         - UNKNOWN (21) if the precompile call fails
+    /// @return evmAddressAlias The EVM address alias associated with the Hedera account, or address(0) if the request fails
+    function getEvmAddressAlias(address accountNumAlias) internal returns (int64 responseCode, address evmAddressAlias) 
+    {
+        (bool success, bytes memory result) = HASPrecompileAddress.call(
+            abi.encodeWithSelector(IHederaAccountService.getEvmAddressAlias.selector, accountNumAlias));
+        (responseCode, evmAddressAlias) = success ? abi.decode(result, (int32, address)) : (HederaResponseCodes.UNKNOWN, address(0));
+    }
+
+    /// Returns the Hedera Account ID (as account num alias) for the given EVM address alias
+    /// @param evmAddressAlias The EVM address alias to get the Hedera account for. Must satisfy all of the following:
+    ///                         - Must be in EVM format (not a long-zero address)
+    ///                         - Must reference an existing Hedera account
+    ///                         - Referenced account must have an associated account num alias (long-zero format)
+    /// @return responseCode The response code indicating the status of the request:
+    ///                         - SUCCESS (22) if successful
+    ///                         - INVALID_SOLIDITY_ADDRESS (29) if any validation of the evmAddressAlias fails
+    ///                         - UNKNOWN (21) if the precompile call fails
+    /// @return accountNumAlias The Hedera account's num alias in long-zero format, or address(0) if the request fails
+    function getHederaAccountNumAlias(address evmAddressAlias) internal returns (int64 responseCode, address accountNumAlias) {
+        (bool success, bytes memory result) = HASPrecompileAddress.call(
+            abi.encodeWithSelector(IHederaAccountService.getHederaAccountNumAlias.selector, evmAddressAlias));
+        (responseCode, accountNumAlias) = success ? abi.decode(result, (int32, address)) : (HederaResponseCodes.UNKNOWN, address(0));
+    }
+
+    /// Returns true iff a Hedera account num alias or EVM address alias.
+    /// @param addr Some 20-byte address.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return response true iff addr is a Hedera account num alias or an EVM address alias (and false otherwise).
+    function isValidAlias(address addr) internal returns (int64 responseCode, bool response) {
+        (bool success, bytes memory result) = HASPrecompileAddress.call(
+            abi.encodeWithSelector(IHederaAccountService.isValidAlias.selector, addr));
+        (responseCode, response) = success ? (HederaResponseCodes.SUCCESS, abi.decode(result, (bool))) : (HederaResponseCodes.UNKNOWN, false);
+    }
+
     /// Determines if the signature is valid for the given message hash and account.
     /// It is assumed that the signature is composed of a single EDCSA or ED25519 key.
     /// @param account The account to check the signature against
     /// @param messageHash The hash of the message to check the signature against
     /// @param signature The signature to check
-    /// @return response True if the signature is valid, false otherwise
-    function isAuthorizedRaw(address account, bytes memory messageHash, bytes memory signature) internal returns (bool response) {
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return authorized True if the signature is valid, false otherwise
+    function isAuthorizedRaw(address account, bytes memory messageHash, bytes memory signature) internal returns (int64 responseCode, bool authorized) {
         (bool success, bytes memory result) = HASPrecompileAddress.call(
             abi.encodeWithSelector(IHederaAccountService.isAuthorizedRaw.selector,
                 account, messageHash, signature));
-        response = success ? abi.decode(result, (bool)) : false;
+        (responseCode, authorized) = success ? (HederaResponseCodes.SUCCESS, abi.decode(result, (bool))) : (HederaResponseCodes.UNKNOWN, false);
     }
 
+    /// Determines if the signature is valid for the given message and account.
+    /// It is assumed that the signature is composed of a possibly complex cryptographic key.
+    /// @param account The account to check the signature against.
+    /// @param message The message to check the signature against.
+    /// @param signature The signature to check encoded as bytes.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return authorized True if the signature is valid, false otherwise.
+    function isAuthorized(address account, bytes memory message, bytes memory signature) internal returns (int64 responseCode, bool authorized) {
+        (bool success, bytes memory result) = HASPrecompileAddress.call(
+            abi.encodeWithSelector(IHederaAccountService.isAuthorized.selector,
+                account, message, signature));
+        (responseCode, authorized) = success ? abi.decode(result, (int32, bool)) : (HederaResponseCodes.UNKNOWN, false);
+    }
 }
 // Filename: contracts/system-contracts/hedera-account-service/IHRC632.sol
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity >=0.4.9 <0.9.0;
 
-/**
- * notice: This interface is only applicable when msg.sender, an EOA, is at the top level of the transaction, 
- *         i.e. the EOA initiates the transaction. It means this interface does not work for a wrapper smart contract.
- */
 interface IHRC632 {
-    function hbarApprove(address spender, int256 amount) external returns (uint256 responseCode);
-    function hbarAllowance(address spender) external returns (int64 responseCode, int256 amount);
+    /// Returns the EVM address alias for the given Hedera account.
+    /// @param accountNumAlias The Hedera account to get the EVM address alias for.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return evmAddressAlias The EVM address alias for the given Hedera account.
+    function getEvmAddressAlias(address accountNumAlias) external
+        returns (int64 responseCode, address evmAddressAlias);
+
+    /// Returns the Hedera Account ID (as account num alias) for the given EVM address alias
+    /// @param evmAddressAlias The EVM address alias to get the Hedera account for.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return accountNumAlias The Hedera account's num for the given EVM address alias.
+    function getHederaAccountNumAlias(address evmAddressAlias) external
+        returns (int64 responseCode, address accountNumAlias);
+
+    /// Returns true iff a Hedera account num alias or EVM address alias.
+    /// @param addr Some 20-byte address.
+    /// @return response true iff addr is a Hedera account num alias or an EVM address alias (and false otherwise).
+    function isValidAlias(address addr) external returns (bool response);
+
+    /// Determines if the signature is valid for the given message hash and account.
+    /// It is assumed that the signature is composed of a single EDCSA or ED25519 key.
+    /// @param account The account to check the signature against.
+    /// @param messageHash The hash of the message to check the signature against.
+    /// @param signature The signature to check.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return authorized True if the signature is valid, false otherwise.
+    function isAuthorizedRaw(
+        address account,
+        bytes memory messageHash,
+        bytes memory signature
+    ) external returns (int64 responseCode, bool authorized);
+
+    /// Determines if the signature is valid for the given message  and account.
+    /// It is assumed that the signature is composed of a possibly complex cryptographic key.
+    /// @param account The account to check the signature against.
+    /// @param message The message to check the signature against.
+    /// @param signature The signature to check encoded as bytes.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return authorized True if the signature is valid, false otherwise.
+    function isAuthorized(
+        address account,
+        bytes memory message,
+        bytes memory signature
+    ) external returns (int64 responseCode, bool authorized);
+}
+// Filename: contracts/system-contracts/hedera-account-service/IHRC904AccountFacade.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+
+/**
+ * notice: This interface is applicable when msg.sender is an EOA or a smart contract and the target address is the same.
+ */
+interface IHRC904AccountFacade {
+    /// @notice Enables or disables automatic token associations for the calling account
+    /// @notice Responsible service: HAS
+    /// @param enableAutoAssociations True to enable unlimited automatic associations, false to disable
+    /// @return responseCode The response code indicating the result of the operation
+    function setUnlimitedAutomaticAssociations(bool enableAutoAssociations) external returns (int64 responseCode);
+}// Filename: contracts/system-contracts/hedera-account-service/IHRC906.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+
+interface IHRC906 {
+    /// Returns the amount of hbar that the spender has been authorized to spend on behalf of the owner.
+    /// @param owner The account that has authorized the spender.
+    /// @param spender The account that has been authorized by the owner.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return amount The amount of hbar that the spender has been authorized to spend on behalf of the owner.
+    function hbarAllowance(
+        address owner,
+        address spender
+    ) external returns (int64 responseCode, int256 amount);
+
+    /// Allows spender to withdraw hbars from the owner account multiple times, up to the value amount. If this
+    /// function is called again it overwrites the current allowance with the new amount.
+    /// @param owner The owner of the hbars.
+    /// @param spender the account address authorized to spend.
+    /// @param amount the amount of tokens authorized to spend.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function hbarApprove(
+        address owner,
+        address spender,
+        int256 amount
+    ) external returns (int64 responseCode);
+}
+// Filename: contracts/system-contracts/hedera-account-service/IHRC906AccountFacade.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+
+/**
+ * notice: This interface is applicable when msg.sender is an EOA or a smart contract and the target address is the same.
+ */
+interface IHRC906AccountFacade {
+    /// Returns the amount of hbar that the spender has been authorized to spend on behalf of the owner.
+    /// @param spender The account that has been authorized by the owner.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return amount The amount of hbar that the spender has been authorized to spend on behalf of the owner.
+    function hbarAllowance(
+        address spender
+    ) external returns (int64 responseCode, int256 amount);
+
+    /// Allows spender to withdraw hbars from the owner account multiple times, up to the value amount. If this
+    /// function is called again it overwrites the current allowance with the new amount.
+    /// @param spender the account address authorized to spend.
+    /// @param amount the amount of tokens authorized to spend.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function hbarApprove(
+        address spender,
+        int256 amount
+    ) external returns (int64 responseCode);
 }
 // Filename: contracts/system-contracts/hedera-account-service/IHederaAccountService.sol
 // SPDX-License-Identifier: Apache-2.0
@@ -7444,18 +8547,145 @@ interface IHederaAccountService {
         int256 amount
     ) external returns (int64 responseCode);
 
+    // Returns the EVM address alias for the given Hedera account.
+    /// @param accountNumAlias The Hedera account to get the EVM address alias for.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return evmAddressAlias The EVM address alias for the given Hedera account.
+    function getEvmAddressAlias(address accountNumAlias) external
+        returns (int64 responseCode, address evmAddressAlias);
+
+    /// Returns the Hedera Account ID (as account num alias) for the given EVM address alias
+    /// @param evmAddressAlias The EVM address alias to get the Hedera account for.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return accountNumAlias The Hedera account's num for the given EVM address alias.
+    function getHederaAccountNumAlias(address evmAddressAlias) external
+        returns (int64 responseCode, address accountNumAlias);
+
+    /// Returns true iff a Hedera account num alias or EVM address alias.
+    /// @param addr Some 20-byte address.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return response true iff addr is a Hedera account num alias or an EVM address alias (and false otherwise).
+    function isValidAlias(address addr) external returns (int64 responseCode, bool response);
+
     /// Determines if the signature is valid for the given message hash and account.
     /// It is assumed that the signature is composed of a single EDCSA or ED25519 key.
-    /// @param account The account to check the signature against
-    /// @param messageHash The hash of the message to check the signature against
-    /// @param signature The signature to check
-    /// @return response True if the signature is valid, false otherwise
+    /// @param account The account to check the signature against.
+    /// @param messageHash The hash of the message to check the signature against.
+    /// @param signature The signature to check.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return authorized True if the signature is valid, false otherwise.
     function isAuthorizedRaw(
         address account,
         bytes memory messageHash,
-        bytes memory signature) external returns (bool response);
+        bytes memory signature
+    ) external returns (int64 responseCode, bool authorized);
+
+    /// Determines if the signature is valid for the given message and account.
+    /// It is assumed that the signature is composed of a possibly complex cryptographic key.
+    /// @param account The account to check the signature against.
+    /// @param message The message to check the signature against.
+    /// @param signature The signature to check encoded as bytes.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return authorized True if the signature is valid, false otherwise.
+    function isAuthorized(
+        address account,
+        bytes memory message,
+        bytes memory signature
+    ) external returns (int64 responseCode, bool authorized);
 }
-// Filename: contracts/system-contracts/hedera-account-service/examples/crypto-allowance/cryptoAllowance.sol
+// Filename: contracts/system-contracts/hedera-account-service/examples/IHRC-632/aliasAccountUtility.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.0;
+
+import "../../HederaAccountService.sol";
+
+
+contract AliasAccountUtility is HederaAccountService { 
+    event ResponseCode(int responseCode);
+    event AccountAuthorizationResponse(int64 responseCode, address account, bool response);
+    event AddressAliasResponse(int64 responseCode, address evmAddressAlias);
+    event IsValidAliasResponse(int64 responseCode, bool response);
+
+
+
+    /// Returns the EVM address alias for a given Hedera account.
+    /// @param accountNumAlias The Hedera account number alias to lookup. Must satisfy all of the following:
+    ///                         - Must be in long-zero format (0x000...0<account_num>)
+    ///                         - Must reference an existing Hedera account
+    ///                         - Referenced account must have an associated EVM address alias
+    /// @return responseCode The response code indicating the status of the request:
+    ///                         - SUCCESS (22) if successful
+    ///                         - INVALID_ACCOUNT_ID (15) if any validation of the accountNumAlias fails
+    /// @return evmAddressAlias The EVM address alias associated with the Hedera account, or address(0) if the request fails
+    function getEvmAddressAliasPublic(address accountNumAlias) public returns (int64 responseCode, address evmAddressAlias) 
+    {
+        (responseCode, evmAddressAlias) = HederaAccountService.getEvmAddressAlias(accountNumAlias);
+        emit AddressAliasResponse(responseCode, evmAddressAlias);
+        if (responseCode != HederaResponseCodes.SUCCESS && responseCode != HederaResponseCodes.INVALID_ACCOUNT_ID) {
+            revert();
+        }
+    }
+
+    /// Returns the Hedera Account ID (as account num alias) for the given EVM address alias
+    /// @param evmAddressAlias The EVM address alias to get the Hedera account for. Must satisfy all of the following:
+    ///                         - Must be in EVM format (not a long-zero address)
+    ///                         - Must reference an existing Hedera account
+    ///                         - Referenced account must have an associated account num alias (long-zero format)
+    /// @return responseCode The response code indicating the status of the request:
+    ///                         - SUCCESS (22) if successful
+    ///                         - INVALID_SOLIDITY_ADDRESS (29) if any validation of the evmAddressAlias fails
+    /// @return accountNumAlias The Hedera account's num alias in long-zero format, or address(0) if the request fails
+    function getHederaAccountNumAliasPublic(address evmAddressAlias) public returns (int64 responseCode, address accountNumAlias) {
+        (responseCode, accountNumAlias) = HederaAccountService.getHederaAccountNumAlias(evmAddressAlias);
+        emit AddressAliasResponse(responseCode, accountNumAlias);
+        if (responseCode != HederaResponseCodes.SUCCESS && responseCode != HederaResponseCodes.INVALID_SOLIDITY_ADDRESS) {
+            revert();
+        }
+    }
+
+    /// Returns true iff a Hedera account num alias or EVM address alias.
+    /// @param addr Some 20-byte address.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return response true iff addr is a Hedera account num alias or an EVM address alias (and false otherwise).
+    function isValidAliasPublic(address addr) public returns (int64 responseCode, bool response) {
+        (responseCode, response) = HederaAccountService.isValidAlias(addr);
+        emit IsValidAliasResponse(responseCode, response);
+        if (responseCode != HederaResponseCodes.SUCCESS && responseCode != HederaResponseCodes.INVALID_SOLIDITY_ADDRESS) {
+            revert();
+        }
+    }
+
+    /// @notice Verifies if a signature was signed by the account's key(s)
+    /// @param account The account address to verify the signature against
+    /// @param messageHash The hash of the message that was signed
+    /// @param signature The signature to verify
+    /// @return responseCode The response code indicating success or failure
+    /// @return authorized True if the signature is valid for the account, false otherwise
+    function isAuthorizedRawPublic(address account, bytes memory messageHash, bytes memory signature) public returns (int64 responseCode, bool authorized) {
+        (responseCode, authorized) = HederaAccountService.isAuthorizedRaw(account, messageHash, signature);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        emit AccountAuthorizationResponse(responseCode, account, authorized);
+    }
+
+
+    /// Determines if the signature is valid for the given message and account.
+    /// It is assumed that the signature is composed of a possibly complex cryptographic key.
+    /// @param account The account to check the signature against.
+    /// @param message The message to check the signature against.
+    /// @param signature The signature to check encoded as bytes.
+    /// @return responseCode The response code for the status of the request.  SUCCESS is 22.
+    /// @return authorized True if the signature is valid, false otherwise.
+    function isAuthorizedPublic(address account, bytes memory message, bytes memory signature) public returns (int64 responseCode, bool authorized) {
+        (responseCode, authorized) = HederaAccountService.isAuthorized(account, message, signature);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        emit AccountAuthorizationResponse(responseCode, account, authorized);
+    }
+}
+// Filename: contracts/system-contracts/hedera-account-service/examples/IHRC-906/cryptoAllowance.sol
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
@@ -7465,6 +8695,7 @@ import "../../../hedera-token-service/HederaTokenService.sol";
 contract CryptoAllowance is HederaAccountService, HederaTokenService {
     event ResponseCode(int responseCode);
     event HbarAllowance(address owner, address spender, int256 allowance);
+    event IsAuthorizedRaw(address account, bool response);
 
     function hbarApprovePublic(address owner, address spender, int256 amount) public returns (int64 responseCode) {
         responseCode = HederaAccountService.hbarApprove(owner, spender, amount);
@@ -7493,7 +8724,7 @@ contract CryptoAllowance is HederaAccountService, HederaTokenService {
         }
     }
 }
-// Filename: contracts/system-contracts/hedera-account-service/examples/crypto-allowance/cryptoOwner.sol
+// Filename: contracts/system-contracts/hedera-account-service/examples/IHRC-906/cryptoOwner.sol
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.0;
 
@@ -7553,6 +8784,204 @@ contract CryptoOwner is HederaAccountService {
         if (responseCode != HederaResponseCodes.SUCCESS) {
             revert();
         }
+    }
+}
+// Filename: contracts/system-contracts/hedera-schedule-service/HederaScheduleService.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+import "../HederaResponseCodes.sol";
+import "./IHederaScheduleService.sol";
+
+abstract contract HederaScheduleService {
+    address constant scheduleSystemContractAddress = address(0x16b);
+
+    /// Authorizes the calling contract as a signer to the schedule transaction.
+    /// @param schedule the address of the schedule transaction.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function authorizeSchedule(address schedule) internal returns (int64 responseCode) {
+        (bool success, bytes memory result) = scheduleSystemContractAddress.call(
+            abi.encodeWithSelector(IHederaScheduleService.authorizeSchedule.selector, schedule));
+        responseCode = success ? abi.decode(result, (int64)) : HederaResponseCodes.UNKNOWN;
+    }
+
+    /// Allows for the signing of a schedule transaction given a protobuf encoded signature map
+    /// The message signed by the keys is defined to be the concatenation of the shard, realm, and schedule transaction ID.
+    /// @param schedule the address of the schedule transaction.
+    /// @param signatureMap the protobuf encoded signature map
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function signSchedule(address schedule, bytes memory signatureMap) internal returns (int64 responseCode) {
+        (bool success, bytes memory result) = scheduleSystemContractAddress.call(
+            abi.encodeWithSelector(IHederaScheduleService.signSchedule.selector, schedule, signatureMap));
+        responseCode = success ? abi.decode(result, (int64)) : HederaResponseCodes.UNKNOWN;
+    }
+
+    /// Allows for the creation of a schedule transaction for given a system contract address, abi encoded call data and payer address
+    /// Currently supports the Hedera Token Service System Contract (0x167) with encoded call data for
+    /// createFungibleToken, createNonFungibleToken, createFungibleTokenWithCustomFees, createNonFungibleTokenWithCustomFees
+    /// and updateToken functions
+    /// @param systemContractAddress the address of the system contract from which to create the schedule transaction
+    /// @param callData the abi encoded call data for the system contract function
+    /// @param payer the address of the account that will pay for the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return scheduleAddress The address of the newly created schedule transaction.
+    function scheduleNative(address systemContractAddress, bytes memory callData, address payer) internal returns (int64 responseCode, address scheduleAddress) {
+        (bool success, bytes memory result) = scheduleSystemContractAddress.call(
+            abi.encodeWithSelector(IHederaScheduleService.scheduleNative.selector, systemContractAddress, callData, payer));
+        (responseCode, scheduleAddress) = success ? abi.decode(result, (int64, address)) : (int64(HederaResponseCodes.UNKNOWN), address(0));
+    }
+
+    /// Returns the token information for a scheduled fungible token create transaction
+    /// @param scheduleAddress the address of the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return fungibleTokenInfo The token information for the scheduled fungible token create transaction
+    function getScheduledCreateFungibleTokenInfo(address scheduleAddress) internal returns (int64 responseCode, IHederaTokenService.FungibleTokenInfo memory fungibleTokenInfo) {
+        (bool success, bytes memory result) = scheduleSystemContractAddress.call(
+            abi.encodeWithSelector(IHederaScheduleService.getScheduledCreateFungibleTokenInfo.selector, scheduleAddress));
+        IHederaTokenService.FungibleTokenInfo memory defaultTokenInfo;
+        (responseCode, fungibleTokenInfo) = success ? abi.decode(result, (int64, IHederaTokenService.FungibleTokenInfo)) : (int64(HederaResponseCodes.UNKNOWN), defaultTokenInfo);
+    }
+
+    /// Returns the token information for a scheduled non fungible token create transaction
+    /// @param scheduleAddress the address of the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return nonFungibleTokenInfo The token information for the scheduled non fungible token create transaction
+    function getScheduledCreateNonFungibleTokenInfo(address scheduleAddress) internal returns (int64 responseCode, IHederaTokenService.NonFungibleTokenInfo memory nonFungibleTokenInfo) {
+        (bool success, bytes memory result) = scheduleSystemContractAddress.call(
+            abi.encodeWithSelector(IHederaScheduleService.getScheduledCreateNonFungibleTokenInfo.selector, scheduleAddress));
+        IHederaTokenService.NonFungibleTokenInfo memory defaultTokenInfo;
+        (responseCode, nonFungibleTokenInfo) = success ? abi.decode(result, (int64, IHederaTokenService.NonFungibleTokenInfo)) : (int64(HederaResponseCodes.UNKNOWN), defaultTokenInfo);
+    }
+}
+// Filename: contracts/system-contracts/hedera-schedule-service/IHRC755.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+interface IHRC755 {
+    /// Authorizes the calling contract as a signer to the schedule transaction.
+    /// @param schedule the address of the schedule transaction.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function authorizeSchedule(address schedule) external returns (int64 responseCode);
+
+    /// Allows for the signing of a schedule transaction given a protobuf encoded signature map
+    /// The message signed by the keys is defined to be the concatenation of the shard, realm, and schedule transaction ID.
+    /// @param schedule the address of the schedule transaction.
+    /// @param signatureMap the protobuf encoded signature map
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function signSchedule(address schedule, bytes memory signatureMap) external returns (int64 responseCode);
+}
+// Filename: contracts/system-contracts/hedera-schedule-service/IHRC755ScheduleFacade.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+interface IHRC755ScheduleFacade {
+    /// Signs the targeted schedule transaction with the key of the calling EOA.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function signSchedule() external returns (int64 responseCode);
+}
+// Filename: contracts/system-contracts/hedera-schedule-service/IHRC756.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+import "../hedera-token-service/IHederaTokenService.sol";
+
+interface IHRC756 {
+    /// Allows for the creation of a schedule transaction for given a system contract address, abi encoded call data and payer address
+    /// Currently supports the Hedera Token Service System Contract (0x167) with encoded call data for
+    /// createFungibleToken, createNonFungibleToken, createFungibleTokenWithCustomFees, createNonFungibleTokenWithCustomFees
+    /// and updateToken functions
+    /// @param systemContractAddress the address of the system contract from which to create the schedule transaction
+    /// @param callData the abi encoded call data for the system contract function
+    /// @param payer the address of the account that will pay for the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return scheduleAddress The address of the newly created schedule transaction.
+    function scheduleNative(address systemContractAddress, bytes memory callData, address payer) external returns (int64 responseCode, address scheduleAddress);
+
+    /// Returns the token information for a scheduled fungible token create transaction
+    /// @param scheduleAddress the address of the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return fungibleTokenInfo The token information for the scheduled fungible token create transaction
+    function getScheduledCreateFungibleTokenInfo(address scheduleAddress) external returns (int64 responseCode, IHederaTokenService.FungibleTokenInfo memory fungibleTokenInfo);
+
+    /// Returns the token information for a scheduled non fungible token create transaction
+    /// @param scheduleAddress the address of the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return nonFungibleTokenInfo The token information for the scheduled non fungible token create transaction
+    function getScheduledCreateNonFungibleTokenInfo(address scheduleAddress) external returns (int64 responseCode, IHederaTokenService.NonFungibleTokenInfo memory nonFungibleTokenInfo);
+}
+// Filename: contracts/system-contracts/hedera-schedule-service/IHederaScheduleService.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+import "../hedera-token-service/IHederaTokenService.sol";
+interface IHederaScheduleService {
+
+    /// Authorizes the calling contract as a signer to the schedule transaction.
+    /// @param schedule the address of the schedule transaction.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function authorizeSchedule(address schedule) external returns (int64 responseCode);
+
+    /// Allows for the signing of a schedule transaction given a protobuf encoded signature map
+    /// The message signed by the keys is defined to be the concatenation of the shard, realm, and schedule transaction ID.
+    /// @param schedule the address of the schedule transaction.
+    /// @param signatureMap the protobuf encoded signature map
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function signSchedule(address schedule, bytes memory signatureMap) external returns (int64 responseCode);
+
+    /// Allows for the creation of a schedule transaction for a given system contract address, abi encoded call data and payer address
+    /// Currently supports the Hedera Token Service System Contract (0x167) with encoded call data for
+    /// createFungibleToken, createNonFungibleToken, createFungibleTokenWithCustomFees, createNonFungibleTokenWithCustomFees
+    /// and updateToken functions
+    /// @param systemContractAddress the address of the system contract from which to create the schedule transaction
+    /// @param callData the abi encoded call data for the system contract function
+    /// @param payer the address of the account that will pay for the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return scheduleAddress The address of the newly created schedule transaction.
+    function scheduleNative(address systemContractAddress, bytes memory callData, address payer) external returns (int64 responseCode, address scheduleAddress);
+
+    /// Returns the token information for a scheduled fungible token create transaction
+    /// @param scheduleAddress the address of the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return fungibleTokenInfo The token information for the scheduled fungible token create transaction
+    function getScheduledCreateFungibleTokenInfo(address scheduleAddress) external returns (int64 responseCode, IHederaTokenService.FungibleTokenInfo memory fungibleTokenInfo);
+
+    /// Returns the token information for a scheduled non fungible token create transaction
+    /// @param scheduleAddress the address of the schedule transaction
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return nonFungibleTokenInfo The token information for the scheduled non fungible token create transaction
+    function getScheduledCreateNonFungibleTokenInfo(address scheduleAddress) external returns (int64 responseCode, IHederaTokenService.NonFungibleTokenInfo memory nonFungibleTokenInfo);
+}
+// Filename: contracts/system-contracts/hedera-schedule-service/examples/IHRC-755/HRC755Contract.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+
+import "../../HederaScheduleService.sol";
+import "../../../hedera-token-service/HederaTokenService.sol";
+
+pragma experimental ABIEncoderV2;
+
+contract HRC755Contract is HederaScheduleService {
+    /// Authorizes the calling contract as a signer to the schedule transaction.
+    /// @param schedule the address of the schedule transaction.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function authorizeScheduleCall(address schedule) external returns (int64 responseCode) {
+        (responseCode) = HederaScheduleService.authorizeSchedule(schedule);
+        require(responseCode == HederaResponseCodes.SUCCESS, "Authorize schedule failed.");
+    }
+
+    /// Allows for the signing of a schedule transaction given a protobuf encoded signature map
+    /// The message signed by the keys is defined to be the concatenation of the shard, realm, and schedule transaction ID.
+    /// @param schedule the address of the schedule transaction.
+    /// @param signatureMap the protobuf encoded signature map.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function signScheduleCall(address schedule, bytes memory signatureMap) external returns (int64 responseCode) {
+        (responseCode) = HederaScheduleService.signSchedule(schedule, signatureMap);
+        require(responseCode == HederaResponseCodes.SUCCESS, "Sign schedule failed.");
     }
 }
 // Filename: contracts/system-contracts/hedera-token-service/AtomicHTS.sol
@@ -9007,6 +10436,48 @@ abstract contract HederaTokenService {
             abi.encodeWithSelector(IHederaTokenService.updateNonFungibleTokenCustomFees.selector, token, fixedFees, royaltyFees));
         responseCode = success ? abi.decode(result, (int32)) : HederaResponseCodes.UNKNOWN;
     }
+
+    /// @notice Airdrop one or more tokens to one or more accounts
+    /// @param tokenTransfers Array of token transfer lists containing token addresses and recipient details
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function airdropTokens(IHederaTokenService.TokenTransferList[] memory tokenTransfers) internal returns (int64 responseCode) {
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(IHederaTokenService.airdropTokens.selector, tokenTransfers));
+
+        (responseCode) = success ? abi.decode(result, (int32)) : HederaResponseCodes.UNKNOWN;
+    }
+
+    /// @notice Cancels pending airdrops that have not yet been claimed
+    /// @param pendingAirdrops Array of pending airdrops to cancel
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function cancelAirdrops(IHederaTokenService.PendingAirdrop[] memory pendingAirdrops) internal returns (int64 responseCode) {
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(IHederaTokenService.cancelAirdrops.selector, pendingAirdrops)
+        );
+        (responseCode) = success ? abi.decode(result, (int32)) : HederaResponseCodes.UNKNOWN;
+    }
+
+    /// @notice Claims pending airdrops that were sent to the calling account
+    /// @param pendingAirdrops Array of pending airdrops to claim
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function claimAirdrops(IHederaTokenService.PendingAirdrop[] memory pendingAirdrops) internal returns (int64 responseCode) {
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(IHederaTokenService.claimAirdrops.selector, pendingAirdrops)
+        );
+        (responseCode) = success ? abi.decode(result, (int32)) : HederaResponseCodes.UNKNOWN;
+    }
+
+    /// @notice Rejects one or more tokens by transferring their full balance from the requesting account to the treasury
+    /// @param rejectingAddress The address rejecting the tokens
+    /// @param ftAddresses Array of fungible token addresses to reject
+    /// @param nftIds Array of NFT IDs to reject
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function rejectTokens(address rejectingAddress, address[] memory ftAddresses, IHederaTokenService.NftID[] memory nftIds) internal returns (int64 responseCode) {
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(IHederaTokenService.rejectTokens.selector, rejectingAddress, ftAddresses, nftIds)
+        );
+        (responseCode) = success ? abi.decode(result, (int32)) : HederaResponseCodes.UNKNOWN;
+    }
 }
 // Filename: contracts/system-contracts/hedera-token-service/IHRC719.sol
 // SPDX-License-Identifier: Apache-2.0
@@ -9028,13 +10499,97 @@ interface IHRC719 {
     /// @return associated True if the account is associated, false otherwise
     function isAssociated() external view returns (bool associated);
 }
-// Filename: contracts/system-contracts/hedera-token-service/IHederaTokenService.sol
+// Filename: contracts/system-contracts/hedera-token-service/IHRC904.sol
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity >=0.4.9 <0.9.0;
-pragma experimental ABIEncoderV2;
 
-interface IHederaTokenService {
+import "./IHTSStructs.sol";
 
+interface IHRC904 is IHTSStructs {
+    /// @notice Airdrop one or more tokens to one or more accounts
+    /// @notice Recipients will receive tokens in one of these ways:
+    /// @notice     - Immediately if already associated with the token
+    /// @notice     - Immediately with auto-association if they have available slots
+    /// @notice     - As a pending airdrop requiring claim if they have "receiver signature required" 
+    /// @notice     - As a pending airdrop requiring claim if they have no available auto-association slots
+    /// @notice Immediate airdrops are irreversible, pending airdrops can be canceled
+    /// @notice All transfer fees and auto-renewal rent costs are charged to the transaction submitter
+    /// @notice The tokenTransfers array is limited to a maximum of 10 elements by default, managed by tokens.maxAllowedAirdropTransfersPerTx configuration
+    /// @param tokenTransfers Array of token transfer lists containing token addresses and recipient details
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function airdropTokens(TokenTransferList[] memory tokenTransfers) external returns (int64 responseCode);
+
+    /// @notice Cancels pending airdrops that have not yet been claimed
+    /// @notice The pendingAirdrops array is limited to a maximum of 10 elements by default, managed by tokens.maxAllowedPendingAirdropsToCancel configuration
+    /// @param pendingAirdrops Array of pending airdrops to cancel
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function cancelAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode);
+
+    /// @notice Claims pending airdrops that were sent to the calling account
+    /// @notice The pendingAirdrops array is limited to a maximum of 10 elements by default, managed by tokens.maxAllowedPendingAirdropsToClaim configuration
+    /// @param pendingAirdrops Array of pending airdrops to claim
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function claimAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode);
+
+    /// @notice Rejects one or more tokens by transferring their full balance from the requesting account to the treasury
+    /// @notice This transfer does not charge any custom fees or royalties defined for the tokens
+    /// @notice For fungible tokens, the requesting account's balance will become 0 and the treasury balance will increase by that amount
+    /// @notice For non-fungible tokens, the requesting account will no longer hold the rejected serial numbers and they will be transferred to the treasury
+    /// @notice The ftAddresses and nftIDs arrays are limited to a combined maximum of 10 elements by default, managed by ledger.tokenRejects.maxLen configuration
+    /// @param rejectingAddress The address rejecting the tokens
+    /// @param ftAddresses Array of fungible token addresses to reject
+    /// @param nftIDs Array of NFT IDs to reject
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function rejectTokens(address rejectingAddress, address[] memory ftAddresses, NftID[] memory nftIDs) external returns (int64 responseCode);
+}// Filename: contracts/system-contracts/hedera-token-service/IHRC904TokenFacade.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+
+/**
+ * notice: This interface is applicable when msg.sender is an EOA or a contract and the target address is an HTS token.
+ */
+interface IHRC904TokenFacade {
+    /// @notice Cancels a pending fungible token airdrop to a specific receiver
+    /// @notice Responsible service: HTS
+    /// @param receiverAddress The address of the receiver whose airdrop should be cancelled
+    /// @return responseCode The response code indicating the result of the operation
+    function cancelAirdropFT(address receiverAddress) external returns (int64 responseCode);
+
+    /// @notice Cancels a pending non-fungible token airdrop to a specific receiver
+    /// @notice Responsible service: HTS
+    /// @param receiverAddress The address of the receiver whose airdrop should be cancelled
+    /// @param serialNumber The serial number of the NFT to cancel
+    /// @return responseCode The response code indicating the result of the operation
+    function cancelAirdropNFT(address receiverAddress, int64 serialNumber) external returns (int64 responseCode);
+
+    /// @notice Claims a pending fungible token airdrop from a specific sender
+    /// @notice Responsible service: HTS
+    /// @param senderAddress The address of the sender whose airdrop should be claimed
+    /// @return responseCode The response code indicating the result of the operation
+    function claimAirdropFT(address senderAddress) external returns (int64 responseCode);
+
+    /// @notice Claims a pending non-fungible token airdrop from a specific sender
+    /// @notice Responsible service: HTS
+    /// @param senderAddress The address of the sender whose airdrop should be claimed
+    /// @param serialNumber The serial number of the NFT to claim
+    /// @return responseCode The response code indicating the result of the operation
+    function claimAirdropNFT(address senderAddress, int64 serialNumber) external returns (int64 responseCode);
+
+    /// @notice Rejects all pending fungible token airdrops
+    /// @notice Responsible service: HTS
+    /// @return responseCode The response code indicating the result of the operation
+    function rejectTokenFT() external returns (int64 responseCode);
+
+    /// @notice Rejects pending non-fungible token airdrops for specific serial numbers
+    /// @notice Responsible service: HTS
+    /// @param serialNumbers Array of NFT serial numbers to reject
+    /// @return responseCode The response code indicating the result of the operation
+    function rejectTokenNFTs(int64[] memory serialNumbers) external returns (int64 responseCode);
+}// Filename: contracts/system-contracts/hedera-token-service/IHTSStructs.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+
+interface IHTSStructs {
     /// Transfers cryptocurrency among two or more accounts by making the desired adjustments to their
     /// balances. Each transfer list can specify up to 10 adjustments. Each negative amount is withdrawn
     /// from the corresponding account (a sender), and each positive one is added to the corresponding
@@ -9325,6 +10880,343 @@ interface IHederaTokenService {
 
         // The ID of the account to receive the custom fee, expressed as a solidity address
         address feeCollector;
+    }
+
+    /// Represents a pending airdrop of a token or NFT to a receiver
+    /// @param sender The address of the account sending the airdrop
+    /// @param receiver The address of the account receiving the airdrop
+    /// @param token The address of the token being airdropped
+    /// @param serial For NFT airdrops, the serial number of the NFT. For fungible tokens, this should be 0
+    struct PendingAirdrop {
+        address sender;
+        address receiver;
+        address token;
+        int64 serial;
+    }
+
+    /// Represents a unique NFT by its token address and serial number
+    /// @param nft The address of the NFT token
+    /// @param serial The serial number that uniquely identifies this NFT within its token type
+    struct NftID {
+        address nft;
+        int64 serial;
+    }
+}// Filename: contracts/system-contracts/hedera-token-service/IHederaTokenService.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+interface IHederaTokenService {
+    /// Transfers cryptocurrency among two or more accounts by making the desired adjustments to their
+    /// balances. Each transfer list can specify up to 10 adjustments. Each negative amount is withdrawn
+    /// from the corresponding account (a sender), and each positive one is added to the corresponding
+    /// account (a receiver). The amounts list must sum to zero. Each amount is a number of tinybars
+    /// (there are 100,000,000 tinybars in one hbar).  If any sender account fails to have sufficient
+    /// hbars, then the entire transaction fails, and none of those transfers occur, though the
+    /// transaction fee is still charged. This transaction must be signed by the keys for all the sending
+    /// accounts, and for any receiving accounts that have receiverSigRequired == true. The signatures
+    /// are in the same order as the accounts, skipping those accounts that don't need a signature.
+    /// @custom:version 0.3.0 previous version did not include isApproval
+    struct AccountAmount {
+        // The Account ID, as a solidity address, that sends/receives cryptocurrency or tokens
+        address accountID;
+
+        // The amount of  the lowest denomination of the given token that
+        // the account sends(negative) or receives(positive)
+        int64 amount;
+
+        // If true then the transfer is expected to be an approved allowance and the
+        // accountID is expected to be the owner. The default is false (omitted).
+        bool isApproval;
+    }
+
+    /// A sender account, a receiver account, and the serial number of an NFT of a Token with
+    /// NON_FUNGIBLE_UNIQUE type. When minting NFTs the sender will be the default AccountID instance
+    /// (0.0.0 aka 0x0) and when burning NFTs, the receiver will be the default AccountID instance.
+    /// @custom:version 0.3.0 previous version did not include isApproval
+    struct NftTransfer {
+        // The solidity address of the sender
+        address senderAccountID;
+
+        // The solidity address of the receiver
+        address receiverAccountID;
+
+        // The serial number of the NFT
+        int64 serialNumber;
+
+        // If true then the transfer is expected to be an approved allowance and the
+        // accountID is expected to be the owner. The default is false (omitted).
+        bool isApproval;
+    }
+
+    struct TokenTransferList {
+        // The ID of the token as a solidity address
+        address token;
+
+        // Applicable to tokens of type FUNGIBLE_COMMON. Multiple list of AccountAmounts, each of which
+        // has an account and amount.
+        AccountAmount[] transfers;
+
+        // Applicable to tokens of type NON_FUNGIBLE_UNIQUE. Multiple list of NftTransfers, each of
+        // which has a sender and receiver account, including the serial number of the NFT
+        NftTransfer[] nftTransfers;
+    }
+
+    struct TransferList {
+        // Multiple list of AccountAmounts, each of which has an account and amount.
+        // Used to transfer hbars between the accounts in the list.
+        AccountAmount[] transfers;
+    }
+
+    /// Expiry properties of a Hedera token - second, autoRenewAccount, autoRenewPeriod
+    struct Expiry {
+        // The epoch second at which the token should expire; if an auto-renew account and period are
+        // specified, this is coerced to the current epoch second plus the autoRenewPeriod
+        int64 second;
+
+        // ID of an account which will be automatically charged to renew the token's expiration, at
+        // autoRenewPeriod interval, expressed as a solidity address
+        address autoRenewAccount;
+
+        // The interval at which the auto-renew account will be charged to extend the token's expiry
+        int64 autoRenewPeriod;
+    }
+
+    /// A Key can be a public key from either the Ed25519 or ECDSA(secp256k1) signature schemes, where
+    /// in the ECDSA(secp256k1) case we require the 33-byte compressed form of the public key. We call
+    /// these public keys <b>primitive keys</b>.
+    /// A Key can also be the ID of a smart contract instance, which is then authorized to perform any
+    /// precompiled contract action that requires this key to sign.
+    /// Note that when a Key is a smart contract ID, it <i>doesn't</i> mean the contract with that ID
+    /// will actually create a cryptographic signature. It only means that when the contract calls a
+    /// precompiled contract, the resulting "child transaction" will be authorized to perform any action
+    /// controlled by the Key.
+    /// Exactly one of the possible values should be populated in order for the Key to be valid.
+    struct KeyValue {
+
+        // if set to true, the key of the calling Hedera account will be inherited as the token key
+        bool inheritAccountKey;
+
+        // smart contract instance that is authorized as if it had signed with a key
+        address contractId;
+
+        // Ed25519 public key bytes
+        bytes ed25519;
+
+        // Compressed ECDSA(secp256k1) public key bytes
+        bytes ECDSA_secp256k1;
+
+        // A smart contract that, if the recipient of the active message frame, should be treated
+        // as having signed. (Note this does not mean the <i>code being executed in the frame</i>
+        // will belong to the given contract, since it could be running another contract's code via
+        // <tt>delegatecall</tt>. So setting this key is a more permissive version of setting the
+        // contractID key, which also requires the code in the active message frame belong to the
+        // the contract with the given id.)
+        address delegatableContractId;
+    }
+
+    /// A list of token key types the key should be applied to and the value of the key
+    struct TokenKey {
+
+        // bit field representing the key type. Keys of all types that have corresponding bits set to 1
+        // will be created for the token.
+        // 0th bit: adminKey
+        // 1st bit: kycKey
+        // 2nd bit: freezeKey
+        // 3rd bit: wipeKey
+        // 4th bit: supplyKey
+        // 5th bit: feeScheduleKey
+        // 6th bit: pauseKey
+        // 7th bit: ignored
+        uint keyType;
+
+        // the value that will be set to the key type
+        KeyValue key;
+    }
+
+    /// Basic properties of a Hedera Token - name, symbol, memo, tokenSupplyType, maxSupply,
+    /// treasury, freezeDefault. These properties are related both to Fungible and NFT token types.
+    struct HederaToken {
+        // The publicly visible name of the token. The token name is specified as a Unicode string.
+        // Its UTF-8 encoding cannot exceed 100 bytes, and cannot contain the 0 byte (NUL).
+        string name;
+
+        // The publicly visible token symbol. The token symbol is specified as a Unicode string.
+        // Its UTF-8 encoding cannot exceed 100 bytes, and cannot contain the 0 byte (NUL).
+        string symbol;
+
+        // The ID of the account which will act as a treasury for the token as a solidity address.
+        // This account will receive the specified initial supply or the newly minted NFTs in
+        // the case for NON_FUNGIBLE_UNIQUE Type
+        address treasury;
+
+        // The memo associated with the token (UTF-8 encoding max 100 bytes)
+        string memo;
+
+        // IWA compatibility. Specified the token supply type. Defaults to INFINITE
+        bool tokenSupplyType;
+
+        // IWA Compatibility. Depends on TokenSupplyType. For tokens of type FUNGIBLE_COMMON - the
+        // maximum number of tokens that can be in circulation. For tokens of type NON_FUNGIBLE_UNIQUE -
+        // the maximum number of NFTs (serial numbers) that can be minted. This field can never be changed!
+        int64 maxSupply;
+
+        // The default Freeze status (frozen or unfrozen) of Hedera accounts relative to this token. If
+        // true, an account must be unfrozen before it can receive the token
+        bool freezeDefault;
+
+        // list of keys to set to the token
+        TokenKey[] tokenKeys;
+
+        // expiry properties of a Hedera token - second, autoRenewAccount, autoRenewPeriod
+        Expiry expiry;
+    }
+
+    /// Additional post creation fungible and non fungible properties of a Hedera Token.
+    struct TokenInfo {
+        /// Basic properties of a Hedera Token
+        HederaToken token;
+
+        /// The number of tokens (fungible) or serials (non-fungible) of the token
+        int64 totalSupply;
+
+        /// Specifies whether the token is deleted or not
+        bool deleted;
+
+        /// Specifies whether the token kyc was defaulted with KycNotApplicable (true) or Revoked (false)
+        bool defaultKycStatus;
+
+        /// Specifies whether the token is currently paused or not
+        bool pauseStatus;
+
+        /// The fixed fees collected when transferring the token
+        FixedFee[] fixedFees;
+
+        /// The fractional fees collected when transferring the token
+        FractionalFee[] fractionalFees;
+
+        /// The royalty fees collected when transferring the token
+        RoyaltyFee[] royaltyFees;
+
+        /// The ID of the network ledger
+        string ledgerId;
+    }
+
+    /// Additional fungible properties of a Hedera Token.
+    struct FungibleTokenInfo {
+        /// The shared hedera token info
+        TokenInfo tokenInfo;
+
+        /// The number of decimal places a token is divisible by
+        int32 decimals;
+    }
+
+    /// Additional non fungible properties of a Hedera Token.
+    struct NonFungibleTokenInfo {
+        /// The shared hedera token info
+        TokenInfo tokenInfo;
+
+        /// The serial number of the nft
+        int64 serialNumber;
+
+        /// The account id specifying the owner of the non fungible token
+        address ownerId;
+
+        /// The epoch second at which the token was created.
+        int64 creationTime;
+
+        /// The unique metadata of the NFT
+        bytes metadata;
+
+        /// The account id specifying an account that has been granted spending permissions on this nft
+        address spenderId;
+    }
+
+    /// A fixed number of units (hbar or token) to assess as a fee during a transfer of
+    /// units of the token to which this fixed fee is attached. The denomination of
+    /// the fee depends on the values of tokenId, useHbarsForPayment and
+    /// useCurrentTokenForPayment. Exactly one of the values should be set.
+    struct FixedFee {
+
+        int64 amount;
+
+        // Specifies ID of token that should be used for fixed fee denomination
+        address tokenId;
+
+        // Specifies this fixed fee should be denominated in Hbar
+        bool useHbarsForPayment;
+
+        // Specifies this fixed fee should be denominated in the Token currently being created
+        bool useCurrentTokenForPayment;
+
+        // The ID of the account to receive the custom fee, expressed as a solidity address
+        address feeCollector;
+    }
+
+    /// A fraction of the transferred units of a token to assess as a fee. The amount assessed will never
+    /// be less than the given minimumAmount, and never greater than the given maximumAmount.  The
+    /// denomination is always units of the token to which this fractional fee is attached.
+    struct FractionalFee {
+        // A rational number's numerator, used to set the amount of a value transfer to collect as a custom fee
+        int64 numerator;
+
+        // A rational number's denominator, used to set the amount of a value transfer to collect as a custom fee
+        int64 denominator;
+
+        // The minimum amount to assess
+        int64 minimumAmount;
+
+        // The maximum amount to assess (zero implies no maximum)
+        int64 maximumAmount;
+        bool netOfTransfers;
+
+        // The ID of the account to receive the custom fee, expressed as a solidity address
+        address feeCollector;
+    }
+
+    /// A fee to assess during a transfer that changes ownership of an NFT. Defines the fraction of
+    /// the fungible value exchanged for an NFT that the ledger should collect as a royalty. ("Fungible
+    /// value" includes both ℏ and units of fungible HTS tokens.) When the NFT sender does not receive
+    /// any fungible value, the ledger will assess the fallback fee, if present, to the new NFT owner.
+    /// Royalty fees can only be added to tokens of type type NON_FUNGIBLE_UNIQUE.
+    struct RoyaltyFee {
+        // A fraction's numerator of fungible value exchanged for an NFT to collect as royalty
+        int64 numerator;
+
+        // A fraction's denominator of fungible value exchanged for an NFT to collect as royalty
+        int64 denominator;
+
+        // If present, the fee to assess to the NFT receiver when no fungible value
+        // is exchanged with the sender. Consists of:
+        // amount: the amount to charge for the fee
+        // tokenId: Specifies ID of token that should be used for fixed fee denomination
+        // useHbarsForPayment: Specifies this fee should be denominated in Hbar
+        int64 amount;
+        address tokenId;
+        bool useHbarsForPayment;
+
+        // The ID of the account to receive the custom fee, expressed as a solidity address
+        address feeCollector;
+    }
+
+    /// Represents a pending airdrop of a token or NFT to a receiver
+    /// @param sender The address of the account sending the airdrop
+    /// @param receiver The address of the account receiving the airdrop
+    /// @param token The address of the token being airdropped
+    /// @param serial For NFT airdrops, the serial number of the NFT. For fungible tokens, this should be 0
+    struct PendingAirdrop {
+        address sender;
+        address receiver;
+        address token;
+        int64 serial;
+    }
+
+    /// Represents a unique NFT by its token address and serial number
+    /// @param nft The address of the NFT token
+    /// @param serial The serial number that uniquely identifies this NFT within its token type
+    struct NftID {
+        address nft;
+        int64 serial;
     }
 
     /**********************
@@ -9846,6 +11738,38 @@ interface IHederaTokenService {
     /// @param royaltyFees Set of royalty fees for `token`
     /// @return responseCode The response code for the status of the request. SUCCESS is 22.
     function updateNonFungibleTokenCustomFees(address token, IHederaTokenService.FixedFee[] memory fixedFees, IHederaTokenService.RoyaltyFee[] memory royaltyFees) external returns (int64 responseCode);
+
+    /// @notice Airdrop one or more tokens to one or more accounts
+    /// @notice Recipients will receive tokens in one of these ways:
+    /// @notice     - Immediately if already associated with the token
+    /// @notice     - Immediately with auto-association if they have available slots
+    /// @notice     - As a pending airdrop requiring claim if they have "receiver signature required" 
+    /// @notice     - As a pending airdrop requiring claim if they have no available auto-association slots
+    /// @notice Immediate airdrops are irreversible, pending airdrops can be canceled
+    /// @notice All transfer fees and auto-renewal rent costs are charged to the transaction submitter
+    /// @param tokenTransfers Array of token transfer lists containing token addresses and recipient details
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function airdropTokens(TokenTransferList[] memory tokenTransfers) external returns (int64 responseCode);
+
+    /// @notice Cancels pending airdrops that have not yet been claimed
+    /// @param pendingAirdrops Array of pending airdrops to cancel
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function cancelAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode);
+
+    /// @notice Claims pending airdrops that were sent to the calling account
+    /// @param pendingAirdrops Array of pending airdrops to claim
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function claimAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode);
+
+    /// @notice Rejects one or more tokens by transferring their full balance from the requesting account to the treasury
+    /// @notice This transfer does not charge any custom fees or royalties defined for the tokens
+    /// @notice For fungible tokens, the requesting account's balance will become 0 and the treasury balance will increase by that amount
+    /// @notice For non-fungible tokens, the requesting account will no longer hold the rejected serial numbers and they will be transferred to the treasury
+    /// @param rejectingAddress The address rejecting the tokens
+    /// @param ftAddresses Array of fungible token addresses to reject
+    /// @param nftIDs Array of NFT IDs to reject
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function rejectTokens(address rejectingAddress, address[] memory ftAddresses, NftID[] memory nftIDs) external returns (int64 responseCode);
 }
 // Filename: contracts/system-contracts/hedera-token-service/KeyHelper.sol
 // SPDX-License-Identifier: Apache-2.0
@@ -10203,6 +12127,498 @@ contract HRC719Contract {
         emit IsAssociated(status);
     }
 }
+// Filename: contracts/system-contracts/hedera-token-service/examples/hrc-904/Airdrop.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+
+import {HederaResponseCodes} from "../../../HederaResponseCodes.sol";
+import {HederaTokenService} from "../../HederaTokenService.sol";
+import {IHederaTokenService} from "../../IHederaTokenService.sol";
+pragma experimental ABIEncoderV2;
+
+// @title Airdrop Contract
+// @notice Facilitates token airdrops for both fungible and non-fungible tokens
+// @dev Implements HRC-904 standard for token airdrops
+//
+// Recipients will receive tokens in one of these ways:
+// - Immediately if already associated with the token
+// - Immediately with auto-association if they have available slots
+// - As a pending airdrop requiring claim if they have "receiver signature required"
+// - As a pending airdrop requiring claim if they have no available auto-association slots
+//
+// All transfer fees and auto-renewal rent costs are charged to the transaction submitter
+contract Airdrop is HederaTokenService {
+    // @notice Airdrops a fungible token from a sender to a single receiver
+    // @dev Builds airdrop struct and submits airdropTokens system contract call
+    // @param token The token address to airdrop
+    // @param sender The address sending the tokens
+    // @param receiver The address receiving the tokens
+    // @param amount The amount of tokens to transfer
+    // @return responseCode The response code from the airdrop operation (22 = success)
+    function tokenAirdrop(address token, address sender, address receiver, int64 amount) public payable returns (int64 responseCode) {
+        IHederaTokenService.TokenTransferList[] memory tokenTransfers = new IHederaTokenService.TokenTransferList[](1);
+        IHederaTokenService.TokenTransferList memory airdrop;
+
+        airdrop.token = token;
+        airdrop.transfers = createAccountTransferPair(sender, receiver, amount);
+        tokenTransfers[0] = airdrop;
+        responseCode = airdropTokens(tokenTransfers);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Airdrops a non-fungible token from a sender to a single receiver
+    // @dev Builds NFT airdrop struct and submits airdropTokens system contract call
+    // @param token The NFT token address
+    // @param sender The address sending the NFT
+    // @param receiver The address receiving the NFT
+    // @param serial The serial number of the NFT to transfer
+    // @return responseCode The response code from the airdrop operation (22 = success)
+    function nftAirdrop(address token, address sender, address receiver, int64 serial) public payable returns (int64 responseCode) {
+        IHederaTokenService.TokenTransferList[] memory tokenTransfers = new IHederaTokenService.TokenTransferList[](1);
+        IHederaTokenService.TokenTransferList memory airdrop;
+
+        airdrop.token = token;
+        IHederaTokenService.NftTransfer memory nftTransfer = prepareNftTransfer(sender, receiver, serial);
+        IHederaTokenService.NftTransfer[] memory nftTransfers = new IHederaTokenService.NftTransfer[](1);
+        nftTransfers[0] = nftTransfer;
+        airdrop.nftTransfers = nftTransfers;
+        tokenTransfers[0] = airdrop;
+        responseCode = airdropTokens(tokenTransfers);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Airdrops multiple fungible tokens of the same amount from a sender to a single receiver
+    // @dev Builds multiple token transfer structs and submits a single airdropTokens system contract call
+    // @param tokens Array of token addresses to airdrop
+    // @param sender The address sending all tokens
+    // @param receiver The address receiving all tokens
+    // @param amount The amount of each token to transfer
+    // @return responseCode The response code from the airdrop operation (22 = success)
+    function multipleFtAirdrop(address[] memory tokens, address sender, address receiver, int64 amount) public payable returns (int64 responseCode) {
+        uint256 length = tokens.length;
+        IHederaTokenService.TokenTransferList[] memory tokenTransfers = new IHederaTokenService.TokenTransferList[](length);
+        for (uint256 i = 0; i < length; i++)
+        {
+            IHederaTokenService.TokenTransferList memory airdrop;
+            airdrop.token = tokens[i];
+            airdrop.transfers = createAccountTransferPair(sender, receiver, amount);
+            tokenTransfers[i] = airdrop;
+        }
+        responseCode = airdropTokens(tokenTransfers);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Airdrops multiple NFTs from a sender to a single receiver
+    // @dev Builds multiple NFT transfer structs and submits a single airdropTokens system contract call
+    // @param nfts Array of NFT token addresses
+    // @param sender The address sending all NFTs
+    // @param receiver The address receiving all NFTs
+    // @param serials Array of serial numbers corresponding to each NFT
+    // @return responseCode The response code from the airdrop operation (22 = success)
+    function multipleNftAirdrop(address[] memory nfts, address sender, address receiver, int64[] memory serials) public returns (int64 responseCode) {
+        uint256 length = nfts.length;
+        IHederaTokenService.TokenTransferList[] memory tokenTransfers = new IHederaTokenService.TokenTransferList[](length);
+        for (uint256 i = 0; i < length; i++)
+        {
+            IHederaTokenService.TokenTransferList memory airdrop;
+            airdrop.token = nfts[i];
+            IHederaTokenService.NftTransfer[] memory nftTransfers = new IHederaTokenService.NftTransfer[](1);
+            nftTransfers[0] = prepareNftTransfer(sender, receiver, serials[i]);
+            airdrop.nftTransfers = nftTransfers;
+            tokenTransfers[i] = airdrop;
+        }
+        responseCode = airdropTokens(tokenTransfers);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Distributes the same amount of a fungible token from one sender to multiple receivers
+    // @dev Optimizes gas by building a single transfer list with multiple receivers
+    // @param token The token address to distribute
+    // @param sender The address sending the tokens
+    // @param receivers Array of addresses to receive the tokens
+    // @param amount The amount each receiver should get
+    // @return responseCode The response code from the airdrop operation (22 = success)
+    function tokenAirdropDistribute(
+        address token,
+        address sender,
+        address[] memory receivers,
+        int64 amount
+    ) public payable returns (int64 responseCode) {
+        uint256 length = receivers.length + 1;
+
+        IHederaTokenService.TokenTransferList[] memory tokenTransfers = new IHederaTokenService.TokenTransferList[](1);
+        IHederaTokenService.TokenTransferList memory airdrop;
+        airdrop.token = token;
+
+        IHederaTokenService.AccountAmount memory senderAA;
+        senderAA.accountID = sender;
+
+        int64 totalAmount = 0;
+        for (uint i = 0; i < receivers.length; i++) {
+            totalAmount += amount;
+        }
+        senderAA.amount = -totalAmount;
+
+        IHederaTokenService.AccountAmount[] memory transfers = new IHederaTokenService.AccountAmount[](length);
+        transfers[0] = senderAA;
+
+        for (uint i = 1; i < length; i++) {
+            IHederaTokenService.AccountAmount memory receiverAA;
+            receiverAA.accountID = receivers[i - 1];
+            receiverAA.amount = amount;
+            transfers[i] = receiverAA;
+        }
+
+        airdrop.transfers = transfers;
+        tokenTransfers[0] = airdrop;
+
+        responseCode = airdropTokens(tokenTransfers);
+
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+
+        return responseCode;
+    }
+
+    // @notice Distributes sequential NFTs from one sender to multiple receivers
+    // @dev Assigns sequential serial numbers starting from 1 to each receiver
+    // @param token The NFT token address
+    // @param sender The address sending the NFTs
+    // @param receivers Array of addresses to receive the NFTs
+    // @param serials Array of serial numbers to assign to each receiver
+    // @return responseCode The response code from the airdrop operation (22 = success)
+    function nftAirdropDistribute(address token, address sender, address[] memory receivers, int64[] memory serials) public payable returns (int64 responseCode) {
+        uint256 length = receivers.length;
+        IHederaTokenService.TokenTransferList[] memory tokenTransfers = new IHederaTokenService.TokenTransferList[](1);
+        IHederaTokenService.TokenTransferList memory airdrop;
+        airdrop.token = token;
+        IHederaTokenService.NftTransfer[] memory nftTransfers = new IHederaTokenService.NftTransfer[](length);
+        for (uint i = 0; i < length; i++) {
+            nftTransfers[i] = prepareNftTransfer(sender, receivers[i], serials[i]);
+        }
+        airdrop.nftTransfers = nftTransfers;
+        tokenTransfers[0] = airdrop;
+
+        responseCode = airdropTokens(tokenTransfers);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Performs a mixed airdrop of both fungible and non-fungible tokens
+    // @dev Combines multiple token types into a single airdropTokens call for gas efficiency
+    // @param token Array of fungible token addresses
+    // @param nft Array of NFT token addresses
+    // @param tokenSenders Array of addresses sending the fungible tokens
+    // @param tokenReceivers Array of addresses receiving the fungible tokens
+    // @param nftSenders Array of addresses sending the NFTs
+    // @param nftReceivers Array of addresses receiving the NFTs
+    // @param tokenAmount Amount of each fungible token to transfer
+    // @param serials Array of serial numbers for the NFTs
+    // @return responseCode The response code from the airdrop operation (22 = success)
+    function mixedAirdrop(address[] memory token, address[] memory nft, address[] memory tokenSenders, address[] memory tokenReceivers, address[] memory nftSenders, address[] memory nftReceivers, int64 tokenAmount, int64[] memory serials) public payable returns (int64 responseCode) {
+        uint256 length = tokenSenders.length + nftSenders.length;
+        IHederaTokenService.TokenTransferList[] memory tokenTransfers = new IHederaTokenService.TokenTransferList[](length);
+        for (uint i = 0; i < tokenSenders.length; i++)
+        {
+            IHederaTokenService.TokenTransferList memory airdrop;
+            airdrop.token = token[i];
+            airdrop.transfers = createAccountTransferPair(tokenSenders[i], tokenReceivers[i], tokenAmount);
+            tokenTransfers[i] = airdrop;
+        }
+        uint nftIndex = tokenSenders.length;
+        for (uint v = 0; nftIndex < length; v++)
+        {
+            IHederaTokenService.TokenTransferList memory airdrop;
+            airdrop.token = nft[v];
+            IHederaTokenService.NftTransfer[] memory nftTransfers = new IHederaTokenService.NftTransfer[](1);
+            nftTransfers[0] = prepareNftTransfer(nftSenders[v], nftReceivers[v], serials[v]);
+            airdrop.nftTransfers = nftTransfers;
+            tokenTransfers[nftIndex] = airdrop;
+            nftIndex++;
+        }
+        responseCode = airdropTokens(tokenTransfers);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Internal helper to prepare AccountAmount array for token transfers
+    // @dev Creates a transfer pair with negative amount for sender and positive for receiver
+    // @param sender The address sending tokens
+    // @param receiver The address receiving tokens
+    // @param amount The amount to transfer
+    // @return transfers Array containing the sender and receiver transfer details
+    function createAccountTransferPair(address sender, address receiver, int64 amount) internal pure returns (IHederaTokenService.AccountAmount[] memory transfers) {
+        IHederaTokenService.AccountAmount memory aa1;
+        aa1.accountID = sender;
+        aa1.amount = -amount;
+        IHederaTokenService.AccountAmount memory aa2;
+        aa2.accountID = receiver;
+        aa2.amount = amount;
+        transfers = new IHederaTokenService.AccountAmount[](2);
+        transfers[0] = aa1;
+        transfers[1] = aa2;
+        return transfers;
+    }
+
+    // @notice Internal helper to prepare NFT transfer struct
+    // @dev Sets up sender, receiver and serial number for an NFT transfer
+    // @param sender The address sending the NFT
+    // @param receiver The address receiving the NFT
+    // @param serial The serial number of the NFT
+    // @return nftTransfer The prepared NFT transfer struct
+    function prepareNftTransfer(address sender, address receiver, int64 serial) internal pure returns (IHederaTokenService.NftTransfer memory nftTransfer) {
+        nftTransfer.senderAccountID = sender;
+        nftTransfer.receiverAccountID = receiver;
+        nftTransfer.serialNumber = serial;
+        return nftTransfer;
+    }
+}
+// Filename: contracts/system-contracts/hedera-token-service/examples/hrc-904/CancelAirdrop.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+
+import {HederaResponseCodes} from "../../../HederaResponseCodes.sol";
+import {HederaTokenService} from "../../HederaTokenService.sol";
+import {IHederaTokenService} from "../../IHederaTokenService.sol";
+pragma experimental ABIEncoderV2;
+
+// @title Cancel Airdrop Contract
+// @notice Facilitates cancellation of pending token airdrops on the Hedera network
+// @dev Implements HRC-904 standard for cancelling pending airdrops
+//
+// Pending airdrops can be cancelled in these cases:
+// - When receiver has "receiver signature required" enabled
+// - When receiver has no available auto-association slots
+// - Before the receiver claims the airdrop
+contract CancelAirdrop is HederaTokenService {
+    
+    // @notice Cancels a pending fungible token airdrop from a sender to a receiver
+    // @dev Builds pending airdrop struct and submits cancelAirdrops system contract call
+    // @param sender The address that sent the tokens
+    // @param receiver The address that was to receive the tokens
+    // @param token The token address of the pending airdrop
+    // @return responseCode The response code from the cancel operation (22 = success)
+    function cancelAirdrop(address sender, address receiver, address token) public returns(int64 responseCode){
+        IHederaTokenService.PendingAirdrop[] memory pendingAirdrops = new IHederaTokenService.PendingAirdrop[](1);
+
+        IHederaTokenService.PendingAirdrop memory pendingAirdrop;
+        pendingAirdrop.sender = sender;
+        pendingAirdrop.receiver = receiver;
+        pendingAirdrop.token = token;
+
+        pendingAirdrops[0] = pendingAirdrop;
+
+        responseCode = cancelAirdrops(pendingAirdrops);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Cancels a pending non-fungible token airdrop from a sender to a receiver
+    // @dev Builds pending NFT airdrop struct and submits cancelAirdrops system contract call
+    // @param sender The address that sent the NFT
+    // @param receiver The address that was to receive the NFT
+    // @param token The NFT token address
+    // @param serial The serial number of the NFT
+    // @return responseCode The response code from the cancel operation (22 = success)
+    function cancelNFTAirdrop(address sender, address receiver, address token, int64 serial) public returns(int64 responseCode){
+        IHederaTokenService.PendingAirdrop[] memory pendingAirdrops = new IHederaTokenService.PendingAirdrop[](1);
+
+        IHederaTokenService.PendingAirdrop memory pendingAirdrop;
+        pendingAirdrop.sender = sender;
+        pendingAirdrop.receiver = receiver;
+        pendingAirdrop.token = token;
+        pendingAirdrop.serial = serial;
+
+        pendingAirdrops[0] = pendingAirdrop;
+
+        responseCode = cancelAirdrops(pendingAirdrops);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Cancels multiple pending airdrops in a single transaction
+    // @dev Builds array of pending airdrop structs and submits batch cancelAirdrops call
+    // @param senders Array of addresses that sent the tokens/NFTs
+    // @param receivers Array of addresses that were to receive the tokens/NFTs
+    // @param tokens Array of token addresses for the pending airdrops
+    // @param serials Array of serial numbers for NFT airdrops (use 0 for fungible tokens)
+    // @return responseCode The response code from the batch cancel operation (22 = success)
+    function cancelMultipleAirdrops(address[] memory senders, address[] memory receivers, address[] memory tokens, int64[] memory serials) public returns (int64 responseCode) {
+        uint length = senders.length;
+        IHederaTokenService.PendingAirdrop[] memory pendingAirdrops = new IHederaTokenService.PendingAirdrop[](length);
+        for (uint i = 0; i < length; i++) {
+            IHederaTokenService.PendingAirdrop memory pendingAirdrop;
+            pendingAirdrop.sender = senders[i];
+            pendingAirdrop.receiver = receivers[i];
+            pendingAirdrop.token = tokens[i];
+            pendingAirdrop.serial = serials[i];
+
+            pendingAirdrops[i] = pendingAirdrop;
+        }
+
+        responseCode = cancelAirdrops(pendingAirdrops);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+}
+// Filename: contracts/system-contracts/hedera-token-service/examples/hrc-904/ClaimAirdrop.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+
+import {HederaResponseCodes} from "../../../HederaResponseCodes.sol";
+import {HederaTokenService} from "../../HederaTokenService.sol";
+import {IHederaTokenService} from "../../IHederaTokenService.sol";
+pragma experimental ABIEncoderV2;
+
+// @title Claim Airdrop Contract
+// @notice Facilitates claiming of pending token airdrops on the Hedera network
+// @dev Implements HRC-904 standard for claiming pending airdrops
+//
+// Pending airdrops can be claimed in these cases:
+// - When receiver has "receiver signature required" enabled
+// - When receiver has no available auto-association slots
+// - After the sender has airdropped tokens but before they are cancelled
+contract ClaimAirdrop is HederaTokenService {
+    
+    // @notice Claims a pending fungible token airdrop sent to the caller
+    // @dev Builds pending airdrop struct and submits claimAirdrops system contract call
+    // @param sender The address that sent the tokens
+    // @param receiver The address claiming the tokens
+    // @param token The token address of the pending airdrop
+    // @return responseCode The response code from the claim operation (22 = success)
+    function claim(address sender, address receiver, address token) public returns(int64 responseCode){
+        IHederaTokenService.PendingAirdrop[] memory pendingAirdrops = new IHederaTokenService.PendingAirdrop[](1);
+
+        IHederaTokenService.PendingAirdrop memory pendingAirdrop;
+        pendingAirdrop.sender = sender;
+        pendingAirdrop.receiver = receiver;
+        pendingAirdrop.token = token;
+
+        pendingAirdrops[0] = pendingAirdrop;
+
+        responseCode = claimAirdrops(pendingAirdrops);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Claims a pending non-fungible token airdrop sent to the caller
+    // @dev Builds pending NFT airdrop struct and submits claimAirdrops system contract call
+    // @param sender The address that sent the NFT
+    // @param receiver The address claiming the NFT
+    // @param token The NFT token address
+    // @param serial The serial number of the NFT
+    // @return responseCode The response code from the claim operation (22 = success)
+    function claimNFTAirdrop(address sender, address receiver, address token, int64 serial) public returns(int64 responseCode){
+        IHederaTokenService.PendingAirdrop[] memory pendingAirdrops = new IHederaTokenService.PendingAirdrop[](1);
+
+        IHederaTokenService.PendingAirdrop memory pendingAirdrop;
+        pendingAirdrop.sender = sender;
+        pendingAirdrop.receiver = receiver;
+        pendingAirdrop.token = token;
+        pendingAirdrop.serial = serial;
+
+        pendingAirdrops[0] = pendingAirdrop;
+
+        responseCode = claimAirdrops(pendingAirdrops);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+
+    // @notice Claims multiple pending airdrops in a single transaction
+    // @dev Builds array of pending airdrop structs and submits batch claimAirdrops call
+    // @param senders Array of addresses that sent the tokens/NFTs
+    // @param receivers Array of addresses claiming the tokens/NFTs
+    // @param tokens Array of token addresses for the pending airdrops
+    // @param serials Array of serial numbers for NFT airdrops (use 0 for fungible tokens)
+    // @return responseCode The response code from the batch claim operation (22 = success)
+    function claimMultipleAirdrops(address[] memory senders, address[] memory receivers, address[] memory tokens, int64[] memory serials) public returns (int64 responseCode) {
+        uint length = senders.length;
+        IHederaTokenService.PendingAirdrop[] memory pendingAirdrops = new IHederaTokenService.PendingAirdrop[](length);
+        for (uint i = 0; i < length; i++) {
+            IHederaTokenService.PendingAirdrop memory pendingAirdrop;
+            pendingAirdrop.sender = senders[i];
+            pendingAirdrop.receiver = receivers[i];
+            pendingAirdrop.token = tokens[i];
+            pendingAirdrop.serial = serials[i];
+
+            pendingAirdrops[i] = pendingAirdrop;
+        }
+
+        responseCode = claimAirdrops(pendingAirdrops);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+}
+// Filename: contracts/system-contracts/hedera-token-service/examples/hrc-904/TokenReject.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+
+import {HederaResponseCodes} from "../../../HederaResponseCodes.sol";
+import {HederaTokenService} from "../../HederaTokenService.sol";
+import {IHederaTokenService} from "../../IHederaTokenService.sol";
+pragma experimental ABIEncoderV2;
+
+// @title Token Reject Contract
+// @notice Facilitates rejection of both fungible and non-fungible tokens on the Hedera network
+// @dev Implements token rejection functionality by building NFT structs and calling the rejectTokens system contract
+//
+// Allows accounts to reject:
+// - Multiple fungible tokens in a single transaction
+// - Multiple NFTs in a single transaction
+// - Both fungible and non-fungible tokens together
+contract TokenReject is HederaTokenService {
+
+    // @notice Rejects multiple fungible and non-fungible tokens for an account
+    // @dev Builds NFT ID structs and submits rejectTokens system contract call
+    // @param rejectingAddress The address rejecting the tokens
+    // @param ftAddresses Array of fungible token addresses to reject
+    // @param nftAddresses Array of NFT token addresses to reject
+    // @return responseCode The response code from the reject operation (22 = success)
+    function rejectTokens(address rejectingAddress, address[] memory ftAddresses, address[] memory nftAddresses) public returns(int64 responseCode) {
+        IHederaTokenService.NftID[] memory nftIDs = new IHederaTokenService.NftID[](nftAddresses.length);
+        for (uint i; i < nftAddresses.length; i++) 
+        {
+            IHederaTokenService.NftID memory nftId;
+            nftId.nft = nftAddresses[i];
+            nftId.serial = 1;
+            nftIDs[i] = nftId;
+        }
+        responseCode = rejectTokens(rejectingAddress, ftAddresses, nftIDs);
+        if (responseCode != HederaResponseCodes.SUCCESS) {
+            revert();
+        }
+        return responseCode;
+    }
+}
 // Filename: contracts/system-contracts/hedera-token-service/examples/token-create/TokenCreateContract.sol
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity >=0.5.0 <0.9.0;
@@ -10221,6 +12637,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
     int64 maxSupply = 20000000000;
     int32 decimals = 0;
     bool freezeDefaultStatus = false;
+    bool finiteTotalSupplyType = true;
 
     event ResponseCode(int responseCode);
     event CreatedToken(address tokenAddress);
@@ -10243,12 +12660,11 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
         HederaTokenService.createFungibleToken(token, initialTotalSupply, decimals);
-
         if (responseCode != HederaResponseCodes.SUCCESS) {
             revert ();
         }
@@ -10272,7 +12688,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -10308,7 +12724,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -10335,7 +12751,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, false, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, false, keys, expiry
         );
 
         IHederaTokenService.FixedFee[] memory fixedFees = new IHederaTokenService.FixedFee[](1);
@@ -10370,7 +12786,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -10399,7 +12815,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -10426,7 +12842,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -10455,7 +12871,7 @@ contract TokenCreateContract is HederaTokenService, ExpiryHelper, KeyHelper {
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
 
         IHederaTokenService.FixedFee[] memory fixedFees = new IHederaTokenService.FixedFee[](1);
@@ -10557,6 +12973,8 @@ import "../../KeyHelper.sol";
 import "../../FeeHelper.sol";
 
 contract TokenCreateCustomContract is HederaTokenService, ExpiryHelper, KeyHelper, FeeHelper {
+    bool finiteTotalSupplyType = true;
+
     event ResponseCode(int responseCode);
     event CreatedToken(address tokenAddress);
     event TransferToken(address tokenAddress, address receiver, int64 amount);
@@ -10578,7 +12996,7 @@ contract TokenCreateCustomContract is HederaTokenService, ExpiryHelper, KeyHelpe
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
         
         (int responseCode, address tokenAddress) =
@@ -10613,7 +13031,7 @@ contract TokenCreateCustomContract is HederaTokenService, ExpiryHelper, KeyHelpe
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, freezeDefaultStatus, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, freezeDefaultStatus, keys, expiry
         );
         
         (int responseCode, address tokenAddress) =
@@ -10642,7 +13060,7 @@ contract TokenCreateCustomContract is HederaTokenService, ExpiryHelper, KeyHelpe
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, false, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, false, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -10669,7 +13087,7 @@ contract TokenCreateCustomContract is HederaTokenService, ExpiryHelper, KeyHelpe
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, false, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, false, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -10697,7 +13115,7 @@ contract TokenCreateCustomContract is HederaTokenService, ExpiryHelper, KeyHelpe
         );
 
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            name, symbol, treasury, memo, true, maxSupply, false, keys, expiry
+            name, symbol, treasury, memo, finiteTotalSupplyType, maxSupply, false, keys, expiry
         );
 
         (int responseCode, address tokenAddress) =
@@ -11577,6 +13995,8 @@ import "./SafeHTS.sol";
 
 contract SafeOperations is SafeHTS {
 
+    bool finiteTotalSupplyType = true;
+
     event TokenCreated(address);
     event MintedNft(int64[], int64);
     event BurnToken(int64);
@@ -11673,7 +14093,7 @@ contract SafeOperations is SafeHTS {
             0, msg.sender, 8000000
         );
         IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
-            "tokenName", "tokenSymbol", msg.sender, "memo", true, 1000, false, getKeys(), expiry
+            "tokenName", "tokenSymbol", msg.sender, "memo", finiteTotalSupplyType, 1000, false, getKeys(), expiry
         );
         (tokenAddress) = safeCreateNonFungibleToken(token);
         emit ResponseCode(HederaResponseCodes.SUCCESS);
@@ -12304,6 +14724,94 @@ contract PrngSystemContract {
         emit PseudoRandomSeed(seedBytes);
     }
 }
+// Filename: contracts/wrapped-tokens/WHBAR.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity 0.8.24;
+
+contract WHBAR {
+    string public name = "Wrapped HBAR";
+    string public symbol = "WHBAR";
+    uint8 public decimals = 8;
+    uint256 private whbarTotalSupply = 0;
+
+    event Approval(address indexed src, address indexed guy, uint wad);
+    event Transfer(address indexed src, address indexed dst, uint wad);
+    event Deposit(address indexed dst, uint wad);
+    event Withdrawal(address indexed src, uint wad);
+
+    error InsufficientFunds();
+    error InsufficientAllowance();
+    error SendFailed();
+
+    mapping(address user => uint balance) public balanceOf;
+    mapping(address owner => mapping(address spender => uint amount)) public allowance;
+
+    fallback() external payable {
+        deposit();
+    }
+
+    receive() external payable {
+        deposit();
+    }
+
+    function deposit() public payable {
+        balanceOf[msg.sender] += msg.value;
+        whbarTotalSupply += msg.value;
+
+        emit Deposit(msg.sender, msg.value);
+    }
+
+    function withdraw(uint wad) public {
+        if (!(balanceOf[msg.sender] >= wad)) {
+            revert InsufficientFunds();
+        }
+
+        balanceOf[msg.sender] -= wad;
+        whbarTotalSupply -= wad;
+        (bool success, ) = payable(msg.sender).call{value: wad}("");
+        if (!success) {
+            revert SendFailed();
+        }
+
+        emit Withdrawal(msg.sender, wad);
+    }
+
+    function totalSupply() public view returns (uint) {
+        return whbarTotalSupply;
+    }
+
+    function approve(address guy, uint wad) public returns (bool) {
+        allowance[msg.sender][guy] = wad;
+
+        emit Approval(msg.sender, guy, wad);
+
+        return true;
+    }
+
+    function transfer(address dst, uint wad) public returns (bool) {
+        return transferFrom(msg.sender, dst, wad);
+    }
+
+    function transferFrom(address src, address dst, uint wad) public returns (bool) {
+        if (!(balanceOf[src] >= wad)) {
+            revert InsufficientFunds();
+        }
+
+        if (src != msg.sender && allowance[src][msg.sender] != type(uint256).max) {
+            if (!(allowance[src][msg.sender] >= wad)) {
+                revert InsufficientAllowance();
+            }
+            allowance[src][msg.sender] -= wad;
+        }
+
+        balanceOf[src] -= wad;
+        balanceOf[dst] += wad;
+
+        emit Transfer(src, dst, wad);
+
+        return true;
+    }
+}
 // Filename: contracts/yul/bitwise-coverage/Bitwise.sol
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.20;
@@ -12841,6 +15349,806 @@ contract TransactionInfo {
     }
 }
 
+// Filename: lib/layer-zero/ExampleHTSConnector.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./hts/HederaTokenService.sol";
+import "./hts/IHederaTokenService.sol";
+import "./hts/KeyHelper.sol";
+import "./HTSConnector.sol";
+
+contract ExampleHTSConnector is Ownable, HTSConnector {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        address _lzEndpoint,
+        address _delegate
+    ) payable HTSConnector(_name, _symbol, _lzEndpoint, _delegate) Ownable(_delegate) {}
+}
+// Filename: lib/layer-zero/ExampleHTSConnectorExistingToken.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./hts/HederaTokenService.sol";
+import "./hts/IHederaTokenService.sol";
+import "./hts/KeyHelper.sol";
+import "./HTSConnectorExistingToken.sol";
+
+contract ExampleHTSConnectorExistingToken is Ownable, HTSConnectorExistingToken {
+    constructor(
+        address _tokenAddress,
+        address _lzEndpoint,
+        address _delegate
+    ) payable HTSConnectorExistingToken(_tokenAddress, _lzEndpoint, _delegate) Ownable(_delegate) {}
+}
+// Filename: lib/layer-zero/ExampleOApp.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.22;
+
+import {OApp, Origin, MessagingFee} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oapp/OApp.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ExampleOApp is OApp {
+    constructor(address _endpoint, address _owner) OApp(_endpoint, _owner) Ownable(_owner) {}
+
+    // Some arbitrary data you want to deliver to the destination chain!
+    string public data;
+
+    /**
+     * @notice Sends a message from the source to destination chain.
+     * @param _dstEid Destination chain's endpoint ID.
+     * @param _message The message to send.
+     * @param _options Message execution options (e.g., for sending gas to destination).
+     */
+    function send(
+        uint32 _dstEid,
+        string memory _message,
+        bytes calldata _options
+    ) external payable {
+        // Encodes the message before invoking _lzSend.
+        // Replace with whatever data you want to send!
+        bytes memory _payload = abi.encode(_message);
+        _lzSend(
+            _dstEid,
+            _payload,
+            _options,
+        // Fee in native gas and ZRO token.
+            MessagingFee(msg.value, 0),
+        // Refund address in case of failed source message.
+            payable(msg.sender)
+        );
+    }
+
+    /**
+     * @dev Called when data is received from the protocol. It overrides the equivalent function in the parent contract.
+     * Protocol messages are defined as packets, comprised of the following parameters.
+     * @param _origin A struct containing information about where the packet came from.
+     * @param _guid A global unique identifier for tracking the packet.
+     * @param payload Encoded message.
+     */
+    function _lzReceive(
+        Origin calldata _origin,
+        bytes32 _guid,
+        bytes calldata payload,
+        address, // Executor address as specified by the OApp.
+        bytes calldata  // Any extra data or options to trigger on receipt.
+    ) internal override {
+        // Decode the payload to get the message
+        // In this case, type is string, but depends on your encoding!
+        data = abi.decode(payload, (string));
+    }
+
+    /**
+     * @notice Quotes the gas needed to pay for the full omnichain transaction in native gas or ZRO token.
+     * @param _dstEid Destination chain's endpoint ID.
+     * @param _message The message.
+     * @param _options Message execution options (e.g., for sending gas to destination).
+     * @param _payInLzToken Whether to return fee in ZRO token.
+     * @return fee A `MessagingFee` struct containing the calculated gas fee in either the native token or ZRO token.
+     */
+    function quote(
+        uint32 _dstEid,
+        string memory _message,
+        bytes memory _options,
+        bool _payInLzToken
+    ) public view returns (MessagingFee memory fee) {
+        bytes memory payload = abi.encode(_message);
+        fee = _quote(_dstEid, payload, _options, _payInLzToken);
+    }
+}
+// Filename: lib/layer-zero/ExampleOFT.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.22;
+
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {OFT} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFT.sol";
+
+contract ExampleOFT is OFT {
+    uint8 decimalsArg = 8;
+
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        address _lzEndpoint,
+        address _delegate,
+        uint256 _initialMint,
+        uint8 _decimals
+    ) OFT(_name, _symbol, _lzEndpoint, _delegate) Ownable(_delegate) {
+        _mint(msg.sender, _initialMint);
+        decimalsArg = _decimals;
+    }
+
+    function decimals() public view override returns (uint8) {
+        return decimalsArg;
+    }
+}
+// Filename: lib/layer-zero/ExampleOFTAdapter.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.22;
+
+import {OFTAdapter} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFTAdapter.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ExampleOFTAdapter is OFTAdapter {
+    constructor(
+        address _token,
+        address _lzEndpoint,
+        address _owner
+    ) OFTAdapter(_token, _lzEndpoint, _owner) Ownable(_owner) {}
+}
+// Filename: lib/layer-zero/ExampleONFT.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.22;
+
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {ONFT721} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721.sol";
+
+contract ExampleONFT is ONFT721 {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        address _lzEndpoint,
+        address _delegate,
+        uint256 tokenId
+    ) ONFT721(_name, _symbol, _lzEndpoint, _delegate) {
+        _mint(msg.sender, tokenId);
+    }
+}
+// Filename: lib/layer-zero/ExampleONFTAdapter.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.22;
+
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {ONFT721Adapter} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721Adapter.sol";
+
+contract ExampleONFTAdapter is ONFT721Adapter {
+    constructor(
+        address _token,
+        address _lzEndpoint,
+        address _owner
+    ) ONFT721Adapter(_token, _lzEndpoint, _owner) { }
+}
+// Filename: lib/layer-zero/HTSConnector.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.20;
+
+import {OFTCore} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFTCore.sol";
+import "./hts/HederaTokenService.sol";
+import "./hts/IHederaTokenService.sol";
+import "./hts/KeyHelper.sol";
+
+/**
+ * @title HTS Connector
+ * @dev HTS Connector is a HTS token that extends the functionality of the OFTCore contract.
+    */
+abstract contract HTSConnector is OFTCore, KeyHelper, HederaTokenService {
+    address public htsTokenAddress;
+    bool public finiteTotalSupplyType = true;
+    event TokenCreated(address tokenAddress);
+
+    /**
+     * @dev Constructor for the HTS Connector contract.
+     * @param _name The name of HTS token
+     * @param _symbol The symbol of HTS token
+     * @param _lzEndpoint The LayerZero endpoint address.
+     * @param _delegate The delegate capable of making OApp configurations inside of the endpoint.
+     */
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        address _lzEndpoint,
+        address _delegate
+    ) payable OFTCore(8, _lzEndpoint, _delegate) {
+        IHederaTokenService.TokenKey[] memory keys = new IHederaTokenService.TokenKey[](1);
+        keys[0] = getSingleKey(
+            KeyType.SUPPLY,
+            KeyValueType.INHERIT_ACCOUNT_KEY,
+            bytes("")
+        );
+
+        IHederaTokenService.Expiry memory expiry = IHederaTokenService.Expiry(0, address(this), 8000000);
+        IHederaTokenService.HederaToken memory token = IHederaTokenService.HederaToken(
+            _name, _symbol, address(this), "memo", finiteTotalSupplyType, 5000, false, keys, expiry
+        );
+
+        (int responseCode, address tokenAddress) = HederaTokenService.createFungibleToken(
+            token, 1000, int32(int256(uint256(8)))
+        );
+        require(responseCode == HederaTokenService.SUCCESS_CODE, "Failed to create HTS token");
+
+        int256 transferResponse = HederaTokenService.transferToken(tokenAddress, address(this), msg.sender, 1000);
+        require(transferResponse == HederaTokenService.SUCCESS_CODE, "HTS: Transfer failed");
+
+        htsTokenAddress = tokenAddress;
+
+        emit TokenCreated(tokenAddress);
+    }
+
+    /**
+     * @dev Retrieves the address of the underlying HTS implementation.
+     * @return The address of the HTS token.
+     */
+    function token() public view returns (address) {
+        return htsTokenAddress;
+    }
+
+    /**
+     * @notice Indicates whether the HTS Connector contract requires approval of the 'token()' to send.
+     * @return requiresApproval Needs approval of the underlying token implementation.
+     */
+    function approvalRequired() external pure virtual returns (bool) {
+        return false;
+    }
+
+    /**
+     * @dev Burns tokens from the sender's specified balance.
+     * @param _from The address to debit the tokens from.
+     * @param _amountLD The amount of tokens to send in local decimals.
+     * @param _minAmountLD The minimum amount to send in local decimals.
+     * @param _dstEid The destination chain ID.
+     * @return amountSentLD The amount sent in local decimals.
+     * @return amountReceivedLD The amount received in local decimals on the remote.
+     */
+    function _debit(
+        address _from,
+        uint256 _amountLD,
+        uint256 _minAmountLD,
+        uint32 _dstEid
+    ) internal virtual override returns (uint256 amountSentLD, uint256 amountReceivedLD) {
+        (amountSentLD, amountReceivedLD) = _debitView(_amountLD, _minAmountLD, _dstEid);
+
+        int256 transferResponse = HederaTokenService.transferToken(htsTokenAddress, _from, address(this), int64(uint64(_amountLD)));
+        require(transferResponse == HederaTokenService.SUCCESS_CODE, "HTS: Transfer failed");
+
+        (int256 response,) = HederaTokenService.burnToken(htsTokenAddress, int64(uint64(amountSentLD)), new int64[](0));
+        require(response == HederaTokenService.SUCCESS_CODE, "HTS: Burn failed");
+    }
+
+    /**
+     * @dev Credits tokens to the specified address.
+     * @param _to The address to credit the tokens to.
+     * @param _amountLD The amount of tokens to credit in local decimals.
+     * @dev _srcEid The source chain ID.
+     * @return amountReceivedLD The amount of tokens ACTUALLY received in local decimals.
+     */
+    function _credit(
+        address _to,
+        uint256 _amountLD,
+        uint32 /*_srcEid*/
+    ) internal virtual override returns (uint256) {
+        (int256 response, ,) = HederaTokenService.mintToken(htsTokenAddress, int64(uint64(_amountLD)), new bytes[](0));
+        require(response == HederaTokenService.SUCCESS_CODE, "HTS: Mint failed");
+
+        int256 transferResponse = HederaTokenService.transferToken(htsTokenAddress, address(this), _to, int64(uint64(_amountLD)));
+        require(transferResponse == HederaTokenService.SUCCESS_CODE, "HTS: Transfer failed");
+
+        return _amountLD;
+    }
+}
+// Filename: lib/layer-zero/HTSConnectorExistingToken.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.20;
+
+import {OFTCore} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFTCore.sol";
+import "./hts/HederaTokenService.sol";
+import "./hts/IHederaTokenService.sol";
+import "./hts/KeyHelper.sol";
+
+/**
+ * @title HTS Connector for existing token
+ * @dev HTSConnectorExistingToken is a contract wrapped for already existing HTS token that extends the functionality of the OFTCore contract.
+ */
+abstract contract HTSConnectorExistingToken is OFTCore, KeyHelper, HederaTokenService {
+    address public htsTokenAddress;
+
+    /**
+     * @dev Constructor for the HTSConnectorExistingToken contract.
+     * @param _tokenAddress Address of already existing HTS token
+     * @param _lzEndpoint The LayerZero endpoint address.
+     * @param _delegate The delegate capable of making OApp configurations inside of the endpoint.
+     */
+    constructor(
+        address _tokenAddress,
+        address _lzEndpoint,
+        address _delegate
+    ) payable OFTCore(8, _lzEndpoint, _delegate) {
+        htsTokenAddress = _tokenAddress;
+    }
+
+    /**
+     * @dev Retrieves the address of the underlying HTS implementation.
+     * @return The address of the HTS token.
+     */
+    function token() public view returns (address) {
+        return htsTokenAddress;
+    }
+
+    /**
+     * @notice Indicates whether the HTS Connector contract requires approval of the 'token()' to send.
+     * @return requiresApproval Needs approval of the underlying token implementation.
+     */
+    function approvalRequired() external pure virtual returns (bool) {
+        return false;
+    }
+
+    /**
+     * @dev Burns tokens from the sender's specified balance.
+     * @param _from The address to debit the tokens from.
+     * @param _amountLD The amount of tokens to send in local decimals.
+     * @param _minAmountLD The minimum amount to send in local decimals.
+     * @param _dstEid The destination chain ID.
+     * @return amountSentLD The amount sent in local decimals.
+     * @return amountReceivedLD The amount received in local decimals on the remote.
+     */
+    function _debit(
+        address _from,
+        uint256 _amountLD,
+        uint256 _minAmountLD,
+        uint32 _dstEid
+    ) internal virtual override returns (uint256 amountSentLD, uint256 amountReceivedLD) {
+        (amountSentLD, amountReceivedLD) = _debitView(_amountLD, _minAmountLD, _dstEid);
+
+        int256 transferResponse = HederaTokenService.transferToken(htsTokenAddress, _from, address(this), int64(uint64(_amountLD)));
+        require(transferResponse == HederaTokenService.SUCCESS_CODE, "HTS: Transfer failed");
+
+        (int256 response,) = HederaTokenService.burnToken(htsTokenAddress, int64(uint64(amountSentLD)), new int64[](0));
+        require(response == HederaTokenService.SUCCESS_CODE, "HTS: Burn failed");
+    }
+
+    /**
+     * @dev Credits tokens to the specified address.
+     * @param _to The address to credit the tokens to.
+     * @param _amountLD The amount of tokens to credit in local decimals.
+     * @dev _srcEid The source chain ID.
+     * @return amountReceivedLD The amount of tokens ACTUALLY received in local decimals.
+     */
+    function _credit(
+        address _to,
+        uint256 _amountLD,
+        uint32 /*_srcEid*/
+    ) internal virtual override returns (uint256) {
+        (int256 response, ,) = HederaTokenService.mintToken(htsTokenAddress, int64(uint64(_amountLD)), new bytes[](0));
+        require(response == HederaTokenService.SUCCESS_CODE, "HTS: Mint failed");
+
+        int256 transferResponse = HederaTokenService.transferToken(htsTokenAddress, address(this), _to, int64(uint64(_amountLD)));
+        require(transferResponse == HederaTokenService.SUCCESS_CODE, "HTS: Transfer failed");
+
+        return _amountLD;
+    }
+}
+// Filename: lib/layer-zero/hts/HederaTokenService.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+import "./IHederaTokenService.sol";
+
+abstract contract HederaTokenService {
+    // all response codes are defined here https://github.com/hashgraph/hedera-smart-contracts/blob/main/contracts/system-contracts/HederaResponseCodes.sol
+    int32 constant UNKNOWN_CODE = 21;
+    int32 constant SUCCESS_CODE = 22;
+
+    address constant precompileAddress = address(0x167);
+    // 90 days in seconds
+    int32 constant defaultAutoRenewPeriod = 7776000;
+
+    modifier nonEmptyExpiry(IHederaTokenService.HederaToken memory token) {
+        if (token.expiry.second == 0 && token.expiry.autoRenewPeriod == 0) {
+            token.expiry.autoRenewPeriod = defaultAutoRenewPeriod;
+        }
+        _;
+    }
+
+    /// Generic event
+    event CallResponseEvent(bool, bytes);
+
+    /// Mints an amount of the token to the defined treasury account
+    /// @param token The token for which to mint tokens. If token does not exist, transaction results in
+    ///              INVALID_TOKEN_ID
+    /// @param amount Applicable to tokens of type FUNGIBLE_COMMON. The amount to mint to the Treasury Account.
+    ///               Amount must be a positive non-zero number represented in the lowest denomination of the
+    ///               token. The new supply must be lower than 2^63.
+    /// @param metadata Applicable to tokens of type NON_FUNGIBLE_UNIQUE. A list of metadata that are being created.
+    ///                 Maximum allowed size of each metadata is 100 bytes
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return newTotalSupply The new supply of tokens. For NFTs it is the total count of NFTs
+    /// @return serialNumbers If the token is an NFT the newly generate serial numbers, otherwise empty.
+    function mintToken(
+        address token,
+        int64 amount,
+        bytes[] memory metadata
+    )
+        internal
+        returns (
+            int responseCode,
+            int64 newTotalSupply,
+            int64[] memory serialNumbers
+        )
+    {
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(
+                IHederaTokenService.mintToken.selector,
+                token,
+                amount,
+                metadata
+            )
+        );
+        (responseCode, newTotalSupply, serialNumbers) = success
+            ? abi.decode(result, (int32, int64, int64[]))
+            : (HederaTokenService.UNKNOWN_CODE, int64(0), new int64[](0));
+    }
+
+    /// Burns an amount of the token from the defined treasury account
+    /// @param token The token for which to burn tokens. If token does not exist, transaction results in
+    ///              INVALID_TOKEN_ID
+    /// @param amount  Applicable to tokens of type FUNGIBLE_COMMON. The amount to burn from the Treasury Account.
+    ///                Amount must be a positive non-zero number, not bigger than the token balance of the treasury
+    ///                account (0; balance], represented in the lowest denomination.
+    /// @param serialNumbers Applicable to tokens of type NON_FUNGIBLE_UNIQUE. The list of serial numbers to be burned.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return newTotalSupply The new supply of tokens. For NFTs it is the total count of NFTs
+    function burnToken(
+        address token,
+        int64 amount,
+        int64[] memory serialNumbers
+    ) internal returns (int responseCode, int64 newTotalSupply) {
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(
+                IHederaTokenService.burnToken.selector,
+                token,
+                amount,
+                serialNumbers
+            )
+        );
+        (responseCode, newTotalSupply) = success
+            ? abi.decode(result, (int32, int64))
+            : (HederaTokenService.UNKNOWN_CODE, int64(0));
+    }
+
+    /// Creates a Fungible Token with the specified properties
+    /// @param token the basic properties of the token being created
+    /// @param initialTotalSupply Specifies the initial supply of tokens to be put in circulation. The
+    /// initial supply is sent to the Treasury Account. The supply is in the lowest denomination possible.
+    /// @param decimals the number of decimal places a token is divisible by
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return tokenAddress the created token's address
+    function createFungibleToken(
+        IHederaTokenService.HederaToken memory token,
+        int64 initialTotalSupply,
+        int32 decimals
+    )
+        internal
+        nonEmptyExpiry(token)
+        returns (int responseCode, address tokenAddress)
+    {
+        (bool success, bytes memory result) = precompileAddress.call{
+            value: msg.value
+        }(
+            abi.encodeWithSelector(
+                IHederaTokenService.createFungibleToken.selector,
+                token,
+                initialTotalSupply,
+                decimals
+            )
+        );
+
+        (responseCode, tokenAddress) = success
+            ? abi.decode(result, (int32, address))
+            : (HederaTokenService.UNKNOWN_CODE, address(0));
+    }
+
+    /// Transfers tokens where the calling account/contract is implicitly the first entry in the token transfer list,
+    /// where the amount is the value needed to zero balance the transfers. Regular signing rules apply for sending
+    /// (positive amount) or receiving (negative amount)
+    /// @param token The token to transfer to/from
+    /// @param sender The sender for the transaction
+    /// @param receiver The receiver of the transaction
+    /// @param amount Non-negative value to send. a negative value will result in a failure.
+    function transferToken(
+        address token,
+        address sender,
+        address receiver,
+        int64 amount
+    ) internal returns (int responseCode) {
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(
+                IHederaTokenService.transferToken.selector,
+                token,
+                sender,
+                receiver,
+                amount
+            )
+        );
+        responseCode = success
+            ? abi.decode(result, (int32))
+            : HederaTokenService.UNKNOWN_CODE;
+    }
+
+    /// Operation to update token keys
+    /// @param token The token address
+    /// @param keys The token keys
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function updateTokenKeys(address token, IHederaTokenService.TokenKey[] memory keys)
+    internal returns (int64 responseCode){
+        (bool success, bytes memory result) = precompileAddress.call(
+            abi.encodeWithSelector(IHederaTokenService.updateTokenKeys.selector, token, keys));
+        (responseCode) = success ? abi.decode(result, (int32)) : HederaTokenService.UNKNOWN_CODE;
+    }
+
+}
+// Filename: lib/layer-zero/hts/IHederaTokenService.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.4.9 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+interface IHederaTokenService {
+    /// Expiry properties of a Hedera token - second, autoRenewAccount, autoRenewPeriod
+    struct Expiry {
+        // The epoch second at which the token should expire; if an auto-renew account and period are
+        // specified, this is coerced to the current epoch second plus the autoRenewPeriod
+        int64 second;
+        // ID of an account which will be automatically charged to renew the token's expiration, at
+        // autoRenewPeriod interval, expressed as a solidity address
+        address autoRenewAccount;
+        // The interval at which the auto-renew account will be charged to extend the token's expiry
+        int64 autoRenewPeriod;
+    }
+
+    /// A Key can be a public key from either the Ed25519 or ECDSA(secp256k1) signature schemes, where
+    /// in the ECDSA(secp256k1) case we require the 33-byte compressed form of the public key. We call
+    /// these public keys <b>primitive keys</b>.
+    /// A Key can also be the ID of a smart contract instance, which is then authorized to perform any
+    /// precompiled contract action that requires this key to sign.
+    /// Note that when a Key is a smart contract ID, it <i>doesn't</i> mean the contract with that ID
+    /// will actually create a cryptographic signature. It only means that when the contract calls a
+    /// precompiled contract, the resulting "child transaction" will be authorized to perform any action
+    /// controlled by the Key.
+    /// Exactly one of the possible values should be populated in order for the Key to be valid.
+    struct KeyValue {
+        // if set to true, the key of the calling Hedera account will be inherited as the token key
+        bool inheritAccountKey;
+        // smart contract instance that is authorized as if it had signed with a key
+        address contractId;
+        // Ed25519 public key bytes
+        bytes ed25519;
+        // Compressed ECDSA(secp256k1) public key bytes
+        bytes ECDSA_secp256k1;
+        // A smart contract that, if the recipient of the active message frame, should be treated
+        // as having signed. (Note this does not mean the <i>code being executed in the frame</i>
+        // will belong to the given contract, since it could be running another contract's code via
+        // <tt>delegatecall</tt>. So setting this key is a more permissive version of setting the
+        // contractID key, which also requires the code in the active message frame belong to the
+        // the contract with the given id.)
+        address delegatableContractId;
+    }
+
+    /// A list of token key types the key should be applied to and the value of the key
+    struct TokenKey {
+        // bit field representing the key type. Keys of all types that have corresponding bits set to 1
+        // will be created for the token.
+        // 0th bit: adminKey
+        // 1st bit: kycKey
+        // 2nd bit: freezeKey
+        // 3rd bit: wipeKey
+        // 4th bit: supplyKey
+        // 5th bit: feeScheduleKey
+        // 6th bit: pauseKey
+        // 7th bit: ignored
+        uint keyType;
+        // the value that will be set to the key type
+        KeyValue key;
+    }
+
+    /// Basic properties of a Hedera Token - name, symbol, memo, tokenSupplyType, maxSupply,
+    /// treasury, freezeDefault. These properties are related both to Fungible and NFT token types.
+    struct HederaToken {
+        // The publicly visible name of the token. The token name is specified as a Unicode string.
+        // Its UTF-8 encoding cannot exceed 100 bytes, and cannot contain the 0 byte (NUL).
+        string name;
+        // The publicly visible token symbol. The token symbol is specified as a Unicode string.
+        // Its UTF-8 encoding cannot exceed 100 bytes, and cannot contain the 0 byte (NUL).
+        string symbol;
+        // The ID of the account which will act as a treasury for the token as a solidity address.
+        // This account will receive the specified initial supply or the newly minted NFTs in
+        // the case for NON_FUNGIBLE_UNIQUE Type
+        address treasury;
+        // The memo associated with the token (UTF-8 encoding max 100 bytes)
+        string memo;
+        // IWA compatibility. Specified the token supply type. Defaults to INFINITE
+        bool tokenSupplyType;
+        // IWA Compatibility. Depends on TokenSupplyType. For tokens of type FUNGIBLE_COMMON - the
+        // maximum number of tokens that can be in circulation. For tokens of type NON_FUNGIBLE_UNIQUE -
+        // the maximum number of NFTs (serial numbers) that can be minted. This field can never be changed!
+        int64 maxSupply;
+        // The default Freeze status (frozen or unfrozen) of Hedera accounts relative to this token. If
+        // true, an account must be unfrozen before it can receive the token
+        bool freezeDefault;
+        // list of keys to set to the token
+        TokenKey[] tokenKeys;
+        // expiry properties of a Hedera token - second, autoRenewAccount, autoRenewPeriod
+        Expiry expiry;
+    }
+
+    /**********************
+     * Direct HTS Calls   *
+     **********************/
+
+    /// Mints an amount of the token to the defined treasury account
+    /// @param token The token for which to mint tokens. If token does not exist, transaction results in
+    ///              INVALID_TOKEN_ID
+    /// @param amount Applicable to tokens of type FUNGIBLE_COMMON. The amount to mint to the Treasury Account.
+    ///               Amount must be a positive non-zero number represented in the lowest denomination of the
+    ///               token. The new supply must be lower than 2^63.
+    /// @param metadata Applicable to tokens of type NON_FUNGIBLE_UNIQUE. A list of metadata that are being created.
+    ///                 Maximum allowed size of each metadata is 100 bytes
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return newTotalSupply The new supply of tokens. For NFTs it is the total count of NFTs
+    /// @return serialNumbers If the token is an NFT the newly generate serial numbers, othersise empty.
+    function mintToken(
+        address token,
+        int64 amount,
+        bytes[] memory metadata
+    )
+        external
+        returns (
+            int64 responseCode,
+            int64 newTotalSupply,
+            int64[] memory serialNumbers
+        );
+
+    /// Burns an amount of the token from the defined treasury account
+    /// @param token The token for which to burn tokens. If token does not exist, transaction results in
+    ///              INVALID_TOKEN_ID
+    /// @param amount  Applicable to tokens of type FUNGIBLE_COMMON. The amount to burn from the Treasury Account.
+    ///                Amount must be a positive non-zero number, not bigger than the token balance of the treasury
+    ///                account (0; balance], represented in the lowest denomination.
+    /// @param serialNumbers Applicable to tokens of type NON_FUNGIBLE_UNIQUE. The list of serial numbers to be burned.
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return newTotalSupply The new supply of tokens. For NFTs it is the total count of NFTs
+    function burnToken(
+        address token,
+        int64 amount,
+        int64[] memory serialNumbers
+    ) external returns (int64 responseCode, int64 newTotalSupply);
+
+    /// Creates a Fungible Token with the specified properties
+    /// @param token the basic properties of the token being created
+    /// @param initialTotalSupply Specifies the initial supply of tokens to be put in circulation. The
+    /// initial supply is sent to the Treasury Account. The supply is in the lowest denomination possible.
+    /// @param decimals the number of decimal places a token is divisible by
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    /// @return tokenAddress the created token's address
+    function createFungibleToken(
+        HederaToken memory token,
+        int64 initialTotalSupply,
+        int32 decimals
+    ) external payable returns (int64 responseCode, address tokenAddress);
+
+    /// Transfers tokens where the calling account/contract is implicitly the first entry in the token transfer list,
+    /// where the amount is the value needed to zero balance the transfers. Regular signing rules apply for sending
+    /// (positive amount) or receiving (negative amount)
+    /// @param token The token to transfer to/from
+    /// @param sender The sender for the transaction
+    /// @param recipient The receiver of the transaction
+    /// @param amount Non-negative value to send. a negative value will result in a failure.
+    function transferToken(
+        address token,
+        address sender,
+        address recipient,
+        int64 amount
+    ) external returns (int64 responseCode);
+
+    /// Operation to update token keys
+    /// @param token The token address
+    /// @param keys The token keys
+    /// @return responseCode The response code for the status of the request. SUCCESS is 22.
+    function updateTokenKeys(address token, TokenKey[] memory keys) external returns (int64 responseCode);
+}
+// Filename: lib/layer-zero/hts/KeyHelper.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity >=0.5.0 <0.9.0;
+pragma experimental ABIEncoderV2;
+
+import "./HederaTokenService.sol";
+
+abstract contract KeyHelper {
+    using Bits for uint256;
+    address supplyContract;
+
+    mapping(KeyType => uint256) keyTypes;
+
+    enum KeyType {
+        ADMIN,
+        KYC,
+        FREEZE,
+        WIPE,
+        SUPPLY,
+        FEE,
+        PAUSE
+    }
+    enum KeyValueType {
+        INHERIT_ACCOUNT_KEY,
+        CONTRACT_ID,
+        ED25519,
+        SECP256K1,
+        DELEGETABLE_CONTRACT_ID
+    }
+
+    constructor() {
+        keyTypes[KeyType.ADMIN] = 1;
+        keyTypes[KeyType.KYC] = 2;
+        keyTypes[KeyType.FREEZE] = 4;
+        keyTypes[KeyType.WIPE] = 8;
+        keyTypes[KeyType.SUPPLY] = 16;
+        keyTypes[KeyType.FEE] = 32;
+        keyTypes[KeyType.PAUSE] = 64;
+    }
+
+    function getSingleKey(
+        KeyType keyType,
+        KeyValueType keyValueType,
+        bytes memory key
+    ) internal view returns (IHederaTokenService.TokenKey memory tokenKey) {
+        tokenKey = IHederaTokenService.TokenKey(
+            getKeyType(keyType),
+            getKeyValueType(keyValueType, key)
+        );
+    }
+
+    function getKeyType(KeyType keyType) internal view returns (uint256) {
+        return keyTypes[keyType];
+    }
+
+    function getKeyValueType(
+        KeyValueType keyValueType,
+        bytes memory key
+    ) internal view returns (IHederaTokenService.KeyValue memory keyValue) {
+        if (keyValueType == KeyValueType.INHERIT_ACCOUNT_KEY) {
+            keyValue.inheritAccountKey = true;
+        } else if (keyValueType == KeyValueType.CONTRACT_ID) {
+            keyValue.contractId = supplyContract;
+        } else if (keyValueType == KeyValueType.ED25519) {
+            keyValue.ed25519 = key;
+        } else if (keyValueType == KeyValueType.SECP256K1) {
+            keyValue.ECDSA_secp256k1 = key;
+        } else if (keyValueType == KeyValueType.DELEGETABLE_CONTRACT_ID) {
+            keyValue.delegatableContractId = supplyContract;
+        }
+    }
+}
+
+library Bits {
+    uint256 internal constant ONE = uint256(1);
+
+    // Sets the bit at the given 'index' in 'self' to '1'.
+    // Returns the modified value.
+    function setBit(uint256 self, uint8 index) internal pure returns (uint256) {
+        return self | (ONE << index);
+    }
+}
 // Filename: test/foundry/ExchangeRateSystemContractMock.t.sol
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.9;
@@ -16168,6 +19476,14 @@ contract HtsSystemContractMock is NoDelegateCall, KeyHelper, IHtsSystemContractM
     function _getStringLength(string memory _string) internal pure returns (uint length) {
         length = bytes(_string).length;
     }
+
+    function airdropTokens(TokenTransferList[] memory tokenTransfers) external returns (int64 responseCode) {}
+
+    function cancelAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode) {}
+
+    function claimAirdrops(PendingAirdrop[] memory pendingAirdrops) external returns (int64 responseCode) {}
+
+    function rejectTokens(address rejectingAddress, address[] memory ftAddresses, NftID[] memory nftIDs) external returns (int64 responseCode) {}
 }
 // Filename: test/foundry/mocks/interfaces/IHRCCommon.sol
 // SPDX-License-Identifier: Apache-2.0
@@ -17841,5 +21157,130 @@ abstract contract UtilUtils is Test, CommonUtils, Constants {
 
     function _doCallPseudorandomSeed(address sender) internal setPranker(sender) returns (bytes32 seed) {
         seed = utilPrecompile.getPseudorandomSeed();
+    }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/contracts/erc-1155/ERC1155Mock.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.7;
+
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+
+contract ERC1155Mock is ERC1155 {
+    constructor(string memory uri) ERC1155(uri) {}
+
+    function mint(address to, uint256 id, uint256 amount, bytes memory data) public {
+        _mint(to, id, amount, data);
+    }
+
+    function mintBatch(address to, uint256[] memory id, uint256[] memory amount, bytes memory data) public {
+        _mintBatch(to, id, amount, data);
+    }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/contracts/erc-20/ERC20Mock.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.7;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract OZERC20Mock is ERC20 {
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
+    
+    function mint(address to, uint256 amount) public virtual {
+        require(amount > 0);
+        _mint(to, amount);
+    }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/contracts/erc-20/MinalmalERC20.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+/**
+ * @title MinimalERC20
+ * @dev An ERC-20 implementation without `name()`, `symbol()`, `decimals()`, and `totalSupply()`.
+ */
+contract MinimalERC20 is ERC20 {
+    constructor() ERC20("", "") {}
+
+    /**
+     * @notice Override the `name()` function to remove it.
+     * @dev Reverts on call to prevent exposing the name of the token.
+     */
+    function name() public pure override returns (string memory) {
+        revert("Name not supported");
+    }
+
+    /**
+     * @notice Override the `symbol()` function to remove it.
+     * @dev Reverts on call to prevent exposing the symbol of the token.
+     */
+    function symbol() public pure override returns (string memory) {
+        revert("Symbol not supported");
+    }
+
+    /**
+     * @notice Override the `decimals()` function to remove it.
+     * @dev Reverts on call to prevent exposing the decimals of the token.
+     */
+    function decimals() public pure override returns (uint8) {
+        revert("Decimals not supported");
+    }
+
+    /**
+     * @notice Override the `totalSupply()` function to remove it.
+     * @dev Reverts on call to prevent exposing the total supply of the token.
+     */
+    function totalSupply() public pure override returns (uint256) {
+        revert("Total supply not supported");
+    }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/contracts/erc-721/ERC721Mock.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.7;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract OZERC721Mock is ERC721 {
+    constructor(string memory name, string memory symbol) ERC721(name, symbol) {}
+
+    function mint(address to, uint256 tokenId) public {
+        _mint(to, tokenId);
+    }
+}
+// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/contracts/erc-721/MinimalERC721.sol
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.7;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract MinimalERC721 is ERC721 {
+    constructor() ERC721("", "") {}
+
+    /**
+     * @notice Override the `name()` function to remove it.
+     * @dev Reverts on call to prevent exposing the name of the token.
+     */
+    function name() public pure override returns (string memory) {
+        revert("Name not supported");
+    }
+
+    /**
+     * @notice Override the `symbol()` function to remove it.
+     * @dev Reverts on call to prevent exposing the symbol of the token.
+     */
+    function symbol() public pure override returns (string memory) {
+        revert("Symbol not supported");
+    }
+}// Filename: tools/erc-repository-indexer/erc-contract-indexer/tests/acceptance/contracts/non-ercs/Basic.sol
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.0;
+
+contract Basic {
+
+    constructor() {}
+
+    function ping() public pure returns (int) {
+        return 1;
     }
 }

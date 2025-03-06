@@ -2,7 +2,7 @@
 
 # List of repositories
 repos=(
-    "hhttps://github.com/hiero-ledger/hiero-sdk-java.git"
+    "https://github.com/hiero-ledger/hiero-sdk-java.git"
     "https://github.com/hiero-ledger/hiero-sdk-js.git"
     "https://github.com/hiero-ledger/hiero-sdk-go.git"
     "https://github.com/hiero-ledger/hiero-sdk-swift.git"
