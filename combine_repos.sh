@@ -2,17 +2,17 @@
 
 # List of repositories
 repos=(
-    "https://github.com/hashgraph/hedera-sdk-java.git"
-    "https://github.com/hashgraph/hedera-sdk-js.git"
-    "https://github.com/hashgraph/hedera-sdk-go.git"
-    "https://github.com/hashgraph/hedera-sdk-swift.git"
-    "https://github.com/hashgraph/hedera-sdk-rust.git"
-    "https://github.com/hashgraph/hedera-sdk-cpp.git"
+    "hhttps://github.com/hiero-ledger/hiero-sdk-java.git"
+    "https://github.com/hiero-ledger/hiero-sdk-js.git"
+    "https://github.com/hiero-ledger/hiero-sdk-go.git"
+    "https://github.com/hiero-ledger/hiero-sdk-swift.git"
+    "https://github.com/hiero-ledger/hiero-sdk-rust.git"
+    "https://github.com/hiero-ledger/hiero-sdk-cpp.git"
     "https://github.com/hashgraph/hedera-smart-contracts.git"
     "https://github.com/hashgraph/hedera-smart-contract-starter.git"
-    "https://github.com/hashgraph/hedera-local-node.git"
+    "https://github.com/hiero-ledger/hiero-local-node.git"
     "https://github.com/hashgraph/solo.git"
-    "https://github.com/hashgraph/hedera-docs.git"
+    "https://github.com/hiero-ledger/hiero-docs.git"
 )
 
 for repo_url in "${repos[@]}"
@@ -35,28 +35,28 @@ do
     # Determine applicable file extensions based on the repository
     extensions=()
     case "$repo_name" in
-        hedera-sdk-java)
+        hiero-sdk-java)
             extensions=("java")
             ;;
-        hedera-sdk-js)
+        hiero-sdk-js)
             extensions=("js")
             ;;
-        hedera-sdk-go)
+        hiero-sdk-go)
             extensions=("go")
             ;;
-        hedera-sdk-swift)
+        hiero-sdk-swift)
             extensions=("swift")
             ;;
-        hedera-sdk-rust)
+        hiero-sdk-rust)
             extensions=("rs")
             ;;
-        hedera-sdk-cpp)
+        hiero-sdk-cpp)
             extensions=("cpp" "h")
             ;;
         hedera-smart-contracts | hedera-smart-contract-starter)
             extensions=("sol" "ts" "js" "md")
             ;;
-        hedera-local-node | solo | hedera-docs)
+        hiero-local-node | solo | hiero-docs)
             extensions=("md")
             ;;
         *)
@@ -77,7 +77,7 @@ do
         rm -f "$output_file"
 
         # Define file pattern
-        if [ "$repo_name" == "hedera-sdk-cpp" ] && [ "$ext" == "cpp" ]; then
+        if [ "$repo_name" == "hiero-sdk-cpp" ] && [ "$ext" == "cpp" ]; then
             pattern='*.{cpp,h}'
         else
             pattern="*.$ext"
