@@ -13,6 +13,8 @@ repos=(
     "https://github.com/hiero-ledger/hiero-local-node.git"
     "https://github.com/hashgraph/solo.git"
     "https://github.com/hiero-ledger/hiero-docs.git"
+    "https://github.com/hashgraph/hedera-docs.git"
+    
 )
 
 for repo_url in "${repos[@]}"
@@ -56,7 +58,7 @@ do
         hedera-smart-contracts | hedera-smart-contract-starter)
             extensions=("sol" "ts" "js" "md")
             ;;
-        hiero-local-node | solo | hiero-docs)
+        hiero-local-node | solo | hiero-docs | hedera-docs)
             extensions=("md")
             ;;
         *)

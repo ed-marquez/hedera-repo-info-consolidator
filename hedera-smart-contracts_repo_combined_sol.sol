@@ -11780,7 +11780,7 @@ import "./HederaTokenService.sol";
 
 abstract contract KeyHelper {
     using Bits for uint256;
-    address supplyContract;
+    address supplyContract = 0x0000000000000000000000000000000000000000;
 
     mapping(KeyType => uint256) keyTypes;
 
@@ -11980,20 +11980,27 @@ contract ERC20Contract {
     }
 
     function transferFrom(address token, address sender, address recipient, uint256 amount) external returns (bool) {
+        // detect when msg.sender is not used as from in transferFrom, ignored because it is needed to run the test properly
+        // slither-disable-next-line arbitrary-send-erc20
         return IERC20(token).transferFrom(sender, recipient, amount);
     }
 
     function delegateTransfer(address token, address recipient, uint256 amount) public {
+        // detect .delegatecall to an address controlled by the user, ignored because it is needed to run the test properly
+        // slither-disable-next-line controlled-delegatecall
         (bool success, ) = address(IERC20(token)).delegatecall(abi.encodeWithSignature("transfer(address,uint256)", recipient, amount));
         require(success, "Delegate call failed");
     }
 
     function delegateApprove(address token, address recipient, uint256 amount) public {
+        // detect .delegatecall to an address controlled by the user, ignored because it is needed to run the test properly
+        // slither-disable-next-line controlled-delegatecall
         (bool success, ) = address(IERC20(token)).delegatecall(abi.encodeWithSignature("approve(address,uint256)", recipient, amount));
         require(success, "Delegate call failed");
     }
 
     function delegateTransferFrom(address token, address from, address to, uint256 amount) external payable {
+        // slither-disable-next-line controlled-delegatecall
         (bool success, ) = address(IERC20(token)).delegatecall(abi.encodeWithSignature("transferFrom(address,address,uint256)", from, to, amount));
         require(success, "Delegate call failed");
     }
@@ -12041,6 +12048,8 @@ contract ERC721Contract {
 
     // The `to` address will receive approval by msg.sender
     function delegateApprove(address token, address to, uint256 tokenId) external payable {
+        // detect .delegatecall to an address controlled by the user, ignored because it is needed to run the test properly
+        // slither-disable-next-line controlled-delegatecall
         (bool success, ) = address(IERC721(token)).delegatecall(abi.encodeWithSignature("approve(address,uint256)", to, tokenId));
         require(success, "Delegate call failed");
     }
@@ -12053,6 +12062,8 @@ contract ERC721Contract {
 
     // The `to` address will receive approval by msg.sender
     function delegateSetApprovalForAll(address token, address operator, bool approved) external {
+        // detect .delegatecall to an address controlled by the user, ignored because it is needed to run the test properly
+        // slither-disable-next-line controlled-delegatecall
         (bool success, ) = address(IERC721(token)).delegatecall(abi.encodeWithSignature("setApprovalForAll(address,bool)", operator, approved));
         require(success, "Delegate call failed");
     }
@@ -12067,11 +12078,15 @@ contract ERC721Contract {
 
     // The call will be executed by the contract itself, so the contract address has to be the owner of `tokenId`
     function transferFrom(address token, address from, address to, uint256 tokenId) external payable {
+        // detect when msg.sender is not used as from in transferFrom, ignored because it is needed to run the test properly
+        // slither-disable-next-line arbitrary-send-erc20
         IERC721(token).transferFrom(from, to, tokenId);
     }
 
     // The call will be executed by the msg.sender address
     function delegateTransferFrom(address token, address from, address to, uint256 tokenId) external payable {
+        // detect .delegatecall to an address controlled by the user, ignored because it is needed to run the test properly
+        // slither-disable-next-line controlled-delegatecall
         (bool success, ) = address(IERC721(token)).delegatecall(abi.encodeWithSignature("transferFrom(address,address,uint256)", from, to, tokenId));
         require(success, "Delegate call failed");
     }
@@ -14646,6 +14661,9 @@ contract EthNativePrecompileCaller {
             exp,
             modulus
         );
+
+        // detect collision due to dynamic type usages in encodePacked, ignored because it is needed to run the test properly
+        // slither-disable-next-line encode-packed-collision
         bytes memory callData = abi.encodePacked(fixed32BytesCalldata, dynamicCallData);
 
         (bool success, bytes memory result) = address(5).call(callData);
@@ -14793,6 +14811,9 @@ contract WHBAR {
     }
 
     function transferFrom(address src, address dst, uint wad) public returns (bool) {
+        if (dst == address(this)) {
+            revert SendFailed();
+        }
         if (!(balanceOf[src] >= wad)) {
             revert InsufficientFunds();
         }
@@ -15618,6 +15639,8 @@ abstract contract HTSConnector is OFTCore, KeyHelper, HederaTokenService {
         uint256 _minAmountLD,
         uint32 _dstEid
     ) internal virtual override returns (uint256 amountSentLD, uint256 amountReceivedLD) {
+        require(_amountLD <= uint64(type(int64).max), "HTSConnector: amount exceeds int64 safe range");
+
         (amountSentLD, amountReceivedLD) = _debitView(_amountLD, _minAmountLD, _dstEid);
 
         int256 transferResponse = HederaTokenService.transferToken(htsTokenAddress, _from, address(this), int64(uint64(_amountLD)));
@@ -15639,6 +15662,8 @@ abstract contract HTSConnector is OFTCore, KeyHelper, HederaTokenService {
         uint256 _amountLD,
         uint32 /*_srcEid*/
     ) internal virtual override returns (uint256) {
+        require(_amountLD <= uint64(type(int64).max), "HTSConnector: amount exceeds int64 safe range");
+
         (int256 response, ,) = HederaTokenService.mintToken(htsTokenAddress, int64(uint64(_amountLD)), new bytes[](0));
         require(response == HederaTokenService.SUCCESS_CODE, "HTS: Mint failed");
 

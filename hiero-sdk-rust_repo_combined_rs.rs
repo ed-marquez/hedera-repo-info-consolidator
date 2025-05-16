@@ -1,23 +1,5 @@
 // Filename: examples/account_alias.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -45,12 +27,12 @@ async fn main() -> anyhow::Result<()> {
 
     client.set_operator(args.operator_account_id, args.operator_key.clone());
 
-    // Hedera supports a form of auto account creation.
+    // Hiero supports a form of auto account creation.
     //
     // You can "create" an account by generating a private key, and then deriving the public key,
-    // without any need to interact with the Hedera network.  The public key more or less acts as the user's
+    // without any need to interact with the Hiero network.  The public key more or less acts as the user's
     // account ID.  This public key is an account's alias_key: a public key that aliases (or will eventually alias)
-    // to a Hedera account.
+    // to a Hiero account.
     //
     // An AccountId takes one of two forms: a normal `AccountId` with no `alias_key` takes the form 0.0.123,
     // while an account ID with an `alias_key` takes the form
@@ -62,9 +44,9 @@ async fn main() -> anyhow::Result<()> {
     // transactions, however most queries and transactions involving such an AccountId won't work until Hbar has
     // been transferred to the alias_key account.
     //
-    // There is no record in the Hedera network of an account associated with a given `alias_key`
+    // There is no record in the Hiero network of an account associated with a given `alias_key`
     // until an amount of Hbar is transferred to the account.  The moment that Hbar is transferred to that `alias_key`
-    // AccountId is the moment that that account actually begins to exist in the Hedera ledger.
+    // AccountId is the moment that that account actually begins to exist in the Hiero ledger.
 
     println!(r#""Creating" a new account"#);
 
@@ -125,25 +107,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/account_allowance.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -396,25 +360,7 @@ async fn print_balances(client: &Client, accounts: &[Account; 3]) -> hedera::Res
     Ok(())
 }
 // Filename: examples/consensus_pub_sub.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -508,25 +454,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/consensus_pub_sub_chunked.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::time::Duration;
 
@@ -754,25 +682,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/contract/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera::{
     AccountId, Client, ContractCreateFlow, ContractExecuteTransaction, ContractFunctionParameters,
@@ -878,25 +788,7 @@ pub async fn create_contract(
     Ok(contract_id)
 }
 // Filename: examples/create_account.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use assert_matches::assert_matches;
 use clap::Parser;
@@ -939,25 +831,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/create_account_threshold_key.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -1047,25 +921,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/create_file.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use assert_matches::assert_matches;
 use clap::Parser;
@@ -1090,7 +946,7 @@ async fn main() -> anyhow::Result<()> {
     client.set_operator(args.operator_account_id, args.operator_key);
 
     let receipt = FileCreateTransaction::new()
-        .contents(&b"Hedera Hashgraph is great!"[..])
+        .contents(&b"Hiero is great!"[..])
         .execute(&client)
         .await?
         .get_receipt(&client)
@@ -1103,25 +959,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/create_simple_contract.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod resources;
 
@@ -1212,25 +1050,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/create_stateful_contract.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod resources;
 
@@ -1339,25 +1159,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/create_topic.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use assert_matches::assert_matches;
 use clap::Parser;
@@ -1394,25 +1196,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/delete_file.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::iter;
 
@@ -1441,7 +1225,7 @@ async fn main() -> anyhow::Result<()> {
     client.set_operator(args.operator_account_id, args.operator_key.clone());
 
     let receipt = FileCreateTransaction::new()
-        .contents(&b"Hedera Hashgraph is great!"[..])
+        .contents(&b"Hiero is great!"[..])
         .keys(iter::once(args.operator_key.public_key()))
         .execute(&client)
         .await?
@@ -1464,25 +1248,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/file_append_chunked.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -1549,31 +1315,13 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/generate_key.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera::PrivateKey;
 
 fn main() {
     // Generate a Ed25519 key
-    // This is the current recommended default for Hedera
+    // This is the current recommended default for Hiero
 
     let private = PrivateKey::generate_ed25519();
     let public = private.public_key();
@@ -1591,25 +1339,7 @@ fn main() {
     println!("ecdsa(secp256k1) public = {public}");
 }
 // Filename: examples/get_account_balance.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera::{AccountBalanceQuery, AccountId, Client, NodeAddressBookQuery};
 
@@ -1638,25 +1368,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/get_account_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{AccountId, AccountInfoQuery, Client, PrivateKey};
@@ -1691,25 +1403,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/get_exchange_rates.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{AccountId, Client, ExchangeRates, FileContentsQuery, FileId, PrivateKey};
@@ -1764,25 +1458,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/get_file_contents.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{AccountId, Client, FileContentsQuery, FileId, PrivateKey};
@@ -1820,25 +1496,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/initialize_client_with_mirror_network.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use assert_matches::assert_matches;
 use clap::Parser;
@@ -1895,25 +1553,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/long_term_scheduled_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -2149,25 +1789,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/modify_token_keys.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -2333,25 +1955,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/multi_app_transfer.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -2479,25 +2083,7 @@ fn exchange_signs_transaction(
         .to_bytes()
 }
 // Filename: examples/multi_sig_offline.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -2580,25 +2166,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/nft_update_metadata.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -2751,25 +2319,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/prng.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{AccountId, Client, PrivateKey, PrngTransaction};
@@ -2838,25 +2388,7 @@ fn bytecode(file: &'static str) -> String {
     }
 }
 // Filename: examples/schedule.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -2969,25 +2501,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/schedule_identical_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -3178,25 +2692,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/schedule_multi_sig_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -3312,7 +2808,7 @@ async fn main() -> anyhow::Result<()> {
 
     println!("sending schedule sign transaction");
 
-    // Finally send this last signature to Hedera. This last signature _should_ mean the transaction executes
+    // Finally send this last signature to Hiero. This last signature _should_ mean the transaction executes
     // since all 3 signatures have been provided.
     ScheduleSignTransaction::new()
         .node_account_ids([response.node_account_id])
@@ -3334,25 +2830,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/scheduled_transaction_multi_sig_threshold.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -3491,25 +2969,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/scheduled_transfer.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -3541,14 +3001,14 @@ async fn main() -> anyhow::Result<()> {
     client.set_operator(args.operator_account_id, args.operator_key.clone());
 
     // A scheduled transaction is a transaction that has been proposed by an account,
-    // but which requires more signatures before it will actually execute on the Hedera network.
+    // but which requires more signatures before it will actually execute on the Hiero network.
     //
     // For example, if Alice wants to transfer an amount of Hbar to Bob, and Bob has
     // receiverSignatureRequired set to true, then that transaction must be signed by
     // both Alice and Bob before the transaction will be executed.
     //
     // To solve this problem, Alice can propose the transaction by creating a scheduled
-    // transaction on the Hedera network which, if executed, would transfer Hbar from
+    // transaction on the Hiero network which, if executed, would transfer Hbar from
     // Alice to Bob.  That scheduled transaction will have a ScheduleId by which we can
     // refer to that scheduled transaction.  Alice can communicate the ScheduleId to Bob, and
     // then Bob can use a ScheduleSignTransaction to sign that scheduled transaction.
@@ -3559,8 +3019,8 @@ async fn main() -> anyhow::Result<()> {
     // that scheduled transaction will expire, and will not be executed.
     //
     // Once a scheduled transaction has all of the signatures necessary to execute, it will
-    // be executed on the Hedera network automatically.  If you create a scheduled transaction
-    // on the Hedera network, but that transaction only requires your signature in order to
+    // be executed on the Hiero network automatically.  If you create a scheduled transaction
+    // on the Hiero network, but that transaction only requires your signature in order to
     // execute and no one else's, that scheduled transaction will be automatically
     // executed immediately.
     let bobs_key = PrivateKey::generate_ed25519();
@@ -3607,7 +3067,7 @@ async fn main() -> anyhow::Result<()> {
     // ScheduleCreateTransaction itself.
     //
     // To clarify: Alice pays a fee to execute the ScheduleCreateTransaction,
-    // which creates the scheduled transaction on the Hedera network.
+    // which creates the scheduled transaction on the Hiero network.
     // She specifies when creating the scheduled transaction that Bob will pay
     // the fee for the scheduled transaction when it is executed.
     //
@@ -3699,25 +3159,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/sign_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -3783,25 +3225,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/staking.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{AccountCreateTransaction, AccountId, AccountInfoQuery, Client, Hbar, PrivateKey};
@@ -3876,25 +3300,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/staking_with_update.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -3992,25 +3398,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/token_airdrop.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::iter::repeat;
 
@@ -4460,25 +3848,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/token_update_metadata_with_admin_key.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -4574,25 +3944,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/token_update_metadata_with_metadata_key.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -4687,25 +4039,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/topic_with_admin_key.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -4840,25 +4174,7 @@ async fn update_topic_admin_key_and_memo(
     Ok(())
 }
 // Filename: examples/transfer_crypto.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{AccountId, Client, Hbar, PrivateKey, TransferTransaction};
@@ -4903,25 +4219,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/transfer_crypto_cost.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{AccountId, Client, Hbar, PrivateKey, TransferTransaction};
@@ -4976,25 +4274,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/transfer_tokens.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use clap::Parser;
 use hedera::{
@@ -5278,25 +4558,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: examples/validate_checksum.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::io::Write;
 
@@ -5427,25 +4689,7 @@ fn parse_account_id() -> anyhow::Result<Option<AccountId>> {
     }
 }
 // Filename: protobufs/build.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::env;
 use std::fs::{
@@ -5459,8 +4703,6 @@ use regex::RegexBuilder;
 
 const DERIVE_EQ_HASH: &str = "#[derive(Eq, Hash)]";
 const SERVICES_FOLDER: &str = "./services/hapi/hedera-protobufs/services";
-const EVENT_FOLDER: &str = "./services/hapi/hedera-protobufs/platform/event";
-// const SERVICES_ROOT_FOLDER: &str = "./services/hapi/hedera-protobufs/";
 
 fn main() -> anyhow::Result<()> {
     // services is the "base" module for the hedera protobufs
@@ -5494,34 +4736,8 @@ fn main() -> anyhow::Result<()> {
     )?;
     fs::rename(out_path.join("services"), &services_tmp_path)?;
 
-    let event_path = Path::new(EVENT_FOLDER);
-    println!("cargo:rerun-if-changed={}", EVENT_FOLDER);
-
-    if !event_path.is_dir() {
-        anyhow::bail!(
-            "Folder {EVENT_FOLDER} does not exist; do you need to `git submodule update --init`?"
-        );
-    }
-
-    let event_tmp_path = out_path.join("event");
-
-    // // Ensure we start fresh
-    let _ = fs::remove_dir_all(&event_tmp_path);
-
-    create_dir_all(&event_tmp_path)?;
-
-    // Copy the event folder
-    fs_extra::copy_items(
-        &[event_path],
-        &services_tmp_path,
-        &fs_extra::dir::CopyOptions::new().overwrite(true).copy_inside(false),
-    )?;
-    fs::rename(out_path.join("event"), &event_tmp_path)?;
-    let _ = fs::remove_dir_all(&event_tmp_path);
-
     let services: Vec<_> = read_dir(&services_tmp_path)?
         .chain(read_dir(&services_tmp_path.join("auxiliary").join("tss"))?)
-        .chain(read_dir(&services_tmp_path.join("event"))?)
         .filter_map(|entry| {
             let entry = entry.ok()?;
 
@@ -5537,14 +4753,12 @@ fn main() -> anyhow::Result<()> {
         // ensure that every `package _` entry is `package proto;`
         let contents = re_package.replace(&contents, "package proto;");
 
-        // remove com.hedera.hapi.node.addressbook. prefix
         let contents = contents.replace("com.hedera.hapi.node.addressbook.", "");
-
-        // remove com.hedera.hapi.services.auxiliary.tss. prefix
+        let contents = contents.replace("com.hedera.hapi.services.auxiliary.history.", "");
         let contents = contents.replace("com.hedera.hapi.services.auxiliary.tss.", "");
-
-        // remove com.hedera.hapi.platform.event. prefix
         let contents = contents.replace("com.hedera.hapi.platform.event.", "");
+
+        let contents = remove_unused_types(&contents);
 
         fs::write(service, &*contents)?;
     }
@@ -5598,16 +4812,14 @@ fn main() -> anyhow::Result<()> {
     cfg = cfg.type_attribute(
         "proto.ResponseCodeEnum",
         r#"#[doc = "
- Returned in `TransactionReceipt`, `Error::PreCheckStatus`, and `Error::ReceiptStatus`.
- 
- The success variant is `Success` which is what a `TransactionReceipt` will contain for a
- successful transaction.
-     "]"#,
+  Returned in `TransactionReceipt`, `Error::PreCheckStatus`, and `Error::ReceiptStatus`.
+  
+  The success variant is `Success` which is what a `TransactionReceipt` will contain for a
+  successful transaction.
+      "]"#,
     );
 
-    cfg.compile_protos(&services, &[services_tmp_path])?;
-
-    println!("here");
+    cfg.compile_protos(&services, &[services_tmp_path.clone()])?;
 
     // NOTE: prost generates rust doc comments and fails to remove the leading * line
     remove_useless_comments(&Path::new(&env::var("OUT_DIR")?).join("proto.rs"))?;
@@ -5733,7 +4945,7 @@ fn main() -> anyhow::Result<()> {
 
     cfg.out_dir(&sdk_out_dir).compile_protos(
         &["./sdk/transaction_list.proto"],
-        &["./sdk/", "./services/hapi/hedera-protobufs/services/"],
+        &["./sdk/", services_tmp_path.as_os_str().to_str().unwrap()],
     )?;
 
     // see note wrt services.
@@ -5749,9 +4961,49 @@ fn remove_useless_comments(path: &Path) -> anyhow::Result<()> {
     contents = contents.replace("/// *\n", "");
     contents = contents.replace("/// UNDOCUMENTED", "");
 
+    // Remove code examples in comments
+    let re = regex::Regex::new(r"/// ```[\s\S]*?/// ```\n").unwrap();
+    contents = re.replace_all(&contents, "").to_string();
+
     fs::write(path, contents)?;
 
     Ok(())
+}
+
+// Temporary function to remove unused types in transaction.proto
+fn remove_unused_types(contents: &str) -> String {
+    let contents = contents.replace(
+        "import \"event/state_signature_transaction.proto\";",
+        "// import \"event/state_signature_transaction.proto\";",
+    );
+
+    let contents = contents.replace(
+        "import \"auxiliary/history/history_proof_vote.proto\";",
+        "// import \"auxiliary/history/history_proof_vote.proto\";",
+    );
+    let contents = contents.replace(
+        "import \"auxiliary/history/history_proof_signature.proto\";",
+        "// import \"auxiliary/history/history_proof_signature.proto\";",
+    );
+    let contents = contents.replace(
+        "import \"auxiliary/history/history_proof_key_publication.proto\";",
+        "// import \"auxiliary/history/history_proof_key_publication.proto\";",
+    );
+
+    let contents = contents.replace("StateSignatureTransaction", "// StateSignatureTransaction");
+
+    let contents =
+        contents.replace("HistoryProofSignatureTransaction", "// HistoryProofSignatureTransaction");
+
+    let contents = contents.replace(
+        "HistoryProofKeyPublicationTransaction",
+        "// HistoryProofKeyPublicationTransaction",
+    );
+
+    let contents =
+        contents.replace("HistoryProofVoteTransaction", "// HistoryProofVoteTransaction");
+
+    contents
 }
 
 trait BuilderExtensions {
@@ -5837,25 +5089,7 @@ mod builder {
     }
 }
 // Filename: protobufs/src/fraction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use fraction::Fraction;
 
@@ -5874,25 +5108,7 @@ impl From<Fraction> for super::services::Fraction {
     }
 }
 // Filename: protobufs/src/lib.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 #![allow(non_camel_case_types)]
 #![allow(clippy::default_trait_access, clippy::doc_markdown)]
@@ -5927,25 +5143,7 @@ pub mod sdk {
     tonic::include_proto!("sdk/proto");
 }
 // Filename: protobufs/src/time_0_3.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use time_0_3::{
     Duration,
@@ -5989,25 +5187,7 @@ impl From<OffsetDateTime> for super::services::Timestamp {
     }
 }
 // Filename: src/account/account_allowance_approve_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use services::crypto_service_client::CryptoServiceClient;
@@ -6695,25 +5875,7 @@ mod tests {
     }
 }
 // Filename: src/account/account_allowance_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -6999,25 +6161,7 @@ mod tests {
     }
 }
 // Filename: src/account/account_balance.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
 
@@ -7109,25 +6253,7 @@ impl FromProtobuf<services::response::Response> for AccountBalance {
     }
 }
 // Filename: src/account/account_balance_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -7369,25 +6495,7 @@ mod tests {
     }
 }
 // Filename: src/account/account_create_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -7419,7 +6527,7 @@ use crate::{
     ValidateChecksums,
 };
 
-/// Create a new Hedera™ account.
+/// Create a new Hiero™ account.
 pub type AccountCreateTransaction = Transaction<AccountCreateTransactionData>;
 
 // TODO: shard_id: Option<ShardId>
@@ -8234,25 +7342,7 @@ mod tests {
     }
 }
 // Filename: src/account/account_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -8514,25 +7604,7 @@ mod tests {
     }
 }
 // Filename: src/account/account_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -8560,7 +7632,7 @@ use crate::{
     ToProtobuf,
 };
 
-/// A unique identifier for a cryptocurrency account on Hedera.
+/// A unique identifier for a cryptocurrency account on Hiero.
 #[derive(Copy, Hash, PartialEq, Eq, Clone)]
 pub struct AccountId {
     /// A non-negative number identifying the shard containing this account.
@@ -8611,15 +7683,8 @@ impl AccountId {
     ///
     /// Accepts "0x___" Ethereum public address.
     #[must_use]
-    pub fn from_evm_address(address: &EvmAddress) -> Self {
-        Self {
-            shard: 0,
-            realm: 0,
-            num: 0,
-            alias: None,
-            evm_address: Some(*address),
-            checksum: None,
-        }
+    pub fn from_evm_address(address: &EvmAddress, shard: u64, realm: u64) -> Self {
+        Self { shard, realm, num: 0, alias: None, evm_address: Some(*address), checksum: None }
     }
 
     /// Convert `self` to a protobuf-encoded [`Vec<u8>`].
@@ -8765,7 +7830,7 @@ impl FromStr for AccountId {
 
             // 0x<evm_address>
             PartialEntityId::ShortOther(evm_address) => {
-                Ok(Self::from_evm_address(&evm_address.parse()?))
+                Ok(Self::from_evm_address(&evm_address.parse()?, 0, 0))
             }
 
             // <shard>.<realm>.<alias>
@@ -9025,32 +8090,14 @@ mod tests {
         let evm_address =
             EvmAddress::from_str("0x302a300506032b6570032100114e6abc371b82da").unwrap();
 
-        let id = AccountId::from_evm_address(&evm_address);
+        let id = AccountId::from_evm_address(&evm_address, 0, 0);
 
         expect_test::expect!["0x302a300506032b6570032100114e6abc371b82da"]
             .assert_eq(&id.to_string());
     }
 }
 // Filename: src/account/account_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use prost::Message;
@@ -9244,25 +8291,7 @@ impl FromProtobuf<services::crypto_get_info_response::AccountInfo> for AccountIn
     }
 }
 // Filename: src/account/account_info_flow.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use crate::transaction::TransactionExecute;
 use crate::{
@@ -9318,25 +8347,7 @@ pub async fn verify_transaction_signature<D: TransactionExecute>(
     key.verify_transaction(transaction)
 }
 // Filename: src/account/account_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -9486,25 +8497,7 @@ mod tests {
     }
 }
 // Filename: src/account/account_records_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -9662,193 +8655,8 @@ mod tests {
         assert_eq!(query.get_account_id(), Some(AccountId::new(0, 0, 5005)));
     }
 }
-// Filename: src/account/account_stakers_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
-
-use hedera_proto::services;
-use hedera_proto::services::crypto_service_client::CryptoServiceClient;
-use tonic::transport::Channel;
-
-use crate::ledger_id::RefLedgerId;
-use crate::query::{
-    AnyQueryData,
-    QueryExecute,
-    ToQueryProtobuf,
-};
-use crate::{
-    AccountId,
-    AllProxyStakers,
-    BoxGrpcFuture,
-    Error,
-    Query,
-    ToProtobuf,
-    ValidateChecksums,
-};
-
-/// Get all the accounts that are proxy staking to this account.
-/// For each of them, give the amount currently staked.
-pub type AccountStakersQuery = Query<AccountStakersQueryData>;
-
-#[derive(Debug, Clone, Default)]
-pub struct AccountStakersQueryData {
-    account_id: Option<AccountId>,
-}
-
-impl From<AccountStakersQueryData> for AnyQueryData {
-    #[inline]
-    fn from(data: AccountStakersQueryData) -> Self {
-        Self::AccountStakers(data)
-    }
-}
-
-impl AccountStakersQuery {
-    /// Gets the account ID for which the records should be retrieved.
-    #[must_use]
-    pub fn get_account_id(&self) -> Option<AccountId> {
-        self.data.account_id
-    }
-
-    /// Sets the account ID for which the records should be retrieved.
-    pub fn account_id(&mut self, id: AccountId) -> &mut Self {
-        self.data.account_id = Some(id);
-        self
-    }
-}
-
-impl ToQueryProtobuf for AccountStakersQueryData {
-    fn to_query_protobuf(&self, header: services::QueryHeader) -> services::Query {
-        let account_id = self.account_id.to_protobuf();
-
-        services::Query {
-            query: Some(services::query::Query::CryptoGetProxyStakers(
-                services::CryptoGetStakersQuery { account_id, header: Some(header) },
-            )),
-        }
-    }
-}
-
-impl QueryExecute for AccountStakersQueryData {
-    type Response = AllProxyStakers;
-
-    fn execute(
-        &self,
-        channel: Channel,
-        request: services::Query,
-    ) -> BoxGrpcFuture<'_, services::Response> {
-        Box::pin(async {
-            CryptoServiceClient::new(channel).get_stakers_by_account_id(request).await
-        })
-    }
-}
-
-impl ValidateChecksums for AccountStakersQueryData {
-    fn validate_checksums(&self, ledger_id: &RefLedgerId) -> Result<(), Error> {
-        self.account_id.validate_checksums(ledger_id)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use expect_test::expect;
-
-    use crate::query::ToQueryProtobuf;
-    use crate::{
-        AccountId,
-        AccountStakersQuery,
-        Hbar,
-    };
-
-    #[test]
-    fn serialize() {
-        expect![[r#"
-            Query {
-                query: Some(
-                    CryptoGetProxyStakers(
-                        CryptoGetStakersQuery {
-                            header: Some(
-                                QueryHeader {
-                                    payment: None,
-                                    response_type: AnswerOnly,
-                                },
-                            ),
-                            account_id: Some(
-                                AccountId {
-                                    shard_num: 0,
-                                    realm_num: 0,
-                                    account: Some(
-                                        AccountNum(
-                                            5005,
-                                        ),
-                                    ),
-                                },
-                            ),
-                        },
-                    ),
-                ),
-            }
-        "#]]
-        .assert_debug_eq(
-            &AccountStakersQuery::new()
-                .account_id(crate::AccountId {
-                    shard: 0,
-                    realm: 0,
-                    num: 5005,
-                    alias: None,
-                    evm_address: None,
-                    checksum: None,
-                })
-                .max_payment_amount(Hbar::from_tinybars(100_000))
-                .data
-                .to_query_protobuf(Default::default()),
-        );
-    }
-
-    #[test]
-    fn get_set_account_id() {
-        let mut query = AccountStakersQuery::new();
-        query.account_id(AccountId::new(0, 0, 5005));
-
-        assert_eq!(query.get_account_id(), Some(AccountId::new(0, 0, 5005)));
-    }
-}
 // Filename: src/account/account_update_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -10754,25 +9562,7 @@ mod tests {
     }
 }
 // Filename: src/account/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod account_allowance_approve_transaction;
 mod account_allowance_delete_transaction;
@@ -10787,7 +9577,6 @@ mod account_info;
 pub mod account_info_flow;
 mod account_info_query;
 mod account_records_query;
-mod account_stakers_query;
 mod account_update_transaction;
 mod proxy_staker;
 
@@ -10808,8 +9597,6 @@ pub use account_info_query::AccountInfoQuery;
 pub(crate) use account_info_query::AccountInfoQueryData;
 pub use account_records_query::AccountRecordsQuery;
 pub(crate) use account_records_query::AccountRecordsQueryData;
-pub use account_stakers_query::AccountStakersQuery;
-pub(crate) use account_stakers_query::AccountStakersQueryData;
 pub use account_update_transaction::AccountUpdateTransaction;
 pub(crate) use account_update_transaction::AccountUpdateTransactionData;
 pub use proxy_staker::{
@@ -10817,25 +9604,7 @@ pub use proxy_staker::{
     ProxyStaker,
 };
 // Filename: src/account/proxy_staker.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -10884,25 +9653,7 @@ impl FromProtobuf<services::ProxyStaker> for ProxyStaker {
     }
 }
 // Filename: src/address_book/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 pub mod node_create_transaction;
 pub mod node_delete_transaction;
@@ -10915,25 +9666,7 @@ pub(crate) use node_delete_transaction::NodeDeleteTransactionData;
 pub use node_update_transaction::NodeUpdateTransaction;
 pub(crate) use node_update_transaction::NodeUpdateTransactionData;
 // Filename: src/address_book/node_create_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::net::Ipv4Addr;
 
@@ -11406,25 +10139,7 @@ mod tests {
     }
 }
 // Filename: src/address_book/node_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::address_book_service_client::AddressBookServiceClient;
@@ -11613,25 +10328,7 @@ mod tests {
     }
 }
 // Filename: src/address_book/node_update_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::net::Ipv4Addr;
 
@@ -12154,25 +10851,7 @@ mod tests {
     }
 }
 // Filename: src/client/config.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -12254,25 +10933,7 @@ pub(super) struct ClientConfig {
     pub(super) mirror_network: Option<Either<Vec<String>, NetworkName>>,
 }
 // Filename: src/client/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::borrow::Cow;
 use std::collections::HashMap;
@@ -12429,7 +11090,7 @@ struct ClientInner {
     backoff: RwLock<ClientBackoff>,
 }
 
-/// Managed client for use on the Hedera network.
+/// Managed client for use on the Hiero network.
 #[derive(Clone)]
 pub struct Client(Arc<ClientInner>);
 
@@ -12562,19 +11223,19 @@ impl Client {
         Ok(client)
     }
 
-    /// Construct a Hedera client pre-configured for mainnet access.
+    /// Construct a Hiero client pre-configured for mainnet access.
     #[must_use]
     pub fn for_mainnet() -> Self {
         ClientBuilder::new(ManagedNetwork::mainnet()).ledger_id(Some(LedgerId::mainnet())).build()
     }
 
-    /// Construct a Hedera client pre-configured for testnet access.
+    /// Construct a Hiero client pre-configured for testnet access.
     #[must_use]
     pub fn for_testnet() -> Self {
         ClientBuilder::new(ManagedNetwork::testnet()).ledger_id(Some(LedgerId::testnet())).build()
     }
 
-    /// Construct a Hedera client pre-configured for previewnet access.
+    /// Construct a Hiero client pre-configured for previewnet access.
     #[must_use]
     pub fn for_previewnet() -> Self {
         ClientBuilder::new(ManagedNetwork::previewnet())
@@ -13036,25 +11697,7 @@ async fn update_network(
     }
 }
 // Filename: src/client/network/mirror.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::borrow::Cow;
 use std::ops::Deref;
@@ -13167,25 +11810,7 @@ impl MirrorNetworkData {
     }
 }
 // Filename: src/client/network/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the[License");
- * you]may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an[AS IS" BASIS]
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 pub(super) mod managed;
 pub(super) mod mirror;
@@ -13800,25 +12425,7 @@ impl Operator {
     }
 }
 // Filename: src/contract/contract_bytecode_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -13971,25 +12578,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_call_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -14710,25 +13299,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_create_flow.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use time::Duration;
 
@@ -15364,25 +13935,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_create_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -16278,25 +14831,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -16611,25 +15146,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_execute_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -18268,25 +16785,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_function_result.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::borrow::Cow;
 use std::str;
@@ -19007,25 +17506,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -19052,7 +17533,7 @@ use crate::{
     ToProtobuf,
 };
 
-/// A unique identifier for a smart contract on Hedera.
+/// A unique identifier for a smart contract on Hiero.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 pub struct ContractId {
     /// A non-negative number identifying the shard containing this contract instance.
@@ -19365,25 +17846,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use time::{
@@ -19694,25 +18157,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -20062,25 +18507,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_nonce_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -20218,25 +18645,7 @@ mod tests {
     }
 }
 // Filename: src/contract/contract_update_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -21084,25 +19493,7 @@ mod tests {
     }
 }
 // Filename: src/contract/delegate_contract_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt;
 use std::str::FromStr;
@@ -21123,7 +19514,7 @@ use crate::{
     Error,
 };
 
-/// A unique identifier for a smart contract on Hedera.
+/// A unique identifier for a smart contract on Hiero.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 pub struct DelegateContractId {
     /// A non-negative number identifying the shard containing this contract instance.
@@ -21310,25 +19701,7 @@ mod tests {
     }
 }
 // Filename: src/contract/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod contract_bytecode_query;
 mod contract_call_query;
@@ -21369,26 +19742,172 @@ pub use contract_nonce_info::ContractNonceInfo;
 pub use contract_update_transaction::ContractUpdateTransaction;
 pub(crate) use contract_update_transaction::ContractUpdateTransactionData;
 pub use delegate_contract_id::DelegateContractId;
+// Filename: src/custom_fee_limit.rs
+use hedera_proto::services::{
+    self,
+};
+
+use crate::custom_fixed_fee::CustomFixedFee;
+use crate::protobuf::{
+    FromProtobuf,
+    ToProtobuf,
+};
+use crate::AccountId;
+
+/// A custom transfer fee that was assessed during the handling of a `CryptoTransfer`.
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub struct CustomFeeLimit {
+    /// The account of the fee payer
+    pub account_id: Option<AccountId>,
+
+    /// The maximum fees that the user is willing to pay for the message.
+    pub fees: Vec<CustomFixedFee>,
+}
+
+impl CustomFeeLimit {
+    pub fn new(account_id: Option<AccountId>, fees: Vec<CustomFixedFee>) -> Self {
+        Self { account_id, fees }
+    }
+}
+
+impl FromProtobuf<services::CustomFeeLimit> for CustomFeeLimit {
+    fn from_protobuf(pb: services::CustomFeeLimit) -> crate::Result<Self>
+    where
+        Self: Sized,
+    {
+        let mut fees = Vec::new();
+        for fee in pb.fees {
+            fees.push(CustomFixedFee {
+                amount: fee.amount as u64,
+                denominating_token_id: Option::from_protobuf(fee.denominating_token_id)?,
+                fee_collector_account_id: None,
+            });
+        }
+
+        Ok(Self { account_id: Option::from_protobuf(pb.account_id)?, fees })
+    }
+}
+
+impl ToProtobuf for CustomFeeLimit {
+    type Protobuf = services::CustomFeeLimit;
+
+    fn to_protobuf(&self) -> Self::Protobuf {
+        let fees: Vec<services::FixedFee> =
+            self.fees.iter().map(|fee| fee.to_fixed_fee_protobuf()).collect();
+
+        services::CustomFeeLimit { account_id: self.account_id.to_protobuf(), fees }
+    }
+}
+// Filename: src/custom_fixed_fee.rs
+// SPDX-License-Identifier: Apache-2.0
+
+use hedera_proto::services;
+
+use crate::{
+    AccountId,
+    FixedFee,
+    FixedFeeData,
+    FromProtobuf,
+    ToProtobuf,
+    TokenId,
+};
+
+/// A custom fee definition for a consensus topic.
+///
+/// This fee definition is specific to an Hiero Consensus Service (HCS) topic
+/// and SHOULD NOT be used in any other context.
+///
+/// All fields for this message are REQUIRED.
+///
+/// Only "fixed" fee definitions are supported because there is no basis for
+/// a fractional fee on a consensus submit transaction.
+#[derive(Debug, Hash, PartialEq, Eq, Clone, Default)]
+pub struct CustomFixedFee {
+    /// The amount of HBAR or other token described by this `FixedFee` SHALL
+    /// be charged to the transction payer for each message submitted to a
+    /// topic that assigns this consensus custom fee.
+    pub amount: u64,
+
+    /// The denomination of the fee; taken as hbar if left unset and, in a TokenCreate, taken as the id
+    /// of the newly created token if set to the sentinel value of 0.0.0
+    pub denominating_token_id: Option<TokenId>,
+
+    /// The account to receive the custom fee.
+    pub fee_collector_account_id: Option<AccountId>,
+}
+
+impl CustomFixedFee {
+    /// Creates a new `CustomFixedFee`
+    pub fn new(
+        amount: u64,
+        denominating_token_id: Option<TokenId>,
+        fee_collector_account_id: Option<AccountId>,
+    ) -> Self {
+        Self { amount, denominating_token_id, fee_collector_account_id }
+    }
+}
+
+impl CustomFixedFee {
+    pub(crate) fn to_fixed_fee_protobuf(&self) -> services::FixedFee {
+        services::FixedFee {
+            amount: self.amount as i64,
+            denominating_token_id: self.denominating_token_id.to_protobuf(),
+        }
+    }
+}
+
+impl From<CustomFixedFee> for FixedFee {
+    fn from(v: CustomFixedFee) -> Self {
+        Self {
+            fee: FixedFeeData {
+                amount: v.amount as i64,
+                denominating_token_id: v.denominating_token_id,
+            },
+            fee_collector_account_id: v.fee_collector_account_id,
+            all_collectors_are_exempt: false,
+        }
+    }
+}
+
+impl ToProtobuf for CustomFixedFee {
+    type Protobuf = services::FixedCustomFee;
+
+    fn to_protobuf(&self) -> Self::Protobuf {
+        Self::Protobuf {
+            fixed_fee: Some(services::FixedFee {
+                amount: self.amount as i64,
+                denominating_token_id: self.denominating_token_id.to_protobuf(),
+            }),
+            fee_collector_account_id: self.fee_collector_account_id.to_protobuf(),
+        }
+    }
+}
+
+impl FromProtobuf<services::FixedCustomFee> for CustomFixedFee {
+    fn from_protobuf(pb: services::FixedCustomFee) -> crate::Result<Self> {
+        let fee = FixedFeeData::from_protobuf(pb.fixed_fee.unwrap())?;
+
+        Ok(Self {
+            amount: fee.amount as u64,
+            denominating_token_id: fee.denominating_token_id,
+            fee_collector_account_id: Option::from_protobuf(pb.fee_collector_account_id)?,
+        })
+    }
+}
+
+impl FromProtobuf<services::FixedFee> for CustomFixedFee {
+    fn from_protobuf(pb: services::FixedFee) -> crate::Result<Self> {
+        let fee = FixedFeeData::from_protobuf(pb)?;
+
+        Ok(Self {
+            amount: fee.amount as u64,
+            denominating_token_id: fee.denominating_token_id,
+            fee_collector_account_id: None,
+        })
+    }
+}
 // Filename: src/downcast.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // not happy about needing this.
 /// Downcast from one type to another.
@@ -21396,25 +19915,7 @@ pub trait DowncastOwned<T>: Sized {
     fn downcast_owned(self) -> Result<T, Self>;
 }
 // Filename: src/entity_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -21487,7 +19988,7 @@ impl<T: ValidateChecksums> ValidateChecksums for Option<T> {
     }
 }
 
-/// The ID of an entity on the Hedera network.
+/// The ID of an entity on the Hiero network.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 pub struct EntityId {
     /// A non-negative number identifying the shard containing this entity.
@@ -21853,25 +20354,7 @@ mod tests {
     }
 }
 // Filename: src/error.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::error::Error as StdError;
 use std::result::Result as StdResult;
@@ -21889,7 +20372,7 @@ pub type Result<T> = StdResult<T, Error>;
 
 pub(crate) type BoxStdError = Box<dyn StdError + Send + Sync + 'static>;
 
-/// Represents any possible error from a fallible function in the Hedera SDK.
+/// Represents any possible error from a fallible function in the Hiero SDK.
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum Error {
@@ -22042,7 +20525,7 @@ pub enum Error {
     #[error("node account `{0}` was not found in the configured network")]
     NodeAccountUnknown(Box<AccountId>),
 
-    /// Received an unrecognized status code from the Hedera Network.
+    /// Received an unrecognized status code from the Hiero Network.
     ///
     /// This can happen when the SDK is outdated, try updating your SDK.
     #[error("received unrecognized status code: {0}, try updating your SDK")]
@@ -22137,25 +20620,7 @@ pub enum MnemonicEntropyError {
     LegacyWithPassphrase,
 }
 // Filename: src/ethereum/ethereum_data.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use core::fmt;
 
@@ -22317,7 +20782,7 @@ pub struct Eip1559EthereumData {
     pub nonce: Vec<u8>,
 
     /// An 'optional' additional fee in Ethereum that is paid directly to miners in order to incentivize
-    /// them to include your transaction in a block. Not used in Hedera.
+    /// them to include your transaction in a block. Not used in Hiero.
     pub max_priority_gas: Vec<u8>,
 
     /// The maximum amount, in tinybars, that the payer of the hedera transaction
@@ -22521,25 +20986,7 @@ mod test {
     }
 }
 // Filename: src/ethereum/ethereum_flow.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::mem;
 
@@ -22691,25 +21138,7 @@ async fn create_file(
     Ok(file_id)
 }
 // Filename: src/ethereum/ethereum_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::smart_contract_service_client::SmartContractServiceClient;
@@ -22923,25 +21352,7 @@ mod tests {
     }
 }
 // Filename: src/ethereum/evm_address.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt;
 use std::str::FromStr;
@@ -23238,25 +21649,7 @@ mod tests {
     }
 }
 // Filename: src/ethereum/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod ethereum_data;
 mod ethereum_flow;
@@ -23274,25 +21667,7 @@ pub(crate) use ethereum_transaction::EthereumTransactionData;
 pub use evm_address::EvmAddress;
 pub(crate) use evm_address::SolidityAddress;
 // Filename: src/exchange_rates.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use time::OffsetDateTime;
@@ -23351,6 +21726,9 @@ pub struct ExchangeRate {
 
     /// Expiration time of this exchange rate.
     pub expiration_time: OffsetDateTime,
+
+    /// Exchange rate in cents
+    pub exchange_rate_in_cents: f64,
 }
 
 impl ExchangeRate {
@@ -23366,7 +21744,14 @@ impl FromProtobuf<services::ExchangeRate> for ExchangeRate {
         let hbars = pb.hbar_equiv as u32;
         let cents = pb.cent_equiv as u32;
 
-        Ok(Self { hbars, cents, expiration_time: pb_getf!(pb, expiration_time)?.into() })
+        let exchange_rate_in_cents = f64::from(cents) / f64::from(hbars);
+
+        Ok(Self {
+            hbars,
+            cents,
+            exchange_rate_in_cents,
+            expiration_time: pb_getf!(pb, expiration_time)?.into(),
+        })
     }
 }
 
@@ -23402,11 +21787,13 @@ mod tests {
                     hbars: 30000,
                     cents: 580150,
                     expiration_time: 2022-02-24 15:00:00.0 +00:00:00,
+                    exchange_rate_in_cents: 19.338333333333335,
                 },
                 next_rate: ExchangeRate {
                     hbars: 30000,
                     cents: 587660,
                     expiration_time: 2022-02-24 16:00:00.0 +00:00:00,
+                    exchange_rate_in_cents: 19.588666666666665,
                 },
             }
         "#]]
@@ -23414,25 +21801,7 @@ mod tests {
     }
 }
 // Filename: src/execute.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 mod error;
 
 use std::any::type_name;
@@ -23932,25 +22301,7 @@ fn random_node_indexes(
     }
 }
 // Filename: src/execute/error.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 use std::error::Error;
 
 use serde::de::StdError;
@@ -24043,9 +22394,9 @@ use crate::protobuf::{
 
 /// Contains the current and next [`FeeSchedule`]s.
 ///
-/// See the [Hedera documentation]
+/// See the [Hiero documentation]
 ///
-/// [Hedera documentation]: https://docs.hedera.com/guides/docs/hedera-api/basic-types/currentandnextfeeschedule
+/// [Hiero documentation]: https://docs.hedera.com/guides/docs/hedera-api/basic-types/currentandnextfeeschedule
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct FeeSchedules {
     /// The current fee schedule.
@@ -24094,9 +22445,9 @@ impl ToProtobuf for FeeSchedules {
 
 /// The fee schedules for hedera functionality and the time at which this fee schedule will expire.
 ///
-/// See the [Hedera documentation].
+/// See the [Hiero documentation].
 ///
-/// [Hedera documentation]: https://docs.hedera.com/guides/docs/hedera-api/basic-types/feeschedule
+/// [Hiero documentation]: https://docs.hedera.com/guides/docs/hedera-api/basic-types/feeschedule
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct FeeSchedule {
     /// The fee schedules per specific piece of functionality.
@@ -24145,9 +22496,9 @@ impl ToProtobuf for FeeSchedule {
 
 /// The fees for a specific transaction or query based on the fee data.
 ///
-/// See the [Hedera documentation].
+/// See the [Hiero documentation].
 ///
-/// [Hedera documentation]: https://docs.hedera.com/guides/docs/hedera-api/basic-types/transactionfeeschedule
+/// [Hiero documentation]: https://docs.hedera.com/guides/docs/hedera-api/basic-types/transactionfeeschedule
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct TransactionFeeSchedule {
     /// The request type that this fee schedule applies to.
@@ -24204,7 +22555,7 @@ impl ToProtobuf for TransactionFeeSchedule {
     }
 }
 
-/// The functionality provided by Hedera.
+/// The functionality provided by Hiero.
 #[derive(Debug, Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum RequestType {
@@ -24465,15 +22816,6 @@ pub enum RequestType {
 
     /// Cancel airdrop tokens.
     TokenCancelAirdrop,
-
-    /// Submit a vote as part of the Threshold Signature Scheme (TSS) processing.
-    TssMessage,
-
-    /// Submit a vote as part of the Threshold Signature Scheme (TSS) processing.
-    TssVote,
-
-    /// Submit a node signature as part of the Threshold Signature Scheme (TSS) processing.
-    TssShareSignature,
 }
 
 impl FromProtobuf<services::HederaFunctionality> for RequestType {
@@ -24562,9 +22904,7 @@ impl FromProtobuf<services::HederaFunctionality> for RequestType {
             HederaFunctionality::TokenAirdrop => Self::TokenAirdrop,
             HederaFunctionality::TokenClaimAirdrop => Self::TokenClaimAirdrop,
             HederaFunctionality::TokenCancelAirdrop => Self::TokenCancelAirdrop,
-            HederaFunctionality::TssMessage => Self::TssMessage,
-            HederaFunctionality::TssVote => Self::TssVote,
-            HederaFunctionality::TssShareSignature => Self::TssShareSignature,
+            _ => todo!(),
         };
 
         Ok(value)
@@ -24659,9 +22999,6 @@ impl ToProtobuf for RequestType {
             Self::TokenAirdrop => HederaFunctionality::TokenAirdrop,
             Self::TokenClaimAirdrop => HederaFunctionality::TokenClaimAirdrop,
             Self::TokenCancelAirdrop => HederaFunctionality::TokenCancelAirdrop,
-            Self::TssMessage => HederaFunctionality::TssMessage,
-            Self::TssVote => HederaFunctionality::TssVote,
-            Self::TssShareSignature => HederaFunctionality::TssShareSignature,
         }
     }
 }
@@ -24673,10 +23010,10 @@ pub struct FeeData {
     /// Fee charged by the node for this functionality.
     pub node: FeeComponents,
 
-    /// Fee charged by Hedera for network operations.
+    /// Fee charged by Hiero for network operations.
     pub network: FeeComponents,
 
-    /// Fee charged by Hedera for providing the service.
+    /// Fee charged by Hiero for providing the service.
     pub service: FeeComponents,
 
     /// A subtype distinguishing between different types of fee data
@@ -24840,6 +23177,10 @@ pub enum FeeDataType {
     /// The resource prices are scoped to a [`ScheduleCreateTransaction`](crate::ScheduleCreateTransaction)
     /// containing a [`ContractExecuteTransaction`](crate::ContractExecuteTransaction).
     ScheduleCreateContractCall,
+
+    /// The resource prices are scoped to a [`TopicCreateTransaction`](crate::TopicCreateTransaction)
+    /// with a custom fee schedule.
+    TopicCreateWithCustomFees,
 }
 
 impl FromProtobuf<services::SubType> for FeeDataType {
@@ -24854,6 +23195,7 @@ impl FromProtobuf<services::SubType> for FeeDataType {
                 Self::TokenNonFungibleUniqueWithCustomFees
             }
             SubType::ScheduleCreateContractCall => Self::ScheduleCreateContractCall,
+            SubType::TopicCreateWithCustomFees => Self::TopicCreateWithCustomFees,
         };
 
         Ok(value)
@@ -24874,6 +23216,7 @@ impl ToProtobuf for FeeDataType {
                 SubType::TokenNonFungibleUniqueWithCustomFees
             }
             Self::ScheduleCreateContractCall => SubType::ScheduleCreateContractCall,
+            Self::TopicCreateWithCustomFees => SubType::TopicCreateWithCustomFees,
         }
     }
 }
@@ -25108,25 +23451,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_append_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::cmp;
 use std::num::NonZeroUsize;
@@ -25455,25 +23780,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_contents_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::file_service_client::FileServiceClient;
@@ -25608,25 +23915,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_contents_response.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -25662,25 +23951,7 @@ impl FromProtobuf<services::response::Response> for FileContentsResponse {
     }
 }
 // Filename: src/file/file_create_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::file_service_client::FileServiceClient;
@@ -25907,6 +24178,7 @@ impl FromProtobuf<services::FileCreateTransactionBody> for FileCreateTransaction
 impl ToProtobuf for FileCreateTransactionData {
     type Protobuf = services::FileCreateTransactionBody;
 
+    #[allow(deprecated)]
     fn to_protobuf(&self) -> Self::Protobuf {
         services::FileCreateTransactionBody {
             expiration_time: self.expiration_time.to_protobuf(),
@@ -26064,6 +24336,7 @@ mod tests {
 
     #[test]
     fn from_proto_body() {
+        #[allow(deprecated)]
         let tx = services::FileCreateTransactionBody {
             expiration_time: Some(EXPIRATION_TIME.to_protobuf()),
             keys: Some(KeyList::from_iter(keys()).to_protobuf()),
@@ -26143,25 +24416,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::file_service_client::FileServiceClient;
@@ -26364,25 +24619,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -26407,7 +24644,7 @@ use crate::{
     ToProtobuf,
 };
 
-/// The unique identifier for a file on Hedera.
+/// The unique identifier for a file on Hiero.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 pub struct FileId {
     /// The shard number.
@@ -26591,25 +24828,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use time::{
@@ -26891,25 +25110,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::file_service_client::FileServiceClient;
@@ -27046,25 +25247,7 @@ mod tests {
     }
 }
 // Filename: src/file/file_update_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::file_service_client::FileServiceClient;
@@ -27535,25 +25718,7 @@ mod tests {
     }
 }
 // Filename: src/file/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod file_append_transaction;
 mod file_contents_query;
@@ -27598,11 +25763,11 @@ pub type Tinybar = i64;
 
 /// Common units of hbar; for the most part they follow SI prefix conventions.
 ///
-/// See the [Hedera Documentation](https://docs.hedera.com/guides/docs/sdks/hbars#hbar-units).
+/// See the [Hiero Documentation](https://docs.hedera.com/guides/docs/sdks/hbars#hbar-units).
 #[repr(i64)]
 #[derive(Debug, Copy, Hash, PartialEq, Eq, Clone)]
 pub enum HbarUnit {
-    /// The atomic (smallest) unit of [`Hbar`], used natively by the Hedera network.
+    /// The atomic (smallest) unit of [`Hbar`], used natively by the Hiero network.
     ///
     /// It is equivalent to <sup>1</sup>&frasl;<sub>100,000,000</sub> [`Hbar`](Self::Hbar).
     Tinybar = 1,
@@ -27624,7 +25789,7 @@ pub enum HbarUnit {
 
     /// Equivalent to 1 billion [`Hbar`](Self::Hbar) or 100 quadrillion [`Tinybar`](Self::Tinybar).
     ///
-    /// The maximum hbar amount supported by Hedera in any context is ~92 gigabar
+    /// The maximum hbar amount supported by Hiero in any context is ~92 gigabar
     /// (2<sup>63</sup> tinybar); use this unit sparingly.
     Gigabar = 1_000_000_000 * 100_000_000,
 }
@@ -27968,25 +26133,7 @@ mod tests {
     }
 }
 // Filename: src/key/key.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -28000,7 +26147,7 @@ use crate::{
     ToProtobuf,
 };
 
-/// Any method that can be used to authorize an operation on Hedera.
+/// Any method that can be used to authorize an operation on Hiero.
 #[derive(Eq, PartialEq, Debug, Clone, Hash)]
 #[non_exhaustive]
 pub enum Key {
@@ -28441,25 +26588,7 @@ mod tests {
     }
 }
 // Filename: src/key/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 #[allow(clippy::module_inception)]
 mod key;
@@ -28478,25 +26607,7 @@ pub(crate) enum KeyKind {
     Ecdsa,
 }
 // Filename: src/key/private_key/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 #[cfg(test)]
 mod tests;
@@ -28573,7 +26684,7 @@ impl From<k256::ecdsa::SigningKey> for PrivateKeyData {
     }
 }
 
-/// A private key on the Hedera network.
+/// A private key on the Hiero network.
 #[derive(Clone)]
 pub struct PrivateKey(Arc<PrivateKeyDataWrapper>);
 
@@ -29672,25 +27783,7 @@ fn ecdsa_ec_private_key_no_public_key_der() {
     );
 }
 // Filename: src/key/public_key/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -29740,7 +27833,7 @@ mod tests;
 pub(super) const EC_ALGORITM_OID: ObjectIdentifier =
     ObjectIdentifier::new_unwrap("1.2.840.10045.2.1");
 
-/// A public key on the Hedera network.
+/// A public key on the Hiero network.
 #[derive(Clone, Eq, Copy, Hash, PartialEq)]
 pub struct PublicKey(PublicKeyData);
 
@@ -30176,25 +28269,7 @@ impl ToProtobuf for PublicKey {
 // TODO: to_protobuf
 // TODO: verify_transaction
 // Filename: src/key/public_key/tests.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::str::FromStr;
 
@@ -30481,7 +28556,7 @@ impl ToOwned for RefLedgerId {
     }
 }
 
-/// The ID of a Hedera Ledger.
+/// The ID of a Hiero Ledger.
 #[derive(Eq, PartialEq)]
 pub struct LedgerId(Box<RefLedgerId>);
 
@@ -30649,28 +28724,10 @@ mod tests {
     }
 }
 // Filename: src/lib.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // todo: more indepth documentation
-//! Hedera Rust SDK.
+//! Hiero Rust SDK.
 
 #![forbid(unsafe_op_in_unsafe_fn)]
 #![warn(
@@ -30772,6 +28829,8 @@ mod account;
 mod address_book;
 mod client;
 mod contract;
+mod custom_fee_limit;
+mod custom_fixed_fee;
 mod downcast;
 mod entity_id;
 mod error;
@@ -30829,7 +28888,6 @@ pub use account::{
     AccountInfo,
     AccountInfoQuery,
     AccountRecordsQuery,
-    AccountStakersQuery,
     AccountUpdateTransaction,
     AllProxyStakers,
     ProxyStaker,
@@ -30858,6 +28916,7 @@ pub use contract::{
     ContractUpdateTransaction,
     DelegateContractId,
 };
+pub use custom_fixed_fee::CustomFixedFee;
 pub use entity_id::EntityId;
 pub(crate) use entity_id::ValidateChecksums;
 pub use error::{
@@ -31038,25 +29097,7 @@ pub(crate) type ArcSwap<T> = arc_swap::ArcSwapAny<triomphe::Arc<T>>;
 pub(crate) type BoxGrpcFuture<'a, T> =
     futures_core::future::BoxFuture<'a, tonic::Result<tonic::Response<T>>>;
 // Filename: src/mirror_query/any.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use futures_core::future::BoxFuture;
 use futures_core::stream::BoxStream;
@@ -31146,25 +29187,7 @@ impl MirrorQueryExecute for AnyMirrorQueryData {
     }
 }
 // Filename: src/mirror_query/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod any;
 mod subscribe;
@@ -31182,7 +29205,7 @@ pub(crate) use subscribe::{
 
 use self::subscribe::MirrorQueryExecute;
 
-/// A query that can be executed on the Hedera mirror network.
+/// A query that can be executed on the Hiero mirror network.
 #[derive(Clone, Debug, Default)]
 pub struct MirrorQuery<D> {
     pub(crate) data: D,
@@ -31209,25 +29232,7 @@ where
     }
 }
 // Filename: src/mirror_query/subscribe.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use async_stream::stream;
 use backoff::backoff::Backoff;
@@ -31250,7 +29255,7 @@ impl<D> MirrorQuery<D>
 where
     D: MirrorQueryExecute,
 {
-    /// Execute this query against the provided client of the Hedera network.
+    /// Execute this query against the provided client of the Hiero network.
     // todo:
     #[allow(clippy::missing_errors_doc)]
     pub async fn execute(&mut self, client: &Client) -> crate::Result<D::Response> {
@@ -31265,7 +29270,7 @@ where
         self.data.execute_with_optional_timeout(&self.common, client, timeout).await
     }
 
-    /// Execute this query against the provided client of the Hedera network.
+    /// Execute this query against the provided client of the Hiero network.
     ///
     /// Note that `timeout` is the connection timeout.
     // todo:
@@ -31278,12 +29283,12 @@ where
         self.execute_with_optional_timeout(client, Some(timeout)).await
     }
 
-    /// Subscribe to this query with the provided client of the Hedera network.
+    /// Subscribe to this query with the provided client of the Hiero network.
     pub fn subscribe<'a>(&self, client: &'a Client) -> D::ItemStream<'a> {
         self.subscribe_with_optional_timeout(client, None)
     }
 
-    /// Subscribe to this query with the provided client of the Hedera network.
+    /// Subscribe to this query with the provided client of the Hiero network.
     ///
     /// Note that `timeout` is the connection timeout.
     pub fn subscribe_with_timeout<'a>(
@@ -31504,25 +29509,7 @@ pub(crate) fn subscribe<I: Send, R: MirrorRequest<GrpcItem = I> + Send + Sync>(
     }
 }
 // Filename: src/mnemonic/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::cmp::Ordering;
 use std::fmt;
@@ -32188,25 +30175,7 @@ mod tests {
     }
 }
 // Filename: src/network_version_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -32216,13 +30185,13 @@ use crate::{
     ToProtobuf,
 };
 
-/// Versions of Hedera Services, and the protobuf schema.
+/// Versions of Hiero Services, and the protobuf schema.
 #[derive(Debug, Clone)]
 pub struct NetworkVersionInfo {
     /// Version of the protobuf schema in use by the network.
     pub protobuf_version: SemanticVersion,
 
-    /// Version of the Hedera services in use by the network.
+    /// Version of the Hiero services in use by the network.
     pub services_version: SemanticVersion,
 }
 
@@ -32342,25 +30311,7 @@ mod tests {
     }
 }
 // Filename: src/network_version_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::network_service_client::NetworkServiceClient;
@@ -32458,25 +30409,7 @@ mod tests {
     }
 }
 // Filename: src/node_address.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::net::SocketAddrV4;
 
@@ -32504,7 +30437,7 @@ fn parse_socket_addr_v4(ip: Vec<u8>, port: i32) -> crate::Result<SocketAddrV4> {
     Ok(SocketAddrV4::new(octets.into(), port))
 }
 
-/// The data about a node, including its service endpoints and the Hedera account to be paid for
+/// The data about a node, including its service endpoints and the Hiero account to be paid for
 /// services provided by the node (that is, queries answered and transactions submitted.).
 #[derive(Debug, Clone)]
 pub struct NodeAddress {
@@ -32640,25 +30573,7 @@ impl ToProtobuf for NodeAddressBook {
     }
 }
 // Filename: src/node_address_book_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::time::Duration;
 
@@ -32862,25 +30777,7 @@ mod tests {
     }
 }
 // Filename: src/pending_airdrop_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt;
 
@@ -33048,25 +30945,7 @@ impl ToProtobuf for PendingAirdropId {
     }
 }
 // Filename: src/pending_airdrop_record.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use core::fmt;
 
@@ -33285,25 +31164,7 @@ impl Execute for PingQuery {
     }
 }
 // Filename: src/prng_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::util_service_client::UtilServiceClient;
@@ -33496,25 +31357,7 @@ mod tests {
     }
 }
 // Filename: src/protobuf/convert.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use crate::Error;
 
@@ -33608,25 +31451,7 @@ where
     }
 }
 // Filename: src/protobuf/get.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 /// Get an optional field from a protobuf object, returning an error if the field does not exist.
 macro_rules! pb_getf {
@@ -33656,25 +31481,7 @@ macro_rules! pb_getv {
     }};
 }
 // Filename: src/protobuf/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod convert;
 mod time;
@@ -33687,25 +31494,7 @@ pub(crate) use convert::{
     ToProtobuf,
 };
 // Filename: src/protobuf/time.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use time::{
@@ -33731,25 +31520,7 @@ impl ToProtobuf for OffsetDateTime {
     }
 }
 // Filename: src/query/any.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use tonic::transport::Channel;
@@ -33759,7 +31530,6 @@ use crate::account::{
     AccountBalanceQueryData,
     AccountInfoQueryData,
     AccountRecordsQueryData,
-    AccountStakersQueryData,
 };
 use crate::contract::{
     ContractBytecodeQueryData,
@@ -33804,14 +31574,13 @@ use crate::{
     TransactionRecordQueryData,
 };
 
-/// Any possible query that may be executed on the Hedera network.
+/// Any possible query that may be executed on the Hiero network.
 pub type AnyQuery = Query<AnyQueryData>;
 
 #[derive(Debug, Clone)]
 pub enum AnyQueryData {
     AccountBalance(AccountBalanceQueryData),
     AccountInfo(AccountInfoQueryData),
-    AccountStakers(AccountStakersQueryData),
     AccountRecords(AccountRecordsQueryData),
     TransactionReceipt(TransactionReceiptQueryData),
     TransactionRecord(TransactionRecordQueryData),
@@ -33885,7 +31654,6 @@ impl ToQueryProtobuf for AnyQueryData {
         match self {
             Self::AccountBalance(data) => data.to_query_protobuf(header),
             Self::AccountInfo(data) => data.to_query_protobuf(header),
-            Self::AccountStakers(data) => data.to_query_protobuf(header),
             Self::AccountRecords(data) => data.to_query_protobuf(header),
             Self::TransactionReceipt(data) => data.to_query_protobuf(header),
             Self::TransactionRecord(data) => data.to_query_protobuf(header),
@@ -33910,7 +31678,6 @@ impl QueryExecute for AnyQueryData {
         match self {
             Self::AccountInfo(query) => query.is_payment_required(),
             Self::AccountBalance(query) => query.is_payment_required(),
-            Self::AccountStakers(query) => query.is_payment_required(),
             Self::AccountRecords(query) => query.is_payment_required(),
             Self::TransactionReceipt(query) => query.is_payment_required(),
             Self::TransactionRecord(query) => query.is_payment_required(),
@@ -33931,7 +31698,6 @@ impl QueryExecute for AnyQueryData {
         match self {
             Self::AccountInfo(query) => query.map_cost(cost),
             Self::AccountBalance(query) => query.map_cost(cost),
-            Self::AccountStakers(query) => query.map_cost(cost),
             Self::AccountRecords(query) => query.map_cost(cost),
             Self::TransactionReceipt(query) => query.map_cost(cost),
             Self::TransactionRecord(query) => query.map_cost(cost),
@@ -33956,7 +31722,6 @@ impl QueryExecute for AnyQueryData {
         match self {
             Self::AccountInfo(query) => query.execute(channel, request),
             Self::AccountBalance(query) => query.execute(channel, request),
-            Self::AccountStakers(query) => query.execute(channel, request),
             Self::AccountRecords(query) => query.execute(channel, request),
             Self::TransactionReceipt(query) => query.execute(channel, request),
             Self::TransactionRecord(query) => query.execute(channel, request),
@@ -33977,7 +31742,6 @@ impl QueryExecute for AnyQueryData {
         match self {
             Self::AccountInfo(query) => query.should_retry_pre_check(status),
             Self::AccountBalance(query) => query.should_retry_pre_check(status),
-            Self::AccountStakers(query) => query.should_retry_pre_check(status),
             Self::AccountRecords(query) => query.should_retry_pre_check(status),
             Self::TransactionReceipt(query) => query.should_retry_pre_check(status),
             Self::TransactionRecord(query) => query.should_retry_pre_check(status),
@@ -33998,7 +31762,6 @@ impl QueryExecute for AnyQueryData {
         match self {
             Self::AccountInfo(query) => query.should_retry(response),
             Self::AccountBalance(query) => query.should_retry(response),
-            Self::AccountStakers(query) => query.should_retry(response),
             Self::AccountRecords(query) => query.should_retry(response),
             Self::TransactionReceipt(query) => query.should_retry(response),
             Self::TransactionRecord(query) => query.should_retry(response),
@@ -34019,7 +31782,6 @@ impl QueryExecute for AnyQueryData {
         match self {
             Self::AccountBalance(query) => query.transaction_id(),
             Self::AccountInfo(query) => query.transaction_id(),
-            Self::AccountStakers(query) => query.transaction_id(),
             Self::AccountRecords(query) => query.transaction_id(),
             Self::TransactionReceipt(query) => query.transaction_id(),
             Self::TransactionRecord(query) => query.transaction_id(),
@@ -34046,9 +31808,6 @@ impl QueryExecute for AnyQueryData {
             }
             Self::AccountInfo(query) => {
                 query.make_response(response).map(AnyQueryResponse::AccountInfo)
-            }
-            Self::AccountStakers(query) => {
-                query.make_response(response).map(AnyQueryResponse::AccountStakers)
             }
             Self::AccountRecords(query) => {
                 query.make_response(response).map(AnyQueryResponse::AccountRecords)
@@ -34096,7 +31855,6 @@ impl ValidateChecksums for AnyQueryData {
         match self {
             Self::AccountBalance(query) => query.validate_checksums(ledger_id),
             Self::AccountInfo(query) => query.validate_checksums(ledger_id),
-            Self::AccountStakers(query) => query.validate_checksums(ledger_id),
             Self::AccountRecords(query) => query.validate_checksums(ledger_id),
             Self::TransactionReceipt(query) => query.validate_checksums(ledger_id),
             Self::TransactionRecord(query) => query.validate_checksums(ledger_id),
@@ -34171,25 +31929,7 @@ impl FromProtobuf<services::response::Response> for AnyQueryResponse {
     }
 }
 // Filename: src/query/cost.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use tonic::transport::Channel;
@@ -34320,7 +32060,7 @@ impl<D> QueryCost<'_, D>
 where
     D: QueryExecute,
 {
-    /// Execute this query against the provided client of the Hedera network.
+    /// Execute this query against the provided client of the Hiero network.
     pub(crate) async fn execute(
         &mut self,
         client: &Client,
@@ -34330,25 +32070,7 @@ where
     }
 }
 // Filename: src/query/execute.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::Debug;
 
@@ -34372,7 +32094,7 @@ use crate::{
     TransactionId,
 };
 
-/// Describes a specific query that can be executed on the Hedera network.
+/// Describes a specific query that can be executed on the Hiero network.
 pub trait QueryExecute:
     Sync + Send + Into<AnyQueryData> + Clone + Debug + ToQueryProtobuf + ValidateChecksums
 {
@@ -34557,25 +32279,7 @@ pub(crate) fn response_header(
     header.as_ref().ok_or_else(|| Error::from_protobuf("unexpected missing `header` in `Response`"))
 }
 // Filename: src/query/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use futures_core::future::BoxFuture;
 use time::Duration;
@@ -34609,7 +32313,7 @@ pub(crate) use execute::{
 };
 pub(crate) use protobuf::ToQueryProtobuf;
 
-/// A query that can be executed on the Hedera network.
+/// A query that can be executed on the Hiero network.
 #[derive(Debug, Default)]
 pub struct Query<D>
 where
@@ -34655,7 +32359,7 @@ where
 
     /// Returns the explicit payment amount for this query.
     ///
-    /// The client will submit exactly this amount for the payment of this query. Hedera
+    /// The client will submit exactly this amount for the payment of this query. Hiero
     /// will not return any remainder (over the actual cost for this query).
     #[must_use]
     pub fn get_payment_amount(&self) -> Option<Hbar> {
@@ -34664,7 +32368,7 @@ where
 
     /// Sets the explicit payment amount for this query.
     ///
-    /// The client will submit exactly this amount for the payment of this query. Hedera
+    /// The client will submit exactly this amount for the payment of this query. Hiero
     /// will not return any remainder (over the actual cost for this query).
     pub fn payment_amount(&mut self, amount: Hbar) -> &mut Self {
         self.payment.amount(amount);
@@ -34785,7 +32489,7 @@ impl<D> Query<D>
 where
     D: QueryExecute,
 {
-    /// Execute this query against the provided client of the Hedera network.
+    /// Execute this query against the provided client of the Hiero network.
     // todo:
     #[allow(clippy::missing_errors_doc)]
     pub async fn execute(&mut self, client: &Client) -> crate::Result<D::Response> {
@@ -34848,7 +32552,7 @@ where
         execute(client, self, timeout).await
     }
 
-    /// Execute this query against the provided client of the Hedera network.
+    /// Execute this query against the provided client of the Hiero network.
     // todo:
     #[allow(clippy::missing_errors_doc)]
     pub async fn execute_with_timeout(
@@ -34860,25 +32564,7 @@ where
     }
 }
 // Filename: src/query/payment_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -34985,25 +32671,7 @@ impl From<PaymentTransactionData> for AnyTransactionData {
     }
 }
 // Filename: src/query/protobuf.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -35080,25 +32748,7 @@ where
     Err(crate::Error::TimedOut(last_error.into()))
 }
 // Filename: src/schedule/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod schedulable_transaction_body;
 mod schedule_create_transaction;
@@ -35727,25 +33377,7 @@ impl From<AnySchedulableTransactionData> for AnyTransactionData {
     }
 }
 // Filename: src/schedule/schedule_create_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::schedule_service_client::ScheduleServiceClient;
@@ -35881,13 +33513,13 @@ impl ScheduleCreateTransaction {
         self
     }
 
-    /// Returns the Hedera key which can be used to sign a `ScheduleDelete` and remove the schedule.
+    /// Returns the Hiero key which can be used to sign a `ScheduleDelete` and remove the schedule.
     #[must_use]
     pub fn get_admin_key(&self) -> Option<&Key> {
         self.data().admin_key.as_ref()
     }
 
-    /// Sets the Hedera key which can be used to sign a `ScheduleDelete` and remove the schedule.
+    /// Sets the Hiero key which can be used to sign a `ScheduleDelete` and remove the schedule.
     pub fn admin_key(&mut self, key: impl Into<Key>) -> &mut Self {
         self.data_mut().admin_key = Some(key.into());
         self
@@ -36278,25 +33910,7 @@ mod tests {
     }
 }
 // Filename: src/schedule/schedule_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::schedule_service_client::ScheduleServiceClient;
@@ -36496,25 +34110,7 @@ mod tests {
     }
 }
 // Filename: src/schedule/schedule_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -36539,7 +34135,7 @@ use crate::{
     ToProtobuf,
 };
 
-/// The unique identifier for a scheduled transaction on Hedera.
+/// The unique identifier for a scheduled transaction on Hiero.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 #[repr(C)]
 pub struct ScheduleId {
@@ -36716,25 +34312,7 @@ mod tests {
     }
 }
 // Filename: src/schedule/schedule_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use time::OffsetDateTime;
@@ -36826,6 +34404,7 @@ impl ScheduleInfo {
                 operator: None,
                 is_frozen: true,
                 regenerate_transaction_id: Some(false),
+                custom_fee_limits: Vec::new(),
             },
             Vec::new(),
         ))
@@ -37359,25 +34938,7 @@ mod tests {
     }
 }
 // Filename: src/schedule/schedule_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::schedule_service_client::ScheduleServiceClient;
@@ -37512,25 +35073,7 @@ mod tests {
     }
 }
 // Filename: src/schedule/schedule_sign_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::schedule_service_client::ScheduleServiceClient;
@@ -37714,25 +35257,7 @@ mod tests {
     }
 }
 // Filename: src/semantic_version/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt;
 use std::str::FromStr;
@@ -37748,7 +35273,7 @@ use crate::Error;
 #[cfg(test)]
 mod tests;
 
-/// Hedera follows [semantic versioning](https://semver.org) for both the HAPI protobufs and
+/// Hiero follows [semantic versioning](https://semver.org) for both the HAPI protobufs and
 /// the Services software.
 #[derive(Debug, Clone)]
 pub struct SemanticVersion {
@@ -37855,7 +35380,7 @@ fn parse_build(s: &str) -> crate::Result<String> {
 impl FromStr for SemanticVersion {
     type Err = Error;
 
-    // its probably useless doing strict parsing when Hedera probably accepts loose parsing anyway, but lets at least *try* not to make it worse.
+    // its probably useless doing strict parsing when Hiero probably accepts loose parsing anyway, but lets at least *try* not to make it worse.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = s.splitn(3, '.').collect();
 
@@ -37944,25 +35469,7 @@ impl ToProtobuf for SemanticVersion {
     }
 }
 // Filename: src/semantic_version/tests.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod parse {
     use std::str::FromStr;
@@ -38261,25 +35768,7 @@ mod display {
     }
 }
 // Filename: src/service_endpoint.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::net::{
     Ipv4Addr,
@@ -38328,7 +35817,7 @@ fn validate_domain_name(domain_name: String) -> crate::Result<()> {
 }
 
 /// Contains the IP address, the port, and the domain name representing a service endpoint of
-/// a Node in a network. Used to reach the Hedera API and submit transactions
+/// a Node in a network. Used to reach the Hiero API and submit transactions
 /// to the network.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ServiceEndpoint {
@@ -38380,25 +35869,7 @@ impl ToProtobuf for ServiceEndpoint {
     }
 }
 // Filename: src/signer.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt;
 
@@ -38650,25 +36121,7 @@ impl ToProtobuf for StakingInfo {
     }
 }
 // Filename: src/system/freeze_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::freeze_service_client::FreezeServiceClient;
@@ -39012,25 +36465,7 @@ mod tests {
     }
 }
 // Filename: src/system/freeze_type.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // todo(sr): Not happy with this doc.
 /// What type of freeze should be executed?
@@ -39077,25 +36512,7 @@ impl From<i32> for FreezeType {
     }
 }
 // Filename: src/system/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod freeze_transaction;
 mod freeze_type;
@@ -39110,25 +36527,7 @@ pub(crate) use system_delete_transaction::SystemDeleteTransactionData;
 pub use system_undelete_transaction::SystemUndeleteTransaction;
 pub(crate) use system_undelete_transaction::SystemUndeleteTransactionData;
 // Filename: src/system/system_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::file_service_client::FileServiceClient;
@@ -39157,16 +36556,16 @@ use crate::{
     ValidateChecksums,
 };
 
-/// Delete a file or smart contract - can only be done by a Hedera admin.
+/// Delete a file or smart contract - can only be done by a Hiero admin.
 pub type SystemDeleteTransaction = Transaction<SystemDeleteTransactionData>;
 
-/// Delete a file or smart contract - can only be done by a Hedera admin.
+/// Delete a file or smart contract - can only be done by a Hiero admin.
 ///
 /// When it is deleted, it immediately disappears from the system as seen by the user,
 /// but is still stored internally until the expiration time, at which time it
 /// is truly and permanently deleted.
 ///
-/// Until that time, it can be undeleted by the Hedera admin.
+/// Until that time, it can be undeleted by the Hiero admin.
 /// When a smart contract is deleted, the cryptocurrency account within it continues
 /// to exist, and is not affected by the expiration time here.
 ///
@@ -39225,6 +36624,7 @@ impl SystemDeleteTransaction {
 impl TransactionData for SystemDeleteTransactionData {}
 
 impl TransactionExecute for SystemDeleteTransactionData {
+    #[allow(deprecated)]
     fn execute(
         &self,
         channel: Channel,
@@ -39499,25 +36899,7 @@ mod tests {
     }
 }
 // Filename: src/system/system_undelete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::file_service_client::FileServiceClient;
@@ -39588,6 +36970,7 @@ impl SystemUndeleteTransaction {
 impl TransactionData for SystemUndeleteTransactionData {}
 
 impl TransactionExecute for SystemUndeleteTransactionData {
+    #[allow(deprecated)]
     fn execute(
         &self,
         channel: Channel,
@@ -40099,25 +37482,7 @@ mod tests {
     }
 }
 // Filename: src/token/custom_fees/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use fraction::Fraction;
 use hedera_proto::services;
@@ -40684,25 +38049,7 @@ fn royalty_fee_can_be_created_from_protobuf() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: src/token/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod assessed_custom_fee;
 mod custom_fees;
@@ -40851,25 +38198,7 @@ pub use token_wipe_transaction::{
     TokenWipeTransactionData,
 };
 // Filename: src/token/nft_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -40891,7 +38220,7 @@ use crate::{
     TokenId,
 };
 
-/// The unique identifier for a token on Hedera.
+/// The unique identifier for a token on Hiero.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 pub struct NftId {
     /// The (non-fungible) token of which this NFT is an instance.
@@ -41101,25 +38430,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_airdrop_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
 
@@ -41772,25 +39083,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_associate_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -42028,25 +39321,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_association.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -42189,25 +39464,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_burn_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -42495,25 +39752,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_cancel_airdrop_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -42807,25 +40046,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_claim_airdrop_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -43133,25 +40354,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_create_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -43242,7 +40445,7 @@ pub struct TokenCreateTransactionData {
     /// The key which can change the supply of a token.
     supply_key: Option<Key>,
 
-    /// The default freeze status (frozen or unfrozen) of Hedera accounts relative to this token. If
+    /// The default freeze status (frozen or unfrozen) of Hiero accounts relative to this token. If
     /// true, an account must be unfrozen before it can receive the token
     freeze_default: bool,
 
@@ -43640,7 +40843,15 @@ impl ToTransactionDataProtobuf for TokenCreateTransactionData {
     ) -> services::transaction_body::Data {
         let _ = chunk_info.assert_single_transaction();
 
-        services::transaction_body::Data::TokenCreation(self.to_protobuf())
+        // Generate the protobuf data
+        let mut protobuf_data = self.to_protobuf();
+
+        // Manually assign the auto_renew_account with operator_id if none is set
+        if protobuf_data.auto_renew_account.is_none() {
+            let operator_id = chunk_info.current_transaction_id.account_id;
+            protobuf_data.auto_renew_account = Some(operator_id.to_protobuf());
+        }
+        services::transaction_body::Data::TokenCreation(protobuf_data)
     }
 }
 
@@ -44322,25 +41533,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -44534,25 +41727,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_dissociate_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -44836,25 +42011,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_fee_schedule_update_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -45195,25 +42352,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_freeze_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -45477,25 +42616,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_grant_kyc_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -45766,25 +42887,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -45809,7 +42912,7 @@ use crate::{
     ToProtobuf,
 };
 
-/// The unique identifier for a token on Hedera.
+/// The unique identifier for a token on Hiero.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 pub struct TokenId {
     /// A non-negative number identifying the shard containing this token.
@@ -45992,25 +43095,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::{
@@ -46077,7 +43162,7 @@ pub struct TokenInfo {
     /// The default Freeze status (not applicable, frozen or unfrozen)
     pub default_freeze_status: Option<bool>,
 
-    /// The default KYC status (KycNotApplicable or Revoked) of Hedera accounts relative to this token.
+    /// The default KYC status (KycNotApplicable or Revoked) of Hiero accounts relative to this token.
     pub default_kyc_status: Option<bool>,
 
     /// Specifies whether the token was deleted or not.
@@ -46395,25 +43480,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -46550,25 +43617,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_key_validation_type.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -46626,25 +43675,7 @@ impl ToProtobuf for TokenKeyValidation {
     }
 }
 // Filename: src/token/token_mint_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -47002,25 +44033,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_nft_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use prost::Message;
@@ -47188,25 +44201,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_nft_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -47394,25 +44389,7 @@ impl TokenNftTransfer {
     }
 }
 // Filename: src/token/token_pause_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -47620,25 +44597,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_reject_flow.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashSet;
 use std::ops::Deref;
@@ -47905,25 +44864,7 @@ fn make_token_dissociate_transaction(
     Ok(tmp)
 }
 // Filename: src/token/token_reject_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -48278,25 +45219,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_revoke_kyc_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -48562,25 +45485,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_supply_type.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -48661,25 +45566,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_type.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -48701,7 +45588,7 @@ use crate::{
 pub enum TokenType {
     /// Interchangeable value with one another, where any quantity of them has the same value as
     /// another equal quantity if they are in the same class.  Share a single set of properties, not
-    /// distinct from one another. Simply represented as a balance or quantity to a given Hedera
+    /// distinct from one another. Simply represented as a balance or quantity to a given Hiero
     /// account.
     FungibleCommon = 0,
 
@@ -48769,25 +45656,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_unfreeze_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -49048,25 +45917,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_unpause_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -49271,25 +46122,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_update_nfts_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -49562,25 +46395,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_update_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -50482,25 +47297,7 @@ mod tests {
     }
 }
 // Filename: src/token/token_wipe_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::token_service_client::TokenServiceClient;
@@ -50920,25 +47717,7 @@ mod tests {
     }
 }
 // Filename: src/topic/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 mod topic_create_transaction;
 mod topic_delete_transaction;
@@ -50966,31 +47745,14 @@ pub(crate) use topic_message_submit_transaction::TopicMessageSubmitTransactionDa
 pub use topic_update_transaction::TopicUpdateTransaction;
 pub(crate) use topic_update_transaction::TopicUpdateTransactionData;
 // Filename: src/topic/topic_create_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::consensus_service_client::ConsensusServiceClient;
 use time::Duration;
 use tonic::transport::Channel;
 
+use crate::custom_fixed_fee::CustomFixedFee;
 use crate::ledger_id::RefLedgerId;
 use crate::protobuf::{
     FromProtobuf,
@@ -51008,6 +47770,7 @@ use crate::{
     AccountId,
     BoxGrpcFuture,
     Error,
+    Hbar,
     Key,
     Transaction,
     ValidateChecksums,
@@ -51041,6 +47804,15 @@ pub struct TopicCreateTransactionData {
 
     /// Account to be used at the topic's expiration time to extend the life of the topic.
     auto_renew_account_id: Option<AccountId>,
+
+    /// The key that can be used to update the custom fees for this topic.
+    fee_schedule_key: Option<Key>,
+
+    /// If the transaction contains a signer from this list, no custom fees are applied.
+    fee_exempt_keys: Vec<Key>,
+
+    /// The custom fee to be assessed during a message submission to this topic. Empty if no custom fees are applied.
+    custom_fees: Vec<CustomFixedFee>,
 }
 
 impl Default for TopicCreateTransactionData {
@@ -51051,6 +47823,9 @@ impl Default for TopicCreateTransactionData {
             submit_key: None,
             auto_renew_period: Some(Duration::days(90)),
             auto_renew_account_id: None,
+            fee_schedule_key: None,
+            fee_exempt_keys: vec![],
+            custom_fees: vec![],
         }
     }
 }
@@ -51121,9 +47896,73 @@ impl TopicCreateTransaction {
         self.data_mut().auto_renew_account_id = Some(id);
         self
     }
+
+    /// Sets the key that can be used to update the fee schedule for the topic.
+    pub fn fee_schedule_key(&mut self, key: impl Into<Key>) -> &mut Self {
+        self.data_mut().fee_schedule_key = Some(key.into());
+        self
+    }
+
+    /// The keys that can be used to update the fee schedule for the topic.
+    #[must_use]
+    pub fn get_fee_schedule_key(&self) -> Option<&Key> {
+        self.data().fee_schedule_key.as_ref()
+    }
+
+    /// Sets the keys that can be used to update the fee schedule for the topic.
+    pub fn fee_exempt_keys(&mut self, keys: Vec<Key>) -> &mut Self {
+        self.data_mut().fee_exempt_keys = keys;
+        self
+    }
+
+    /// The keys exempt from custom fees for this topic.
+    #[must_use]
+    pub fn get_fee_exempt_keys(&self) -> &Vec<Key> {
+        &self.data().fee_exempt_keys
+    }
+
+    /// Clears the keys exempt from custom fees for this topic.
+    pub fn clear_fee_exempt_keys(&mut self) -> &mut Self {
+        self.data_mut().fee_exempt_keys.clear();
+        self
+    }
+
+    /// Adds a key to the list of keys exempt from custom fees for this topic.
+    pub fn add_fee_exempt_key(&mut self, key: impl Into<Key>) -> &mut Self {
+        self.data_mut().fee_exempt_keys.push(key.into());
+        self
+    }
+
+    /// The custom fees to be assessed during a message submission to this topic.
+    #[must_use]
+    pub fn get_custom_fees(&self) -> &Vec<CustomFixedFee> {
+        &self.data().custom_fees
+    }
+
+    /// Sets the custom fees to be assessed during a message submission to this topic.
+    pub fn custom_fees(&mut self, fees: Vec<CustomFixedFee>) -> &mut Self {
+        self.data_mut().custom_fees = fees;
+        self
+    }
+
+    /// Clears the custom fees for this topic.
+    pub fn clear_custom_fees(&mut self) -> &mut Self {
+        self.data_mut().custom_fees.clear();
+        self
+    }
+
+    /// Adds a custom fee to the list of custom fees for this topic.
+    pub fn add_custom_fee(&mut self, fee: CustomFixedFee) -> &mut Self {
+        self.data_mut().custom_fees.push(fee);
+        self
+    }
 }
 
-impl TransactionData for TopicCreateTransactionData {}
+impl TransactionData for TopicCreateTransactionData {
+    fn default_max_transaction_fee(&self) -> Hbar {
+        Hbar::new(25)
+    }
+}
 
 impl TransactionExecute for TopicCreateTransactionData {
     fn execute(
@@ -51148,7 +47987,15 @@ impl ToTransactionDataProtobuf for TopicCreateTransactionData {
     ) -> services::transaction_body::Data {
         let _ = chunk_info.assert_single_transaction();
 
-        services::transaction_body::Data::ConsensusCreateTopic(self.to_protobuf())
+        // Generate the protobuf data
+        let mut protobuf_data = self.to_protobuf();
+
+        // Manually assign the auto_renew_account with operator_id if none is set
+        if protobuf_data.auto_renew_account.is_none() {
+            let operator_id = chunk_info.current_transaction_id.account_id;
+            protobuf_data.auto_renew_account = Some(operator_id.to_protobuf());
+        }
+        services::transaction_body::Data::ConsensusCreateTopic(protobuf_data)
     }
 }
 
@@ -51168,12 +48015,27 @@ impl From<TopicCreateTransactionData> for AnyTransactionData {
 
 impl FromProtobuf<services::ConsensusCreateTopicTransactionBody> for TopicCreateTransactionData {
     fn from_protobuf(pb: services::ConsensusCreateTopicTransactionBody) -> crate::Result<Self> {
+        let custom_fees = pb
+            .custom_fees
+            .into_iter()
+            .map(CustomFixedFee::from_protobuf)
+            .collect::<Result<Vec<_>, _>>()?;
+
+        let fee_exempt_keys = pb
+            .fee_exempt_key_list
+            .into_iter()
+            .map(Key::from_protobuf)
+            .collect::<Result<Vec<_>, _>>()?;
+
         Ok(Self {
             topic_memo: pb.memo,
             admin_key: Option::from_protobuf(pb.admin_key)?,
             submit_key: Option::from_protobuf(pb.submit_key)?,
             auto_renew_period: pb.auto_renew_period.map(Into::into),
             auto_renew_account_id: Option::from_protobuf(pb.auto_renew_account)?,
+            fee_schedule_key: Option::from_protobuf(pb.fee_schedule_key)?,
+            fee_exempt_keys,
+            custom_fees,
         })
     }
 }
@@ -51182,12 +48044,20 @@ impl ToProtobuf for TopicCreateTransactionData {
     type Protobuf = services::ConsensusCreateTopicTransactionBody;
 
     fn to_protobuf(&self) -> Self::Protobuf {
+        let custom_fees = self.custom_fees.iter().map(|fee| fee.to_protobuf()).collect::<Vec<_>>();
+        let fee_exempt_key_list =
+            self.fee_exempt_keys.iter().map(|key| key.to_protobuf()).collect::<Vec<_>>();
+        let fee_schedule_key = self.fee_schedule_key.as_ref().map(|key| key.to_protobuf());
+
         services::ConsensusCreateTopicTransactionBody {
             auto_renew_account: self.auto_renew_account_id.to_protobuf(),
             memo: self.topic_memo.clone(),
             admin_key: self.admin_key.to_protobuf(),
             submit_key: self.submit_key.to_protobuf(),
             auto_renew_period: self.auto_renew_period.to_protobuf(),
+            custom_fees,
+            fee_exempt_key_list,
+            fee_schedule_key,
         }
     }
 }
@@ -51199,6 +48069,7 @@ mod tests {
     use time::Duration;
 
     use super::TopicCreateTransactionData;
+    use crate::custom_fixed_fee::CustomFixedFee;
     use crate::protobuf::{
         FromProtobuf,
         ToProtobuf,
@@ -51211,7 +48082,9 @@ mod tests {
     use crate::{
         AccountId,
         AnyTransaction,
+        PrivateKey,
         PublicKey,
+        TokenId,
         TopicCreateTransaction,
     };
 
@@ -51347,6 +48220,9 @@ mod tests {
                             ),
                         },
                     ),
+                    fee_schedule_key: None,
+                    fee_exempt_key_list: [],
+                    custom_fees: [],
                 },
             )
         "#]]
@@ -51374,6 +48250,9 @@ mod tests {
             submit_key: Some(key().to_protobuf()),
             auto_renew_period: Some(AUTO_RENEW_PERIOD.to_protobuf()),
             auto_renew_account: Some(AUTO_RENEW_ACCOUNT_ID.to_protobuf()),
+            custom_fees: vec![],
+            fee_exempt_key_list: vec![],
+            fee_schedule_key: None,
         };
 
         let tx = TopicCreateTransactionData::from_protobuf(tx).unwrap();
@@ -51439,27 +48318,115 @@ mod tests {
     fn get_set_auto_renew_account_id_frozen_panics() {
         make_transaction().auto_renew_account_id(AUTO_RENEW_ACCOUNT_ID);
     }
+
+    #[test]
+    fn get_set_fee_schedule_key() {
+        let mut tx = TopicCreateTransaction::new();
+        tx.fee_schedule_key(key());
+
+        assert_eq!(tx.get_fee_schedule_key(), Some(&key().into()));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_fee_schedule_key_frozen_panics() {
+        make_transaction().fee_schedule_key(key());
+    }
+
+    #[test]
+    fn get_set_fee_exempt_keys() {
+        let keys = vec![PrivateKey::generate_ecdsa(), PrivateKey::generate_ecdsa()];
+        let mut tx = TopicCreateTransaction::new();
+        tx.fee_exempt_keys(keys.iter().map(|key| key.public_key().into()).collect());
+
+        assert_eq!(
+            tx.get_fee_exempt_keys(),
+            &keys.iter().map(|key| key.public_key().into()).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn get_set_custom_fees() {
+        let mut tx = TopicCreateTransaction::new();
+        tx.custom_fees(vec![
+            CustomFixedFee::new(100, Some(TokenId::new(1, 2, 3)), Some(AccountId::new(4, 5, 6))),
+            CustomFixedFee::new(200, None, None),
+        ]);
+
+        assert_eq!(
+            tx.get_custom_fees(),
+            &vec![
+                CustomFixedFee::new(
+                    100,
+                    Some(TokenId::new(1, 2, 3)),
+                    Some(AccountId::new(4, 5, 6))
+                ),
+                CustomFixedFee::new(200, None, None)
+            ]
+        );
+    }
+
+    #[test]
+    fn add_topic_custom_fee_to_list() {
+        let custom_fixed_fees = vec![
+            CustomFixedFee::new(1, Some(TokenId::new(0, 0, 0)), None),
+            CustomFixedFee::new(2, Some(TokenId::new(0, 0, 1)), None),
+            CustomFixedFee::new(3, Some(TokenId::new(0, 0, 2)), None),
+        ];
+
+        let custom_fee_to_add = CustomFixedFee::new(4, Some(TokenId::new(0, 0, 3)), None);
+
+        let mut expected_custom_fees = custom_fixed_fees.clone();
+        expected_custom_fees.push(custom_fee_to_add.clone());
+
+        let mut tx = TopicCreateTransaction::new();
+        tx.custom_fees(custom_fixed_fees);
+        tx.add_custom_fee(custom_fee_to_add);
+
+        assert_eq!(tx.get_custom_fees().len(), expected_custom_fees.len());
+        assert_eq!(tx.get_custom_fees(), &expected_custom_fees);
+    }
+
+    #[test]
+    fn add_topic_custom_fee_to_empty_list() {
+        let custom_fee_to_add = CustomFixedFee::new(4, Some(TokenId::new(0, 0, 3)), None);
+
+        let mut tx = TopicCreateTransaction::new();
+        tx.add_custom_fee(custom_fee_to_add.clone());
+
+        assert_eq!(tx.get_custom_fees().len(), 1);
+        assert_eq!(tx.get_custom_fees(), &vec![custom_fee_to_add]);
+    }
+
+    #[test]
+    fn add_fee_exempt_key_to_empty_list() {
+        let mut tx = TopicCreateTransaction::new();
+
+        let fee_exempt_key = PrivateKey::generate_ecdsa();
+        tx.add_fee_exempt_key(fee_exempt_key.public_key());
+
+        assert_eq!(tx.get_fee_exempt_keys().len(), 1);
+        assert_eq!(tx.get_fee_exempt_keys(), &vec![fee_exempt_key.public_key().into()]);
+    }
+
+    #[test]
+    fn add_fee_exempt_key_to_list() {
+        let fee_exempt_key = PrivateKey::generate_ecdsa();
+        let mut tx = TopicCreateTransaction::new();
+        tx.fee_exempt_keys(vec![fee_exempt_key.public_key().into()]);
+
+        let fee_exempt_key_to_add = PrivateKey::generate_ecdsa();
+        tx.add_fee_exempt_key(fee_exempt_key_to_add.public_key());
+
+        let expected_keys =
+            vec![fee_exempt_key.public_key().into(), fee_exempt_key_to_add.public_key().into()];
+
+        assert_eq!(tx.get_fee_exempt_keys().len(), 2);
+        assert_eq!(tx.get_fee_exempt_keys(), &expected_keys);
+    }
 }
 // Filename: src/topic/topic_delete_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::consensus_service_client::ConsensusServiceClient;
@@ -51632,25 +48599,7 @@ mod tests {
     }
 }
 // Filename: src/topic/topic_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -51674,7 +48623,7 @@ use crate::{
     ToProtobuf,
 };
 
-/// The unique identifier for a topic on Hedera.
+/// The unique identifier for a topic on Hiero.
 #[derive(Hash, PartialEq, Eq, Clone, Copy)]
 #[repr(C)]
 pub struct TopicId {
@@ -51851,25 +48800,7 @@ mod tests {
     }
 }
 // Filename: src/topic/topic_info.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use time::{
@@ -51877,6 +48808,7 @@ use time::{
     OffsetDateTime,
 };
 
+use crate::custom_fixed_fee::CustomFixedFee;
 use crate::protobuf::ToProtobuf;
 use crate::{
     AccountId,
@@ -51920,6 +48852,15 @@ pub struct TopicInfo {
 
     /// The ledger ID the response was returned from
     pub ledger_id: LedgerId,
+
+    /// Access control for update/delete of custom fees.
+    pub fee_schedule_key: Option<Key>,
+
+    /// If the transaction contains a signer from this list, no custom fees are applied.
+    pub fee_exempt_keys: Vec<Key>,
+
+    /// List of custom fees.
+    pub custom_fees: Vec<CustomFixedFee>,
 }
 
 impl TopicInfo {
@@ -51962,6 +48903,17 @@ impl FromProtobuf<services::ConsensusGetTopicInfoResponse> for TopicInfo {
         let auto_renew_period = info.auto_renew_period.map(Into::into);
         let auto_renew_account_id = Option::from_protobuf(info.auto_renew_account)?;
         let ledger_id = LedgerId::from_bytes(info.ledger_id);
+        let fee_schedule_key = Option::from_protobuf(info.fee_schedule_key)?;
+
+        let mut fee_exempt_keys = Vec::new();
+        for pb_key in info.fee_exempt_key_list {
+            fee_exempt_keys.push(Key::from_protobuf(pb_key)?);
+        }
+
+        let mut custom_fees = Vec::new();
+        for pb_fee in info.custom_fees {
+            custom_fees.push(CustomFixedFee::from_protobuf(pb_fee)?);
+        }
 
         Ok(Self {
             topic_id: TopicId::from_protobuf(topic_id)?,
@@ -51974,6 +48926,9 @@ impl FromProtobuf<services::ConsensusGetTopicInfoResponse> for TopicInfo {
             expiration_time,
             topic_memo: info.memo,
             ledger_id,
+            fee_schedule_key,
+            fee_exempt_keys,
+            custom_fees,
         })
     }
 }
@@ -51994,6 +48949,9 @@ impl ToProtobuf for TopicInfo {
                 auto_renew_period: self.auto_renew_period.to_protobuf(),
                 auto_renew_account: self.auto_renew_account_id.to_protobuf(),
                 ledger_id: self.ledger_id.to_bytes(),
+                custom_fees: vec![],
+                fee_exempt_key_list: vec![],
+                fee_schedule_key: None,
             }),
             header: None,
         }
@@ -52034,6 +48992,9 @@ mod tests {
                     account: Some(services::account_id::Account::AccountNum(4)),
                 }),
                 ledger_id: LedgerId::testnet().to_bytes(),
+                custom_fees: vec![],
+                fee_exempt_key_list: vec![],
+                fee_schedule_key: None,
             }),
         }
     }
@@ -52071,6 +49032,9 @@ mod tests {
                     },
                 ),
                 ledger_id: "testnet",
+                fee_schedule_key: None,
+                fee_exempt_keys: [],
+                custom_fees: [],
             }
         "#]]
         .assert_debug_eq(&TopicInfo::from_protobuf(make_info()).unwrap())
@@ -52204,6 +49168,9 @@ mod tests {
                         ledger_id: [
                             1,
                         ],
+                        fee_schedule_key: None,
+                        fee_exempt_key_list: [],
+                        custom_fees: [],
                     },
                 ),
             }
@@ -52244,31 +49211,16 @@ mod tests {
                     },
                 ),
                 ledger_id: "testnet",
+                fee_schedule_key: None,
+                fee_exempt_keys: [],
+                custom_fees: [],
             }
         "#]]
         .assert_debug_eq(&TopicInfo::from_bytes(&make_info().encode_to_vec()).unwrap())
     }
 }
 // Filename: src/topic/topic_info_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::consensus_service_client::ConsensusServiceClient;
@@ -52403,25 +49355,7 @@ mod tests {
     }
 }
 // Filename: src/topic/topic_message.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::iter;
 
@@ -52572,25 +49506,7 @@ pub(crate) struct PbTopicMessageChunk {
     pub(crate) total: i32,
 }
 // Filename: src/topic/topic_message_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
 use std::{
@@ -52641,7 +49557,7 @@ pub struct TopicMessageQueryContext {
     start_time: Option<OffsetDateTime>,
 }
 
-/// Query a stream of Hedera Consensus Service (HCS)
+/// Query a stream of Hiero Consensus Service (HCS)
 /// messages for an HCS Topic via a specific (possibly open-ended) time range.
 pub type TopicMessageQuery = MirrorQuery<TopicMessageQueryData>;
 
@@ -52966,25 +49882,7 @@ mod tests {
     }
 }
 // Filename: src/topic/topic_message_submit_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::cmp;
 use std::num::NonZeroUsize;
@@ -53325,25 +50223,7 @@ mod tests {
     }
 }
 // Filename: src/topic/topic_update_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::consensus_service_client::ConsensusServiceClient;
@@ -53353,6 +50233,7 @@ use time::{
 };
 use tonic::transport::Channel;
 
+use crate::custom_fixed_fee::CustomFixedFee;
 use crate::ledger_id::RefLedgerId;
 use crate::protobuf::{
     FromProtobuf,
@@ -53406,6 +50287,16 @@ pub struct TopicUpdateTransactionData {
 
     /// Optional account to be used at the topic's expiration time to extend the life of the topic.
     auto_renew_account_id: Option<AccountId>,
+
+    /// Access control for update/delete of custom fees.
+    /// None if the key should not be updated.
+    fee_schedule_key: Option<Key>,
+
+    /// If the transaction contains a signer from this list, no custom fees are applied.
+    fee_exempt_keys: Vec<Key>,
+
+    /// The custom fee to be assessed during a message submission to this topic.
+    custom_fees: Option<Vec<CustomFixedFee>>,
 }
 
 impl TopicUpdateTransaction {
@@ -53519,6 +50410,66 @@ impl TopicUpdateTransaction {
             checksum: None,
         })
     }
+
+    /// The key that can be used to update the fee schedule for the topic.
+    pub fn fee_schedule_key(&mut self, key: impl Into<Key>) -> &mut Self {
+        self.data_mut().fee_schedule_key = Some(key.into());
+        self
+    }
+
+    /// The key that can be used to update the fee schedule for the topic.
+    #[must_use]
+    pub fn get_fee_schedule_key(&self) -> Option<&Key> {
+        self.data().fee_schedule_key.as_ref()
+    }
+
+    /// The keys that can be used to update the fee schedule for the topic.
+    pub fn fee_exempt_keys(&mut self, keys: Vec<Key>) -> &mut Self {
+        self.data_mut().fee_exempt_keys = keys;
+        self
+    }
+
+    /// The keys that can be used to update the fee schedule for the topic.
+    #[must_use]
+    pub fn get_fee_exempt_keys(&self) -> &Vec<Key> {
+        &self.data().fee_exempt_keys
+    }
+
+    /// Clears the keys that can be used to update the fee schedule for the topic.
+    pub fn clear_fee_exempt_keys(&mut self) -> &mut Self {
+        self.data_mut().fee_exempt_keys = vec![];
+        self
+    }
+
+    /// Adds a key to the list of keys that can be used to update the fee schedule for the topic.
+    pub fn add_fee_exempt_key(&mut self, key: Key) -> &mut Self {
+        self.data_mut().fee_exempt_keys.push(key);
+        self
+    }
+
+    /// The custom fees to be assessed during a message submission to this topic.
+    pub fn custom_fees(&mut self, fees: Vec<CustomFixedFee>) -> &mut Self {
+        self.data_mut().custom_fees = Some(fees);
+        self
+    }
+
+    /// Clears the custom fees for this topic.
+    pub fn clear_custom_fees(&mut self) -> &mut Self {
+        self.data_mut().custom_fees = None;
+        self
+    }
+
+    /// The custom fees to be assessed during a message submission to this topic.
+    #[must_use]
+    pub fn get_custom_fees(&self) -> Option<&Vec<CustomFixedFee>> {
+        self.data().custom_fees.as_ref()
+    }
+
+    /// Adds a custom fee to the list of custom fees for this topic.
+    pub fn add_custom_fee(&mut self, fee: CustomFixedFee) -> &mut Self {
+        self.data_mut().custom_fees = Some(vec![fee]);
+        self
+    }
 }
 
 impl TransactionData for TopicUpdateTransactionData {}
@@ -53567,6 +50518,28 @@ impl From<TopicUpdateTransactionData> for AnyTransactionData {
 
 impl FromProtobuf<services::ConsensusUpdateTopicTransactionBody> for TopicUpdateTransactionData {
     fn from_protobuf(pb: services::ConsensusUpdateTopicTransactionBody) -> crate::Result<Self> {
+        let custom_fees = if let Some(custom_fees) = pb.custom_fees {
+            Some(
+                custom_fees
+                    .fees
+                    .into_iter()
+                    .map(CustomFixedFee::from_protobuf)
+                    .collect::<Result<Vec<_>, _>>()?,
+            )
+        } else {
+            None
+        };
+
+        let fee_exempt_keys = if let Some(fee_exempt_keys) = pb.fee_exempt_key_list {
+            fee_exempt_keys
+                .keys
+                .into_iter()
+                .map(|pb_key| Key::from_protobuf(pb_key))
+                .collect::<Result<Vec<_>, _>>()?
+        } else {
+            Vec::new()
+        };
+
         Ok(Self {
             topic_id: Option::from_protobuf(pb.topic_id)?,
             expiration_time: pb.expiration_time.map(Into::into),
@@ -53575,6 +50548,9 @@ impl FromProtobuf<services::ConsensusUpdateTopicTransactionBody> for TopicUpdate
             submit_key: Option::from_protobuf(pb.submit_key)?,
             auto_renew_period: pb.auto_renew_period.map(Into::into),
             auto_renew_account_id: Option::from_protobuf(pb.auto_renew_account)?,
+            fee_schedule_key: Option::from_protobuf(pb.fee_schedule_key)?,
+            fee_exempt_keys,
+            custom_fees,
         })
     }
 }
@@ -53587,8 +50563,21 @@ impl ToProtobuf for TopicUpdateTransactionData {
         let expiration_time = self.expiration_time.map(Into::into);
         let admin_key = self.admin_key.to_protobuf();
         let submit_key = self.submit_key.to_protobuf();
+        let fee_schedule_key = self.fee_schedule_key.to_protobuf();
+
         let auto_renew_period = self.auto_renew_period.map(Into::into);
         let auto_renew_account_id = self.auto_renew_account_id.to_protobuf();
+        let custom_fees = self.custom_fees.as_ref().map(|fees| services::FixedCustomFeeList {
+            fees: fees.iter().map(|fee| fee.to_protobuf()).collect(),
+        });
+
+        let fee_exempt_key_list = if self.fee_exempt_keys.is_empty() {
+            None
+        } else {
+            Some(services::FeeExemptKeyList {
+                keys: self.fee_exempt_keys.iter().map(|key| key.to_protobuf()).collect(),
+            })
+        };
 
         services::ConsensusUpdateTopicTransactionBody {
             auto_renew_account: auto_renew_account_id,
@@ -53598,6 +50587,9 @@ impl ToProtobuf for TopicUpdateTransactionData {
             admin_key,
             submit_key,
             auto_renew_period,
+            fee_exempt_key_list,
+            fee_schedule_key,
+            custom_fees,
         }
     }
 }
@@ -53605,8 +50597,12 @@ impl ToProtobuf for TopicUpdateTransactionData {
 #[cfg(test)]
 mod tests {
     use expect_test::expect;
-    use time::Duration;
+    use time::{
+        Duration,
+        OffsetDateTime,
+    };
 
+    use crate::custom_fixed_fee::CustomFixedFee;
     use crate::transaction::test_helpers::{
         check_body,
         transaction_body,
@@ -53614,10 +50610,20 @@ mod tests {
         VALID_START,
     };
     use crate::{
+        AccountId,
         AnyTransaction,
+        Key,
+        PrivateKey,
+        TokenId,
         TopicId,
         TopicUpdateTransaction,
     };
+
+    const TEST_TOPIC_ID: TopicId = TopicId::new(0, 0, 5007);
+    const TEST_TOPIC_MEMO: &str = "test memo";
+    const TEST_AUTO_RENEW_PERIOD: Duration = Duration::days(1);
+    const TEST_AUTO_RENEW_ACCOUNT_ID: AccountId = AccountId::new(0, 0, 5007);
+    const TEST_EXPIRATION_TIME: OffsetDateTime = VALID_START;
 
     fn make_transaction() -> TopicUpdateTransaction {
         let mut tx = TopicUpdateTransaction::new_for_tests();
@@ -53689,6 +50695,9 @@ mod tests {
                             ),
                         },
                     ),
+                    fee_schedule_key: None,
+                    fee_exempt_key_list: None,
+                    custom_fees: None,
                 },
             )
         "#]]
@@ -53851,6 +50860,9 @@ mod tests {
                             ),
                         },
                     ),
+                    fee_schedule_key: None,
+                    fee_exempt_key_list: None,
+                    custom_fees: None,
                 },
             )
         "#]]
@@ -53869,27 +50881,263 @@ mod tests {
 
         assert_eq!(tx, tx2);
     }
+
+    #[test]
+    fn get_set_topic_id() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.topic_id(TEST_TOPIC_ID);
+
+        assert_eq!(tx.get_topic_id(), Some(TEST_TOPIC_ID));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_topic_id_frozen_panics() {
+        make_transaction().topic_id(TEST_TOPIC_ID);
+    }
+
+    #[test]
+    fn get_set_topic_memo() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.topic_memo(TEST_TOPIC_MEMO);
+
+        assert_eq!(tx.get_topic_memo(), Some(TEST_TOPIC_MEMO));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_topic_memo_frozen_panics() {
+        make_transaction().topic_memo(TEST_TOPIC_MEMO);
+    }
+
+    #[test]
+    fn get_set_expiration_time() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.expiration_time(TEST_EXPIRATION_TIME);
+
+        assert_eq!(tx.get_expiration_time(), Some(TEST_EXPIRATION_TIME));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_expiration_time_frozen_panics() {
+        make_transaction().expiration_time(TEST_EXPIRATION_TIME);
+    }
+
+    #[test]
+    fn get_set_admin_key() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.admin_key(unused_private_key().public_key());
+
+        assert_eq!(tx.get_admin_key(), Some(&unused_private_key().public_key().into()));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_admin_key_frozen_panics() {
+        make_transaction().admin_key(unused_private_key().public_key());
+    }
+
+    #[test]
+    fn clear_admin_key() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.admin_key(unused_private_key().public_key());
+        tx.clear_admin_key();
+
+        assert_eq!(tx.get_admin_key(), Some(&Key::KeyList(crate::KeyList::new())));
+    }
+
+    #[test]
+    #[should_panic]
+    fn clear_admin_key_frozen_panics() {
+        make_transaction().clear_admin_key();
+    }
+
+    #[test]
+    fn get_set_submit_key() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.submit_key(unused_private_key().public_key());
+
+        assert_eq!(tx.get_submit_key(), Some(&unused_private_key().public_key().into()));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_submit_key_frozen_panics() {
+        make_transaction().submit_key(unused_private_key().public_key());
+    }
+
+    #[test]
+    fn clear_submit_key() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.submit_key(unused_private_key().public_key());
+        tx.clear_submit_key();
+
+        assert_eq!(tx.get_submit_key(), Some(&Key::KeyList(crate::KeyList::new())));
+    }
+
+    #[test]
+    #[should_panic]
+    fn clear_submit_key_frozen_panics() {
+        make_transaction().clear_submit_key();
+    }
+
+    #[test]
+    fn get_set_auto_renew_period() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.auto_renew_period(TEST_AUTO_RENEW_PERIOD);
+
+        assert_eq!(tx.get_auto_renew_period(), Some(TEST_AUTO_RENEW_PERIOD));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_auto_renew_period_frozen_panics() {
+        make_transaction().auto_renew_period(TEST_AUTO_RENEW_PERIOD);
+    }
+
+    #[test]
+    fn get_set_auto_renew_account_id() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.auto_renew_account_id(TEST_AUTO_RENEW_ACCOUNT_ID);
+
+        assert_eq!(tx.get_auto_renew_account_id(), Some(TEST_AUTO_RENEW_ACCOUNT_ID));
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_set_auto_renew_account_id_frozen_panics() {
+        make_transaction().auto_renew_account_id(TEST_AUTO_RENEW_ACCOUNT_ID);
+    }
+
+    #[test]
+    fn clear_auto_renew_account_id() {
+        let mut tx = TopicUpdateTransaction::new();
+        tx.auto_renew_account_id(TEST_AUTO_RENEW_ACCOUNT_ID);
+        tx.clear_auto_renew_account_id();
+
+        assert_eq!(tx.get_auto_renew_account_id(), Some(AccountId::new(0, 0, 0)));
+    }
+
+    #[test]
+    #[should_panic]
+    fn clear_auto_renew_account_id_frozen_panics() {
+        make_transaction().clear_auto_renew_account_id();
+    }
+
+    #[test]
+    fn get_set_fee_schedule_key() {
+        let fee_schedule_key = PrivateKey::generate_ecdsa();
+        let mut tx = TopicUpdateTransaction::new();
+        tx.fee_schedule_key(fee_schedule_key.public_key());
+
+        assert_eq!(tx.get_fee_schedule_key(), Some(&fee_schedule_key.public_key().into()));
+    }
+
+    #[test]
+    fn get_set_fee_exempt_keys() {
+        let fee_exempt_keys = vec![PrivateKey::generate_ecdsa(), PrivateKey::generate_ecdsa()];
+        let mut tx = TopicUpdateTransaction::new();
+        tx.fee_exempt_keys(fee_exempt_keys.iter().map(|key| key.public_key().into()).collect());
+
+        let expected_keys =
+            fee_exempt_keys.iter().map(|key| key.public_key().into()).collect::<Vec<_>>();
+
+        assert_eq!(tx.get_fee_exempt_keys(), &expected_keys);
+    }
+
+    #[test]
+    fn add_fee_exempt_key_to_empty_list() {
+        let mut tx = TopicUpdateTransaction::new();
+        let fee_exempt_key = PrivateKey::generate_ecdsa();
+        tx.add_fee_exempt_key(fee_exempt_key.public_key().into());
+
+        assert_eq!(tx.get_fee_exempt_keys(), &vec![fee_exempt_key.public_key().into()]);
+    }
+
+    #[test]
+    fn add_fee_exempt_key_to_list() {
+        let fee_exempt_key = PrivateKey::generate_ecdsa();
+        let mut tx = TopicUpdateTransaction::new();
+        tx.fee_exempt_keys(vec![fee_exempt_key.public_key().into()]);
+
+        let fee_exempt_key_to_add = PrivateKey::generate_ecdsa();
+        tx.add_fee_exempt_key(fee_exempt_key_to_add.public_key().into());
+
+        let expected_keys =
+            vec![fee_exempt_key.public_key().into(), fee_exempt_key_to_add.public_key().into()];
+
+        assert_eq!(tx.get_fee_exempt_keys(), &expected_keys);
+    }
+
+    #[test]
+    fn clear_fee_exempt_keys() {
+        let fee_exempt_key = PrivateKey::generate_ecdsa();
+        let mut tx = TopicUpdateTransaction::new();
+        tx.fee_exempt_keys(vec![fee_exempt_key.public_key().into()]);
+        tx.clear_fee_exempt_keys();
+
+        assert_eq!(tx.get_fee_exempt_keys(), &vec![]);
+    }
+
+    #[test]
+    fn get_set_custom_fees() {
+        let custom_fees = vec![
+            CustomFixedFee::new(1, Some(TokenId::new(0, 0, 0)), None),
+            CustomFixedFee::new(2, Some(TokenId::new(0, 0, 1)), None),
+            CustomFixedFee::new(3, Some(TokenId::new(0, 0, 2)), None),
+        ];
+
+        let mut tx = TopicUpdateTransaction::new();
+        tx.custom_fees(custom_fees.clone());
+
+        assert_eq!(tx.get_custom_fees(), Some(&custom_fees));
+    }
+
+    #[test]
+    fn add_custom_fee_to_list() {
+        let custom_fees = vec![
+            CustomFixedFee::new(1, Some(TokenId::new(0, 0, 0)), None),
+            CustomFixedFee::new(2, Some(TokenId::new(0, 0, 1)), None),
+            CustomFixedFee::new(3, Some(TokenId::new(0, 0, 2)), None),
+        ];
+
+        let custom_fee_to_add = CustomFixedFee::new(4, Some(TokenId::new(0, 0, 3)), None);
+
+        let mut tx = TopicUpdateTransaction::new();
+        tx.custom_fees(custom_fees);
+        tx.add_custom_fee(custom_fee_to_add.clone());
+
+        assert_eq!(tx.get_custom_fees(), Some(&vec![custom_fee_to_add]));
+    }
+
+    #[test]
+    fn add_custom_fee_to_empty_list() {
+        let custom_fee_to_add = CustomFixedFee::new(4, Some(TokenId::new(0, 0, 3)), None);
+
+        let mut tx = TopicUpdateTransaction::new();
+        tx.add_custom_fee(custom_fee_to_add.clone());
+
+        assert_eq!(tx.get_custom_fees(), Some(&vec![custom_fee_to_add]));
+    }
+
+    #[test]
+    fn clear_custom_fees() {
+        let custom_fees = vec![
+            CustomFixedFee::new(1, Some(TokenId::new(0, 0, 0)), None),
+            CustomFixedFee::new(2, Some(TokenId::new(0, 0, 1)), None),
+            CustomFixedFee::new(3, Some(TokenId::new(0, 0, 2)), None),
+        ];
+
+        let mut tx = TopicUpdateTransaction::new();
+        tx.custom_fees(custom_fees);
+        tx.clear_custom_fees();
+
+        assert_eq!(tx.get_custom_fees(), None);
+    }
 }
 // Filename: src/transaction/any.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use tonic::transport::Channel;
@@ -53899,6 +51147,7 @@ use super::{
     TransactionData,
     TransactionExecuteChunked,
 };
+use crate::custom_fee_limit::CustomFeeLimit;
 use crate::downcast::DowncastOwned;
 use crate::entity_id::ValidateChecksums;
 use crate::ledger_id::RefLedgerId;
@@ -53984,7 +51233,7 @@ mod data {
     pub(super) use crate::transfer_transaction::TransferTransactionData as Transfer;
 }
 
-/// Any possible transaction that may be executed on the Hedera network.
+/// Any possible transaction that may be executed on the Hiero network.
 pub type AnyTransaction = Transaction<AnyTransactionData>;
 
 #[derive(Debug, Clone)]
@@ -54537,15 +51786,6 @@ impl FromProtobuf<services::transaction_body::Data> for AnyTransactionData {
             Data::TokenAirdrop(pb) => data::TokenAirdrop::from_protobuf(pb)?.into(),
             Data::TokenClaimAirdrop(pb) => data::TokenClaimAirdrop::from_protobuf(pb)?.into(),
             Data::TokenCancelAirdrop(pb) => data::TokenCancelAirdrop::from_protobuf(pb)?.into(),
-            Data::TssMessage(_) => {
-                return Err(Error::from_protobuf("unsupported transaction `TssMessageTransaction`"))
-            }
-            Data::TssVote(_) => {
-                return Err(Error::from_protobuf("unsupported transaction `TssVoteTransaction`"))
-            }
-            Data::TssShareSignature(_) => {
-                return Err(Error::from_protobuf("unsupported transaction `TssShareSignature`"))
-            }
             Data::CryptoAddLiveHash(_) => {
                 return Err(Error::from_protobuf(
                     "unsupported transaction `AddLiveHashTransaction`",
@@ -54758,6 +51998,11 @@ impl AnyTransaction {
                 operator: None,
                 is_frozen: true,
                 regenerate_transaction_id: Some(false),
+                custom_fee_limits: first_body
+                    .max_custom_fees
+                    .into_iter()
+                    .map(CustomFeeLimit::from_protobuf)
+                    .collect::<Result<Vec<_>, _>>()?,
             },
             signers: Vec::new(),
             sources: None,
@@ -54888,15 +52133,6 @@ impl FromProtobuf<Vec<services::transaction_body::Data>> for ServicesTransaction
             Data::TokenAirdrop(it) => Self::TokenAirdrop(make_vec(it, len)),
             Data::TokenClaimAirdrop(it) => Self::TokenClaimAirdrop(make_vec(it, len)),
             Data::TokenCancelAirdrop(it) => Self::TokenCancelAirdrop(make_vec(it, len)),
-            Data::TssMessage(_) => {
-                return Err(Error::from_protobuf("unsupported transaction `TssMessageTransaction`"))
-            }
-            Data::TssVote(_) => {
-                return Err(Error::from_protobuf("unsupported transaction `TssVoteTransaction`"))
-            }
-            Data::TssShareSignature(_) => {
-                return Err(Error::from_protobuf("unsupported transaction `TssShareSignature`"))
-            }
             Data::CryptoAddLiveHash(_) => {
                 return Err(Error::from_protobuf(
                     "unsupported transaction `AddLiveHashTransaction`",
@@ -55026,6 +52262,7 @@ macro_rules! impl_cast_any {
                             operator: transaction.body.operator,
                             is_frozen: transaction.body.is_frozen,
                             regenerate_transaction_id: transaction.body.regenerate_transaction_id,
+                            custom_fee_limits: transaction.body.custom_fee_limits,
                         },
                         signers: transaction.signers,
                         sources: transaction.sources,
@@ -55476,6 +52713,7 @@ impl<D: Clone> CostTransaction<D> {
                 operator: transaction.body.operator,
                 is_frozen: transaction.body.is_frozen,
                 regenerate_transaction_id: transaction.body.regenerate_transaction_id,
+                custom_fee_limits: transaction.body.custom_fee_limits,
             },
             // cost transactions have no signers
             signers: Vec::new(),
@@ -55522,25 +52760,7 @@ impl<D: ToTransactionDataProtobuf> ToTransactionDataProtobuf for CostTransaction
     }
 }
 // Filename: src/transaction/execute.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::borrow::Cow;
 use std::collections::HashMap;
@@ -55823,6 +53043,7 @@ where
             node_account_id: Some(chunk_info.node_account_id.to_protobuf()),
             generate_record: false,
             transaction_fee,
+            max_custom_fees: vec![],
         }
     }
 }
@@ -55973,25 +53194,7 @@ impl<'a, D: TransactionExecute> Execute for SourceTransactionExecuteView<'a, D> 
     }
 }
 // Filename: src/transaction/mod.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::borrow::Cow;
 use std::collections::HashMap;
@@ -56007,6 +53210,7 @@ use prost::Message;
 use time::Duration;
 use triomphe::Arc;
 
+use crate::custom_fee_limit::CustomFeeLimit;
 use crate::downcast::DowncastOwned;
 use crate::execute::execute;
 use crate::signer::AnySigner;
@@ -56055,7 +53259,7 @@ pub(crate) use source::TransactionSources;
 
 const DEFAULT_TRANSACTION_VALID_DURATION: Duration = Duration::seconds(120);
 
-/// A transaction that can be executed on the Hedera network.
+/// A transaction that can be executed on the Hiero network.
 #[derive(Clone)]
 pub struct Transaction<D> {
     body: TransactionBody<D>,
@@ -56084,6 +53288,11 @@ pub(crate) struct TransactionBody<D> {
     pub(crate) is_frozen: bool,
 
     pub(crate) regenerate_transaction_id: Option<bool>,
+
+    /// The maximum custom fee that the user is willing to pay for the message.
+    /// If left empty, the user is willing to pay any custom fee.
+    /// If used with a transaction type that does not support custom fee limits, the transaction will fail.
+    pub(crate) custom_fee_limits: Vec<CustomFeeLimit>,
 }
 
 impl<D> Default for Transaction<D>
@@ -56102,6 +53311,7 @@ where
                 operator: None,
                 is_frozen: false,
                 regenerate_transaction_id: None,
+                custom_fee_limits: Vec::new(),
             },
             signers: Vec::new(),
             sources: None,
@@ -56165,7 +53375,7 @@ impl<D> Transaction<D> {
 
     /// # Panics
     /// If `self.is_frozen()`.
-    fn body_mut(&mut self) -> &mut TransactionBody<D> {
+    pub(crate) fn body_mut(&mut self) -> &mut TransactionBody<D> {
         self.require_not_frozen();
         &mut self.body
     }
@@ -56233,6 +53443,33 @@ impl<D> Transaction<D> {
     /// Sets the maximum transaction fee the paying account is willing to pay.
     pub fn max_transaction_fee(&mut self, fee: Hbar) -> &mut Self {
         self.body_mut().max_transaction_fee = Some(fee);
+        self
+    }
+
+    /// Returns the custom fee limits for the transaction.
+    #[must_use]
+    pub fn get_custom_fee_limits(&self) -> &[CustomFeeLimit] {
+        &self.body.custom_fee_limits
+    }
+
+    /// Sets the custom fee limits for the transaction.
+    pub fn custom_fee_limits(
+        &mut self,
+        limits: impl IntoIterator<Item = CustomFeeLimit>,
+    ) -> &mut Self {
+        self.body_mut().custom_fee_limits = limits.into_iter().collect();
+        self
+    }
+
+    /// Adds a custom fee limit to the transaction.
+    pub fn add_custom_fee_limit(&mut self, limit: CustomFeeLimit) -> &mut Self {
+        self.body_mut().custom_fee_limits.push(limit);
+        self
+    }
+
+    /// Removes all custom fee limits for the transaction.
+    pub fn clear_custom_fee_limits(&mut self) -> &mut Self {
+        self.body_mut().custom_fee_limits.clear();
         self
     }
 
@@ -56402,6 +53639,8 @@ impl<D: ValidateChecksums> Transaction<D> {
             client.and_then(Client::default_max_transaction_fee)
         });
 
+        let custom_fee_limits = self.body.custom_fee_limits.clone();
+
         let operator = client.and_then(Client::full_load_operator);
 
         // note: yes, there's an `Some(opt.unwrap())`, this is INTENTIONAL.
@@ -56409,6 +53648,7 @@ impl<D: ValidateChecksums> Transaction<D> {
         self.body.max_transaction_fee = max_transaction_fee;
         self.body.operator = operator;
         self.body.is_frozen = true;
+        self.body.custom_fee_limits = custom_fee_limits;
 
         if let Some(client) = client {
             if client.auto_validate_checksums() {
@@ -56674,7 +53914,7 @@ where
 
         match result {
             Ok(response) => {
-                // unexpected response from Hedera, expecting to receive an `InsufficientTxFee` but received `Ok`
+                // unexpected response from Hiero, expecting to receive an `InsufficientTxFee` but received `Ok`
                 return Err(Error::TransactionPreCheckStatus {
                     cost: None,
                     status: services::ResponseCodeEnum::Ok,
@@ -56692,7 +53932,7 @@ where
         }
     }
 
-    /// Execute this transaction against the provided client of the Hedera network.
+    /// Execute this transaction against the provided client of the Hiero network.
     pub async fn execute(&mut self, client: &Client) -> crate::Result<TransactionResponse> {
         self.execute_with_optional_timeout(client, None).await
     }
@@ -56791,7 +54031,7 @@ where
         Ok(responses)
     }
 
-    /// Execute this transaction against the provided client of the Hedera network.
+    /// Execute this transaction against the provided client of the Hiero network.
     // todo:
     #[allow(clippy::missing_errors_doc)]
     pub async fn execute_with_timeout(
@@ -56808,7 +54048,7 @@ impl<D> Transaction<D>
 where
     D: TransactionExecuteChunked,
 {
-    /// Execute all transactions against the provided client of the Hedera network.
+    /// Execute all transactions against the provided client of the Hiero network.
     pub async fn execute_all(
         &mut self,
         client: &Client,
@@ -56939,6 +54179,7 @@ fn pb_transaction_body_eq(
         generate_record,
         memo,
         data,
+        max_custom_fees,
     } = rhs;
 
     if &lhs.transaction_fee != transaction_fee {
@@ -56954,6 +54195,10 @@ fn pb_transaction_body_eq(
     }
 
     if &lhs.memo != memo {
+        return false;
+    }
+
+    if &lhs.max_custom_fees != max_custom_fees {
         return false;
     }
 
@@ -57030,6 +54275,7 @@ where
             operator,
             is_frozen,
             regenerate_transaction_id,
+            custom_fee_limits,
         } = body;
 
         // not a `map().map_err()` because ownership.
@@ -57045,6 +54291,7 @@ where
                     operator,
                     is_frozen,
                     regenerate_transaction_id,
+                    custom_fee_limits,
                 },
                 signers,
                 sources,
@@ -57061,6 +54308,7 @@ where
                     operator,
                     is_frozen,
                     regenerate_transaction_id,
+                    custom_fee_limits,
                 },
                 signers,
                 sources,
@@ -57144,6 +54392,7 @@ pub(crate) mod test_helpers {
             generate_record,
             memo,
             data,
+            max_custom_fees,
         } = body;
 
         let node_account_id = node_account_id.unwrap();
@@ -57156,7 +54405,7 @@ pub(crate) mod test_helpers {
         assert_eq!(transaction_valid_duration, Some(services::Duration { seconds: 120 }));
         assert_eq!(generate_record, false);
         assert_eq!(memo, "");
-
+        assert_eq!(max_custom_fees, vec![]);
         data.unwrap()
     }
 
@@ -57191,25 +54440,7 @@ pub(crate) mod test_helpers {
         OffsetDateTime::UNIX_EPOCH.saturating_add(Duration::seconds(1554158542));
 }
 // Filename: src/transaction/protobuf.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 
@@ -57228,25 +54459,7 @@ pub trait ToSchedulableTransactionDataProtobuf: Send + Sync {
     ) -> services::schedulable_transaction_body::Data;
 }
 // Filename: src/transaction/source.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2023 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::borrow::Cow;
 use std::ops::Range;
@@ -57661,25 +54874,7 @@ async fn chunked_to_from_bytes() -> crate::Result<()> {
     Ok(())
 }
 // Filename: src/transaction_hash.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -57718,25 +54913,7 @@ impl Display for TransactionHash {
     }
 }
 // Filename: src/transaction_id.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::fmt::{
     self,
@@ -58076,7 +55253,7 @@ mod tests {
         )
     }
 
-    /// Parse a transaction ID returned by the Hedera mirror api.
+    /// Parse a transaction ID returned by the Hiero mirror api.
     ///
     /// Test case was an output of this mirror request:
     /// curl 'https://mainnet.mirrornode.hedera.com/api/v1/accounts/2?transactionType=cryptotransfer'
@@ -58097,25 +55274,7 @@ mod tests {
     }
 }
 // Filename: src/transaction_receipt.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::ops::Not;
 
@@ -58382,11 +55541,13 @@ mod tests {
                     hbars: 100,
                     cents: 100,
                     expiration_time: EXPIRATION_TIME,
+                    exchange_rate_in_cents: f64::from(100) / f64::from(100),
                 },
                 next_rate: ExchangeRate {
                     hbars: 200,
                     cents: 200,
                     expiration_time: EXPIRATION_TIME,
+                    exchange_rate_in_cents: f64::from(200) / f64::from(200),
                 },
             }),
             contract_id: Some(ContractId::new(3, 2, 1)),
@@ -58551,25 +55712,7 @@ mod tests {
     }
 }
 // Filename: src/transaction_receipt_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -58842,25 +55985,7 @@ mod tests {
     }
 }
 // Filename: src/transaction_record.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
 
@@ -58887,7 +56012,7 @@ use crate::{
     Transfer,
 };
 
-/// The complete record for a transaction on Hedera that has reached consensus.
+/// The complete record for a transaction on Hiero that has reached consensus.
 /// Response from [`TransactionRecordQuery`][crate::TransactionRecordQuery].
 #[derive(Debug, Clone)]
 pub struct TransactionRecord {
@@ -59311,25 +56436,7 @@ mod tests {
     }
 }
 // Filename: src/transaction_record_query.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
@@ -59576,25 +56683,7 @@ mod tests {
     }
 }
 // Filename: src/transaction_response.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use crate::{
     AccountId,
@@ -59762,25 +56851,7 @@ impl ToProtobuf for Transfer {
     }
 }
 // Filename: src/transfer_transaction.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
 use std::ops::Not;
@@ -60643,7 +57714,7 @@ pub fn from_hedera_error(error: Error) -> ErrorObjectOwned {
         | Error::ReceiptStatus { status, .. }
         | Error::TransactionPreCheckStatus { status, .. } => ErrorObject::owned(
             HEDERA_ERROR,
-            "Hedera error".to_string(),
+            "Hiero error".to_string(),
             Some(json!({
                 "status": status.as_str_name().to_string(),
                 "message": error.to_string(),
@@ -60983,7 +58054,7 @@ async fn run_server() -> anyhow::Result<SocketAddr> {
         count: Arc::new(AtomicUsize::new(0)),
     });
 
-    let server = Server::builder().set_rpc_middleware(m).build("127.0.0.1:80").await?;
+    let server = Server::builder().set_rpc_middleware(m).build("127.0.0.1:8544").await?;
 
     let addr = server.local_addr()?;
     let handle = server.start(RpcServerImpl.into_rpc());
@@ -65963,7 +63034,7 @@ use crate::common::{
 const TEST_SECONDS: i64 = 86400;
 
 #[tokio::test]
-#[ignore = "not implemented in Hedera yet"]
+#[ignore = "not implemented in Hiero yet"]
 async fn create_account() -> anyhow::Result<()> {
     let Some(TestEnvironment { config, client }) = setup_nonfree() else {
         return Ok(());
@@ -65998,7 +63069,7 @@ async fn create_account() -> anyhow::Result<()> {
 }
 
 #[tokio::test]
-#[ignore = "not implemented in Hedera yet"]
+#[ignore = "not implemented in Hiero yet"]
 async fn create_account_schedule() -> anyhow::Result<()> {
     let Some(TestEnvironment { config, client }) = setup_nonfree() else {
         return Ok(());
@@ -66080,7 +63151,7 @@ async fn transfer() -> anyhow::Result<()> {
 
     assert_eq!(info.executed_at, None);
 
-    // Finally send this last signature to Hedera. This last signature _should_ mean the transaction executes
+    // Finally send this last signature to Hiero. This last signature _should_ mean the transaction executes
     // since all 3 signatures have been provided.
     ScheduleSignTransaction::new()
         .schedule_id(schedule_id)
@@ -66855,7 +63926,7 @@ use crate::common::{
 };
 
 #[tokio::test]
-#[ignore = "not implemented in Hedera yet"]
+#[ignore = "not implemented in Hiero yet"]
 async fn basic() -> anyhow::Result<()> {
     let Some(TestEnvironment { config, client }) = setup_nonfree() else {
         return Ok(());
@@ -69279,6 +66350,7 @@ use hedera::{
     Status,
     TokenCreateTransaction,
     TokenId,
+    TokenInfoQuery,
     TokenType,
 };
 use time::{
@@ -69876,6 +66948,62 @@ async fn royalty_fee() -> anyhow::Result<()> {
 
     token.delete(&client).await?;
     account.delete(&client).await?;
+    Ok(())
+}
+
+#[tokio::test]
+async fn auto_renew_account() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config: _, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let account = Account::create(Hbar::new(0), &client).await?;
+
+    let token_id = TokenCreateTransaction::new()
+        .name("ffff")
+        .symbol("F")
+        .treasury_account_id(account.id)
+        .auto_renew_account_id(account.id)
+        .expiration_time(OffsetDateTime::now_utc() + Duration::minutes(5))
+        .sign(account.key.clone())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?
+        .token_id
+        .unwrap();
+
+    let info = TokenInfoQuery::new().token_id(token_id).execute(&client).await?;
+
+    // auto renew account should be set to operator account
+    assert_eq!(info.auto_renew_account.unwrap(), account.id);
+    Ok(())
+}
+
+#[tokio::test]
+async fn autoset_auto_renew_account() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config: _, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let account = Account::create(Hbar::new(0), &client).await?;
+
+    let token_id = TokenCreateTransaction::new()
+        .name("ffff")
+        .symbol("F")
+        .treasury_account_id(account.id)
+        .expiration_time(OffsetDateTime::now_utc() + Duration::minutes(5))
+        .sign(account.key.clone())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?
+        .token_id
+        .unwrap();
+
+    let info = TokenInfoQuery::new().token_id(token_id).execute(&client).await?;
+    // auto renew account should be set to operator account
+    assert_eq!(info.auto_renew_account.unwrap(), client.get_operator_account_id().unwrap());
     Ok(())
 }
 // Filename: tests/e2e/token/delete.rs
@@ -72094,25 +69222,7 @@ async fn get_metadata_list(
     Ok(list)
 }
 // Filename: tests/e2e/token/pause.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use assert_matches::assert_matches;
 use hedera::{
@@ -72225,25 +69335,7 @@ async fn missing_pause_key_fails() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: tests/e2e/token/reject.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::iter::repeat;
 
@@ -72982,25 +70074,7 @@ async fn create_receiver_account(
     Ok(Account { key: account_key.clone(), id: account_id })
 }
 // Filename: tests/e2e/token/reject_flow.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2024 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use std::iter::repeat;
 
@@ -73921,25 +70995,7 @@ async fn non_associated_token_fails() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: tests/e2e/token/unpause.rs
-/*
- * ‌
- * Hedera Rust SDK
- * ​
- * Copyright (C) 2022 - 2023 Hedera Hashgraph, LLC
- * ​
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ‍
- */
+// SPDX-License-Identifier: Apache-2.0
 
 use assert_matches::assert_matches;
 use hedera::{
@@ -76067,7 +73123,22 @@ async fn missing_amount() -> anyhow::Result<()> {
     Ok(())
 }
 // Filename: tests/e2e/topic/create.rs
-use hedera::TopicCreateTransaction;
+use hedera::{
+    AccountBalanceQuery,
+    AccountCreateTransaction,
+    Client,
+    CustomFixedFee,
+    Hbar,
+    Key,
+    PrivateKey,
+    TokenCreateTransaction,
+    TokenId,
+    TopicCreateTransaction,
+    TopicInfoQuery,
+    TopicMessageSubmitTransaction,
+    TopicUpdateTransaction,
+    TransactionId,
+};
 
 use crate::common::{
     setup_nonfree,
@@ -76116,6 +73187,444 @@ async fn fieldless() -> anyhow::Result<()> {
         .await?
         .topic_id
         .unwrap();
+    Ok(())
+}
+
+#[tokio::test]
+async fn autoset_auto_renew_account() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config: _, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let topic_id = TopicCreateTransaction::new()
+        .admin_key(client.get_operator_public_key().unwrap())
+        .topic_memo("[e2e::TopicCreateTransaction]")
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?
+        .topic_id
+        .unwrap();
+
+    let info = TopicInfoQuery::new().topic_id(topic_id).execute(&client).await?;
+    assert_eq!(info.auto_renew_account_id.unwrap(), client.get_operator_account_id().unwrap());
+    Ok(())
+}
+
+async fn create_token(client: &Client) -> anyhow::Result<TokenId> {
+    let operator_account_id = client.get_operator_account_id().unwrap();
+    let operator_key = client.get_operator_public_key().unwrap();
+
+    let receipt = TokenCreateTransaction::new()
+        .name("Test Token")
+        .symbol("FT")
+        .treasury_account_id(operator_account_id)
+        .initial_supply(1_000_000)
+        .decimals(2)
+        .admin_key(operator_key.clone())
+        .supply_key(operator_key)
+        .execute(client)
+        .await?
+        .get_receipt(client)
+        .await?;
+
+    Ok(receipt.token_id.unwrap())
+}
+
+#[tokio::test]
+async fn creates_and_updates_revenue_generating_topic() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let fee_exempt_keys = vec![PrivateKey::generate_ecdsa(), PrivateKey::generate_ecdsa()];
+
+    let token1 = create_token(&client).await?;
+    let token2 = create_token(&client).await?;
+
+    let Some(op) = &config.operator else {
+        log::debug!("skipping test due to missing operator");
+        return Ok(());
+    };
+
+    let custom_fixed_fees = vec![
+        CustomFixedFee::new(1, Some(token1), Some(op.account_id)),
+        CustomFixedFee::new(2, Some(token2), Some(op.account_id)),
+    ];
+
+    // Create revenue-generating topic
+    let receipt = TopicCreateTransaction::new()
+        .fee_schedule_key(op.private_key.public_key())
+        .submit_key(op.private_key.public_key())
+        .admin_key(op.private_key.public_key())
+        .fee_exempt_keys(fee_exempt_keys.iter().map(|key| key.public_key().into()).collect())
+        .custom_fees(custom_fixed_fees)
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let topic_id = receipt.topic_id.unwrap();
+
+    let info = TopicInfoQuery::new().topic_id(topic_id).execute(&client).await?;
+
+    assert_eq!(
+        info.fee_schedule_key.unwrap().to_bytes(),
+        Key::Single(op.private_key.public_key()).to_bytes()
+    );
+
+    // Update the revenue-generating topic
+    let new_fee_exempt_keys = vec![PrivateKey::generate_ecdsa(), PrivateKey::generate_ecdsa()];
+    let new_fee_schedule_key = PrivateKey::generate_ecdsa();
+
+    let new_token1 = create_token(&client).await?;
+    let new_token2 = create_token(&client).await?;
+
+    let new_custom_fixed_fees = vec![
+        CustomFixedFee::new(3, Some(new_token1), Some(op.account_id)),
+        CustomFixedFee::new(4, Some(new_token2), Some(op.account_id)),
+    ];
+
+    TopicUpdateTransaction::new()
+        .topic_id(topic_id)
+        .fee_exempt_keys(new_fee_exempt_keys.iter().map(|key| key.public_key().into()).collect())
+        .fee_schedule_key(new_fee_schedule_key.public_key())
+        .custom_fees(new_custom_fixed_fees.clone())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let updated_info = TopicInfoQuery::new().topic_id(topic_id).execute(&client).await?;
+
+    assert_eq!(
+        updated_info.fee_schedule_key.unwrap().to_bytes(),
+        Key::Single(new_fee_schedule_key.public_key()).to_bytes()
+    );
+
+    // Validate updated fee exempt keys
+    for (idx, key) in new_fee_exempt_keys.iter().enumerate() {
+        assert_eq!(
+            updated_info.fee_exempt_keys[idx].to_bytes(),
+            Key::Single(key.public_key()).to_bytes()
+        );
+    }
+
+    // Validate updated custom fees
+    for (idx, fee) in new_custom_fixed_fees.iter().enumerate() {
+        assert_eq!(updated_info.custom_fees[idx].amount, fee.amount);
+        assert_eq!(updated_info.custom_fees[idx].denominating_token_id, fee.denominating_token_id);
+    }
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn create_revenue_generating_topic_with_invalid_fee_exempt_key_fails() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let Some(op) = &config.operator else {
+        log::debug!("skipping test due to missing operator");
+        return Ok(());
+    };
+
+    let fee_exempt_key = PrivateKey::generate_ecdsa();
+    let fee_exempt_key_list_with_duplicates =
+        vec![Key::Single(fee_exempt_key.public_key()), Key::Single(fee_exempt_key.public_key())];
+
+    let result = TopicCreateTransaction::new()
+        .admin_key(op.private_key.public_key())
+        .fee_exempt_keys(fee_exempt_key_list_with_duplicates)
+        .execute(&client)
+        .await;
+
+    assert!(matches!(
+        result,
+        Err(hedera::Error::TransactionPreCheckStatus {
+            status: hedera::Status::FeeExemptKeyListContainsDuplicatedKeys,
+            ..
+        })
+    ));
+
+    // Test exceeding key limit
+    let fee_exempt_key_list_exceeding_limit =
+        (0..11).map(|_| Key::Single(PrivateKey::generate_ecdsa().public_key())).collect::<Vec<_>>();
+
+    let result = TopicCreateTransaction::new()
+        .admin_key(op.private_key.public_key())
+        .fee_exempt_keys(fee_exempt_key_list_exceeding_limit)
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await;
+
+    assert!(matches!(
+        result.unwrap_err(),
+        hedera::Error::ReceiptStatus {
+            status: hedera::Status::MaxEntriesForFeeExemptKeyListExceeded,
+            ..
+        }
+    ));
+
+    Ok(())
+}
+
+// Continuing with more test conversions...
+#[tokio::test]
+async fn update_fee_schedule_key_without_permission_fails() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let Some(op) = &config.operator else {
+        log::debug!("skipping test due to missing operator");
+        return Ok(());
+    };
+
+    let receipt = TopicCreateTransaction::new()
+        .admin_key(op.private_key.public_key())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let topic_id = receipt.topic_id.unwrap();
+    let fee_schedule_key = PrivateKey::generate_ed25519();
+
+    let result = TopicUpdateTransaction::new()
+        .topic_id(topic_id)
+        .fee_schedule_key(fee_schedule_key.public_key())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await;
+
+    assert!(matches!(
+        result.unwrap_err(),
+        hedera::Error::ReceiptStatus { status: hedera::Status::FeeScheduleKeyCannotBeUpdated, .. }
+    ));
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn update_custom_fees_without_fee_schedule_key_fails() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let Some(op) = &config.operator else {
+        log::debug!("skipping test due to missing operator");
+        return Ok(());
+    };
+
+    // Create a topic without fee schedule key
+    let receipt = TopicCreateTransaction::new()
+        .admin_key(op.private_key.public_key())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let topic_id = receipt.topic_id.unwrap();
+
+    let token1 = create_token(&client).await?;
+    let token2 = create_token(&client).await?;
+
+    let custom_fixed_fees = vec![
+        CustomFixedFee::new(1, Some(token1), Some(op.account_id)),
+        CustomFixedFee::new(2, Some(token2), Some(op.account_id)),
+    ];
+
+    let result = TopicUpdateTransaction::new()
+        .topic_id(topic_id)
+        .custom_fees(custom_fixed_fees)
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await;
+
+    assert!(matches!(
+        result.unwrap_err(),
+        hedera::Error::ReceiptStatus { status: hedera::Status::FeeScheduleKeyNotSet, .. }
+    ));
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn charges_hbar_fee_with_limits_applied() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let Some(op) = &config.operator else {
+        log::debug!("skipping test due to missing operator");
+        return Ok(());
+    };
+
+    let hbar_amount: u64 = 100_000_000;
+    let private_key = PrivateKey::generate_ecdsa();
+
+    let custom_fixed_fee = CustomFixedFee::new(hbar_amount / 2, None, Some(op.account_id));
+
+    let receipt = TopicCreateTransaction::new()
+        .admin_key(op.private_key.public_key())
+        .fee_schedule_key(op.private_key.public_key())
+        .add_custom_fee(custom_fixed_fee)
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let topic_id = receipt.topic_id.unwrap();
+
+    let account_receipt = AccountCreateTransaction::new()
+        .initial_balance(Hbar::new(1))
+        .key(private_key.public_key())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let account_id = account_receipt.account_id.unwrap();
+
+    client.set_operator(account_id, private_key);
+
+    TopicMessageSubmitTransaction::new()
+        .topic_id(topic_id)
+        .message("Hello, Hiero™ hashgraph!".as_bytes().to_vec())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    client.set_operator(op.account_id, PrivateKey::generate_ecdsa());
+
+    let account_info = AccountBalanceQuery::new().account_id(account_id).execute(&client).await?;
+
+    assert!(account_info.hbars.to_tinybars() < (hbar_amount / 2) as i64);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn exempts_fee_exempt_keys_from_hbar_fees() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let Some(op) = &config.operator else {
+        log::debug!("skipping test due to missing operator");
+        return Ok(());
+    };
+
+    let hbar_amount: u64 = 100_000_000;
+    let fee_exempt_key1 = PrivateKey::generate_ecdsa();
+    let fee_exempt_key2 = PrivateKey::generate_ecdsa();
+
+    let custom_fixed_fee = CustomFixedFee::new(hbar_amount / 2, None, Some(op.account_id));
+
+    let receipt = TopicCreateTransaction::new()
+        .admin_key(op.private_key.public_key())
+        .fee_schedule_key(op.private_key.public_key())
+        .fee_exempt_keys(vec![
+            Key::Single(fee_exempt_key1.public_key()),
+            Key::Single(fee_exempt_key2.public_key()),
+        ])
+        .add_custom_fee(custom_fixed_fee)
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let topic_id = receipt.topic_id.unwrap();
+
+    let payer_account_receipt = AccountCreateTransaction::new()
+        .initial_balance(Hbar::new(1))
+        .key(fee_exempt_key1.public_key())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let payer_account_id = payer_account_receipt.account_id.unwrap();
+
+    client.set_operator(payer_account_id, fee_exempt_key1);
+
+    TopicMessageSubmitTransaction::new()
+        .topic_id(topic_id)
+        .message("Hello, Hiero™ hashgraph!".as_bytes().to_vec())
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    client.set_operator(payer_account_id, PrivateKey::generate_ecdsa());
+
+    let account_info =
+        AccountBalanceQuery::new().account_id(payer_account_id).execute(&client).await?;
+
+    assert!(account_info.hbars.to_tinybars() > (hbar_amount / 2) as i64);
+
+    Ok(())
+}
+
+// Test temporarily taken out until can figure out a solution for a separate freeze
+#[tokio::test]
+async fn automatically_assign_auto_renew_account_id_on_topic_create() -> anyhow::Result<()> {
+    let Some(TestEnvironment { config: _, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let topic_receipt =
+        TopicCreateTransaction::new().execute(&client).await?.get_receipt(&client).await?;
+
+    let topic_id = topic_receipt.topic_id.unwrap();
+
+    let info = TopicInfoQuery::new().topic_id(topic_id).execute(&client).await?;
+
+    assert!(info.auto_renew_account_id.is_some());
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn create_with_transaction_id_assigns_auto_renew_account_id_to_transaction_id_account_id(
+) -> anyhow::Result<()> {
+    let Some(TestEnvironment { config: _, client }) = setup_nonfree() else {
+        return Ok(());
+    };
+
+    let private_key = PrivateKey::generate_ecdsa();
+    let public_key = private_key.public_key();
+
+    let account_receipt = AccountCreateTransaction::new()
+        .key(public_key)
+        .initial_balance(Hbar::new(10))
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let account_id = account_receipt.account_id.unwrap();
+
+    let topic_receipt = TopicCreateTransaction::new()
+        .transaction_id(TransactionId::generate(account_id))
+        .freeze_with(&client)?
+        .sign(private_key)
+        .execute(&client)
+        .await?
+        .get_receipt(&client)
+        .await?;
+
+    let topic_id = topic_receipt.topic_id.unwrap();
+
+    let topic_info = TopicInfoQuery::new().topic_id(topic_id).execute(&client).await?;
+
+    assert_eq!(topic_info.auto_renew_account_id, Some(account_id));
 
     Ok(())
 }

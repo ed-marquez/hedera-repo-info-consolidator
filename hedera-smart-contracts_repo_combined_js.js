@@ -284,6 +284,7 @@ require('hardhat-abi-exporter');
 require('@openzeppelin/hardhat-upgrades');
 require('@nomicfoundation/hardhat-foundry');
 require('@nomicfoundation/hardhat-chai-matchers');
+require('solidity-coverage');
 
 const {
   OPERATOR_ID_A,
@@ -14879,7 +14880,7 @@ describe('@HAS IHRC-632 Test Suite', () => {
 
   describe('getEvmAddressAlias', () => {
     // skipping since there's a bug in getEvmAddressAlias in the services
-    xit('Should execute getEvmAddressAliasPublic and get the corressponded evmAddressAlias', async () => {
+    it('Should execute getEvmAddressAliasPublic and get the corressponded evmAddressAlias', async () => {
       const tx = await aliasAccountUtility.getEvmAddressAliasPublic(
         walletAHederaAccountNumAlias,
         Constants.GAS_LIMIT_1_000_000
@@ -14929,7 +14930,7 @@ describe('@HAS IHRC-632 Test Suite', () => {
       ); // evm address
     });
 
-    it('Should execute getEvmAddressAliasPublic with not long zero address and get INVALID_ACOUNT_ID', async () => {
+    it('Should execute getEvmAddressAliasPublic with long zero address and get the corresponded evm address', async () => {
       const tx = await aliasAccountUtility.getEvmAddressAliasPublic(
         walletAHederaAccountNumAlias, // a long zero address
         Constants.GAS_LIMIT_1_000_000
@@ -14940,8 +14941,8 @@ describe('@HAS IHRC-632 Test Suite', () => {
       const evmAddressAlias = receipt.logs.find(
         (log) => log.fragment.name === 'AddressAliasResponse'
       ).args;
-      expect(evmAddressAlias[0]).to.eq(15); // responseCode 15 = INVALID_ACCOUNT_ID
-      expect(evmAddressAlias[1]).to.eq(ethers.ZeroAddress);
+      expect(evmAddressAlias[0]).to.eq(22); // responseCode 22 = success
+      expect(evmAddressAlias[1]).to.eq(walletA.address);
     });
   });
 
@@ -17153,7 +17154,7 @@ const { ethers } = require('hardhat');
 const utils = require('../utils');
 const Constants = require('../../../constants');
 
-describe('HIP904 AirdropContract Test Suite', function () {
+describe('HIP904Batch1 AirdropContract Test Suite', function () {
   let airdropContract;
   let tokenCreateContract;
   let erc20Contract;
@@ -17501,64 +17502,55 @@ describe('HIP904 AirdropContract Test Suite', function () {
     expect(responseCode).to.eq('50'); // INVALID_TRANSACTION_BODY code
   });
 
-  // TODO: The following 2 tests are skipped because they are not supported by the current implementation in services
-  // They do not return the correct error code and we can currently only check if they revert
-  // therefore they will be skipped until the implementation is updated
-  it.skip('should fail when 11 or more NFT airdrops are provided', async function () {
-    try {
-      const nftTokens = [];
-      const nftSerials = [];
-      for (let i = 0; i < 11; i++) {
-        const tokenAddress = await utils.setupNft(
-          tokenCreateContract,
-          owner,
-          contractAddresses
-        );
-        const serial = await utils.mintNFTToAddress(
-          tokenCreateContract,
-          tokenAddress
-        );
-        nftTokens.push(tokenAddress);
-        nftSerials.push(serial);
-      }
-
-      const tx = await airdropContract.multipleNftAirdrop(
-        nftTokens,
+  it('should fail when 11 or more NFT airdrops are provided', async function () {
+    const nftTokens = [];
+    const nftSerials = [];
+    for (let i = 0; i < 11; i++) {
+      const tokenAddress = await utils.setupNft(
+        tokenCreateContract,
         owner,
-        signers[1].address,
-        nftSerials,
-        {
-          gasLimit: 15_000_000,
-        }
+        contractAddresses
       );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
+      const serial = await utils.mintNFTToAddress(
+        tokenCreateContract,
+        tokenAddress
+      );
+      nftTokens.push(tokenAddress);
+      nftSerials.push(serial);
     }
+
+    const tx = await airdropContract.multipleNftAirdrop(
+      nftTokens,
+      owner,
+      signers[1].address,
+      nftSerials,
+      {
+        gasLimit: 15_000_000,
+      }
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('TOKEN_REFERENCE_LIST_SIZE_LIMIT_EXCEEDED');
   });
 
-  it.skip('should fail when 11 or more token airdrops are provided', async function () {
-    try {
-      const ftAmount = BigInt(1);
-      const tokens = [];
-      for (let i = 0; i < 6; i++) {
-        tokens.push(
-          await utils.setupToken(tokenCreateContract, airdropContract, owner)
-        );
-      }
-      const tx = await airdropContract.multipleFtAirdrop(
-        tokens,
-        owner,
-        signers[1].address,
-        ftAmount,
-        Constants.GAS_LIMIT_2_000_000
+  it('should fail when 11 or more token airdrops are provided', async function () {
+    const ftAmount = BigInt(1);
+    const tokens = [];
+    for (let i = 0; i < 6; i++) {
+      tokens.push(
+        await utils.setupToken(tokenCreateContract, owner, contractAddresses)
       );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
     }
+    const tx = await airdropContract.multipleFtAirdrop(
+      tokens,
+      owner,
+      signers[1].address,
+      ftAmount,
+      Constants.GAS_LIMIT_2_000_000
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('TOKEN_REFERENCE_LIST_SIZE_LIMIT_EXCEEDED');
   });
 
   it('should handle airdrop to account with no available association slots', async function () {
@@ -17581,9 +17573,7 @@ describe('HIP904 AirdropContract Test Suite', function () {
     const disableAutoAssociations =
       await walletIHRC904AccountFacade.setUnlimitedAutomaticAssociations(
         false,
-        {
-          gasLimit: 2_000_000,
-        }
+        Constants.GAS_LIMIT_2_000_000
       );
     await disableAutoAssociations.wait();
 
@@ -17618,7 +17608,7 @@ const { ethers } = require('hardhat');
 const utils = require('../utils');
 const Constants = require('../../../constants');
 
-describe('HIP904 CancelAirdropContract Test Suite', function () {
+describe('HIP904Batch2 CancelAirdropContract Test Suite', function () {
   let airdropContract;
   let cancelAirdropContract;
   let tokenCreateContract;
@@ -17855,71 +17845,56 @@ describe('HIP904 CancelAirdropContract Test Suite', function () {
     expect(responseCode).to.eq('367'); // INVALID_PENDING_AIRDROP_ID code
   });
 
-  // TODO: Test is skipped because current implementation does not return correct error code for non-existent tokens
-  // https://github.com/hashgraph/hedera-services/issues/17534
-  it.skip('should fail when token does not exist', async function () {
+  it('should fail when token does not exist', async function () {
     const invalidToken = ethers.Wallet.createRandom().address;
 
-    try {
-      const tx = await cancelAirdropContract.cancelAirdrop(
-        owner,
-        receiver,
-        invalidToken,
-        Constants.GAS_LIMIT_2_000_000
-      );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
-    }
+    const tx = await cancelAirdropContract.cancelAirdrop(
+      owner,
+      receiver,
+      invalidToken,
+      Constants.GAS_LIMIT_2_000_000
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('INVALID_TOKEN_ID');
   });
 
-  // TODO: Test is skipped because current implementation does not return correct error code for non-existent NFTs
-  // https://github.com/hashgraph/hedera-services/issues/17534
-  it.skip('should fail when NFT does not exist', async function () {
+  it('should fail when NFT does not exist', async function () {
     const invalidNftToken = ethers.Wallet.createRandom().address;
     const serialNumber = 1;
 
-    try {
-      const tx = await cancelAirdropContract.cancelNFTAirdrop(
-        owner,
-        receiver,
-        invalidNftToken,
-        serialNumber,
-        Constants.GAS_LIMIT_2_000_000
-      );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
-    }
+    const tx = await cancelAirdropContract.cancelNFTAirdrop(
+      owner,
+      receiver,
+      invalidNftToken,
+      serialNumber,
+      Constants.GAS_LIMIT_2_000_000
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('INVALID_TOKEN_ID');
   });
 
-  // TODO: Test is skipped because current implementation does not support checking for maximum number of pending airdrops
-  // https://github.com/hashgraph/hedera-services/issues/17534
-  it.skip('should fail when more than 10 pending airdrops provided', async function () {
-    try {
-      const { senders, receivers, tokens, serials } =
-        await utils.createPendingAirdrops(
-          11,
-          tokenCreateContract,
-          owner,
-          airdropContract,
-          receiver
-        );
-
-      const tx = await cancelAirdropContract.cancelMultipleAirdrops(
-        senders,
-        receivers,
-        tokens,
-        serials,
-        Constants.GAS_LIMIT_2_000_000
+  it('should fail when more than 10 pending airdrops provided', async function () {
+    const { senders, receivers, tokens, serials } =
+      await utils.createPendingAirdrops(
+        11,
+        tokenCreateContract,
+        owner,
+        airdropContract,
+        receiver
       );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
-    }
+
+    const tx = await cancelAirdropContract.cancelMultipleAirdrops(
+      senders,
+      receivers,
+      tokens,
+      serials,
+      Constants.GAS_LIMIT_2_000_000
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('PENDING_AIRDROP_ID_LIST_TOO_LONG');
   });
 
   it('should fail when NFT serial number does not exist', async function () {
@@ -17949,7 +17924,7 @@ const { ethers } = require('hardhat');
 const utils = require('../utils');
 const Constants = require('../../../constants');
 
-describe('HIP904 ClaimAirdropContract Test Suite', function () {
+describe('HIP904Batch3 ClaimAirdropContract Test Suite', function () {
   let airdropContract;
   let claimAirdropContract;
   let tokenCreateContract;
@@ -18202,70 +18177,59 @@ describe('HIP904 ClaimAirdropContract Test Suite', function () {
     expect(responseCode).to.eq('15'); // INVALID_ACCOUNT_ID code
   });
 
-  // TODO: Test is skipped because current services implementation does not support checking for maximum number of pending airdrops
-  // https://github.com/hashgraph/hedera-services/issues/17534
-  it.skip('should fail to claim more than 10 pending airdrops at once', async function () {
-    try {
-      const { senders, receivers, tokens, serials } =
-        await utils.createPendingAirdrops(
-          airdropContract,
-          owner,
-          tokenCreateContract,
-          receiver.address,
-          11
-        );
-
-      const tx = await claimAirdropContract.claimMultipleAirdrops(
-        senders,
-        receivers,
-        tokens,
-        serials,
-        Constants.GAS_LIMIT_10_000_000
+  it('should fail to claim more than 10 pending airdrops at once', async function () {
+    const { senders, receivers, tokens, serials, amounts } =
+      await utils.createPendingAirdrops(
+        11,
+        tokenCreateContract,
+        owner,
+        airdropContract,
+        receiver.address
       );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
+
+    for (let token of tokens) {
+      await utils.associateWithSigner(receiverPrivateKey, token);
     }
+
+    const tx = await claimAirdropContract.claimMultipleAirdrops(
+      senders,
+      receivers,
+      tokens,
+      serials,
+      Constants.GAS_LIMIT_10_000_000
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('PENDING_AIRDROP_ID_LIST_TOO_LONG');
   });
 
-  // TODO: Test is skipped because current services implementation does not return correct error code for non-existent tokens
-  // https://github.com/hashgraph/hedera-services/issues/17534
-  it.skip('should fail to claim airdrops when token does not exist', async function () {
+  it('should fail to claim airdrops when token does not exist', async function () {
     const nonExistentToken = '0x1234567890123456789012345678901234567890';
 
-    try {
-      const tx = await claimAirdropContract.claim(
-        owner,
-        receiver.address,
-        nonExistentToken,
-        Constants.GAS_LIMIT_2_000_000
-      );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
-    }
+    const tx = await claimAirdropContract.claim(
+      owner,
+      receiver.address,
+      nonExistentToken,
+      Constants.GAS_LIMIT_2_000_000
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('INVALID_TOKEN_ID');
   });
 
-  // TODO: Test is skipped because current services implementation does not return correct error code for non-existent NFTs
-  // https://github.com/hashgraph/hedera-services/issues/17534
-  it.skip('should fail to claim airdrops when NFT does not exist', async function () {
+  it('should fail to claim airdrops when NFT does not exist', async function () {
     const nonExistentNft = '0x1234567890123456789012345678901234567890';
 
-    try {
-      const tx = await claimAirdropContract.claimNFTAirdrop(
-        owner,
-        receiver.address,
-        nonExistentNft,
-        1,
-        Constants.GAS_LIMIT_2_000_000
-      );
-      await tx.wait();
-      expect.fail('Should revert');
-    } catch (error) {
-      expect(error.shortMessage).to.eq('transaction execution reverted');
-    }
+    const tx = await claimAirdropContract.claimNFTAirdrop(
+      owner,
+      receiver.address,
+      nonExistentNft,
+      1,
+      Constants.GAS_LIMIT_2_000_000
+    );
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('INVALID_TOKEN_ID');
   });
 
   it('should fail to claim airdrops when NFT serial number does not exist', async function () {
@@ -18314,7 +18278,7 @@ const utils = require('../utils');
 const Constants = require('../../../constants');
 const { Contract } = require('ethers');
 
-describe('HIP904 IHRC904Facade ContractTest Suite', function () {
+describe('HIP904Batch2 IHRC904Facade Contract Test Suite', function () {
   let airdropContract;
   let tokenAddress;
   let nftTokenAddress;
@@ -18814,11 +18778,7 @@ describe('HIP904 IHRC904Facade ContractTest Suite', function () {
     expect(responseCode).to.eq('354'); // INVALID_OWNER_ID code
   });
 
-  // TODO: The following test is skipped because it is not supported by the current implementation in services
-  // It does not return the correct error code and we can currently only check if it reverts
-  // therefore it will be skipped until the implementation is updated
-  // https://github.com/hashgraph/hedera-services/issues/17534
-  it.skip('should revert when trying to reject NFT tokens when 11 or more serials are provided', async function () {
+  it('should revert when trying to reject NFT tokens when 11 or more serials are provided', async function () {
     let serialNumbers = [];
     for (let i = 0; i < 11; i++) {
       serialNumbers.push(
@@ -18826,8 +18786,11 @@ describe('HIP904 IHRC904Facade ContractTest Suite', function () {
       );
     }
 
-    await expect(walletIHRC904NftFacadeReceiver.rejectTokenNFTs(serialNumbers))
-      .to.be.reverted;
+    const tx =
+      await walletIHRC904NftFacadeReceiver.rejectTokenNFTs(serialNumbers);
+    const responseCode = await utils.getHTSResponseCode(tx.hash);
+    const responseText = utils.decimalToAscii(responseCode);
+    expect(responseText).to.eq('TOKEN_REFERENCE_LIST_SIZE_LIMIT_EXCEEDED');
   });
 });
 // Filename: test/system-contracts/hedera-token-service/hrc-904/TokenRejectContract.js
@@ -18838,7 +18801,7 @@ const { ethers } = require('hardhat');
 const utils = require('../utils');
 const Constants = require('../../../constants');
 
-describe('HIP904 TokenRejectContract Test Suite', function () {
+describe('HIP904Batch3 TokenRejectContract Test Suite', function () {
   let tokenRejectContract;
   let tokenCreateContract;
   let airdropContract;
@@ -24707,7 +24670,7 @@ const {
   TokenAssociateTransaction,
   AccountBalanceQuery,
   ContractInfoQuery,
-  AccountDeleteTransaction
+  AccountDeleteTransaction,
 } = require('@hashgraph/sdk');
 const Constants = require('../../constants');
 const axios = require('axios');
@@ -25408,17 +25371,19 @@ class Utils {
   }
 
   static async getContractInfo(evmAddress, client) {
-    const query = new ContractInfoQuery().setContractId(ContractId.fromEvmAddress(0, 0, evmAddress));
+    const query = new ContractInfoQuery().setContractId(
+      ContractId.fromEvmAddress(0, 0, evmAddress)
+    );
 
     return await query.execute(client);
   }
 
   static async deleteAccount(account, signer, accountId) {
-    const accountDeleteTransaction = (await (new AccountDeleteTransaction()
-            .setAccountId(accountId)
-            .setTransferAccountId(signer.getOperator().accountId)
-            .freezeWith(signer)
-    ).sign(PrivateKey.fromStringECDSA(account.signingKey.privateKey)));
+    const accountDeleteTransaction = await new AccountDeleteTransaction()
+      .setAccountId(accountId)
+      .setTransferAccountId(signer.getOperator().accountId)
+      .freezeWith(signer)
+      .sign(PrivateKey.fromStringECDSA(account.signingKey.privateKey));
 
     await accountDeleteTransaction.execute(signer);
   }
@@ -25810,6 +25775,11 @@ class Utils {
     const mirrorNodeUrl = getMirrorNodeUrl(network);
     const response = await axios.get(`${mirrorNodeUrl}/accounts/${evmAddress}`);
     return response.data.max_automatic_token_associations;
+  }
+
+  static decimalToAscii(decimalStr) {
+    const hex = BigInt(decimalStr).toString(16);
+    return Buffer.from(hex, 'hex').toString('ascii');
   }
 }
 
@@ -26531,46 +26501,70 @@ module.exports = Utils;
 // Filename: test/wrapped-tokens/WHBAR.js
 // SPDX-License-Identifier: Apache-2.0
 
+const chai = require('chai');
 const { expect } = require('chai');
 const hre = require('hardhat');
-const Utils = require("../system-contracts/hedera-token-service/utils");
+const Utils = require('../system-contracts/hedera-token-service/utils');
+const chaiAsPromised = require('chai-as-promised');
 const { Hbar, TransferTransaction, PrivateKey } = require('@hashgraph/sdk');
 const { ethers } = hre;
+chai.use(chaiAsPromised);
 
+/**
+ * How to run solidity coverage?
+ * - change the defaultNetwork in hardhat.config.js to hardhat - defaultNetwork: 'hardhat'
+ * - change the ONE_HBAR constant to the proper one
+ *     - for solidity-coverage use 1_000_000_000_000_000_000n
+ *     - for tests again local node use 100_000_000n
+ * - run `npx hardhat coverage --sources wrapped-tokens/WHBAR.sol --testfiles test/wrapped-tokens/WHBAR.js`
+ */
+
+// Core constants
 const ONE_HBAR = 1n * 100_000_000n;
 const WEIBAR_COEF = 10_000_000_000n;
 const ONE_HBAR_AS_WEIBAR = ONE_HBAR * WEIBAR_COEF;
+const ONE_HBAR_TRUNCATED = '100000000';
 
-describe('WHBAR', function() {
+// Test constants
+const TINY_AMOUNT = 1n;
+const TWO_HBAR = ONE_HBAR * 2n;
+const THREE_HBAR = ONE_HBAR * 3n;
+const FIVE_HBAR = ONE_HBAR * 5n;
+const HUNDRED_HBAR = ONE_HBAR * 100n;
+const SAMPLE_APPROVE_AMOUNT = 5644n;
+const SAMPLE_FALLBACK_DATA = '0x5644aa';
+const OVERFLOW_VALUE =
+  '0x10000000000000000000000000000000000000000000000000000000000000000';
+
+describe('WHBAR', function () {
   let signers;
   let contract;
 
-  before(async function() {
+  before(async function () {
     signers = await ethers.getSigners();
   });
 
-  it('should deploy the WHBAR contract', async function() {
+  it('WHBAR-000 should deploy the WHBAR contract', async function () {
     const contractFactory = await ethers.getContractFactory('WHBAR');
     contract = await contractFactory.deploy();
-    console.log(`WHBAR address: ${contract.target}`);
 
     await contract.waitForDeployment();
     expect(contract).to.not.be.undefined;
   });
 
-  it('should get name', async function() {
+  it('WHBAR-001 should get name', async function () {
     expect(await contract.name()).to.equal('Wrapped HBAR');
   });
 
-  it('should get symbol', async function() {
+  it('WHBAR-002 should get symbol', async function () {
     expect(await contract.symbol()).to.equal('WHBAR');
   });
 
-  it('should get decimals', async function() {
+  it('WHBAR-003 should get decimals', async function () {
     expect(await contract.decimals()).to.equal(8);
   });
 
-  it('should not update total supply after CryptoTransfer tx', async function() {
+  it('WHBAR-004 should not update total supply after CryptoTransfer tx', async function () {
     // initial values for contract's total supply and balance
     const totalSupplyBefore = await contract.totalSupply();
     const balanceBefore = await signers[0].provider.getBalance(contract.target);
@@ -26579,20 +26573,27 @@ describe('WHBAR', function() {
     const client = await Utils.createSDKClient();
     const signerId = await Utils.getAccountId(signers[0].address, client);
     const contractId = await Utils.getAccountId(contract.target, client);
-    client.setOperator(signerId, PrivateKey.fromStringECDSA((await Utils.getHardhatSignersPrivateKeys(false))[0]));
+    client.setOperator(
+      signerId,
+      PrivateKey.fromStringECDSA(
+        (await Utils.getHardhatSignersPrivateKeys(false))[0]
+      )
+    );
 
     // send 1 hbar to the contract via CryptoTransfer
     const tx = new TransferTransaction()
-        .addHbarTransfer(signerId, Hbar.fromTinybars(Number(ONE_HBAR)).negated())
-        .addHbarTransfer(contractId, Hbar.fromTinybars(Number(ONE_HBAR)));
+      .addHbarTransfer(signerId, Hbar.fromTinybars(Number(ONE_HBAR)).negated())
+      .addHbarTransfer(contractId, Hbar.fromTinybars(Number(ONE_HBAR)));
     const txResponse = await tx.execute(client);
     const receipt = await txResponse.getReceipt(client);
     if (receipt.status._code !== 22) {
-      throw new Error(`Funding tx with id ${txResponse.transactionId.toString()} failed.`);
+      throw new Error(
+        `Funding tx with id ${txResponse.transactionId.toString()} failed.`
+      );
     }
 
     // wait for the mirror node data population
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 3000));
 
     // get updated contract's total supply and balance
     const totalSupplyAfter = await contract.totalSupply();
@@ -26603,70 +26604,673 @@ describe('WHBAR', function() {
     expect(balanceBefore + ONE_HBAR_AS_WEIBAR).to.equal(balanceAfter);
   });
 
-  it('should deposit 1 hbar and check totalSupply', async function() {
-
-    const hbarBalanceBefore = await ethers.provider.getBalance(signers[0].address);
+  it('WHBAR-005 should deposit 1 hbar and check totalSupply', async function () {
+    const hbarBalanceBefore = await ethers.provider.getBalance(
+      signers[0].address
+    );
     const whbarBalanceBefore = await contract.balanceOf(signers[0].address);
     const totalSupplyBefore = await contract.totalSupply();
 
     const txDeposit = await contract.deposit({
-      value: ONE_HBAR_AS_WEIBAR
+      value: ONE_HBAR_AS_WEIBAR,
     });
-    await txDeposit.wait();
+    const receiptDeposit = await txDeposit.wait();
 
-    const hbarBalanceAfter = await ethers.provider.getBalance(signers[0].address);
+    // Verify Deposit event was emitted with correct parameters
+    const depositEvents = receiptDeposit.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Deposit'
+    );
+    expect(depositEvents.length).to.equal(1);
+    expect(depositEvents[0].args[0]).to.equal(signers[0].address); // dst
+    expect(depositEvents[0].args[1]).to.equal(ONE_HBAR_TRUNCATED); // wad
+
+    const hbarBalanceAfter = await ethers.provider.getBalance(
+      signers[0].address
+    );
     const whbarBalanceAfter = await contract.balanceOf(signers[0].address);
     const totalSupplyAfter = await contract.totalSupply();
 
-    expect(hbarBalanceBefore - hbarBalanceAfter).to.be.greaterThanOrEqual(ONE_HBAR_AS_WEIBAR);
+    expect(hbarBalanceBefore - hbarBalanceAfter).to.be.greaterThanOrEqual(
+      ONE_HBAR_AS_WEIBAR
+    );
     expect(whbarBalanceAfter - whbarBalanceBefore).to.equal(ONE_HBAR);
     expect(totalSupplyBefore + ONE_HBAR).to.equal(totalSupplyAfter);
   });
 
-  it('should withdraw 1 hbar and check totalSupply', async function() {
+  it('WHBAR-006 should withdraw 1 hbar and check totalSupply', async function () {
     const txDeposit = await contract.deposit({
-      value: ONE_HBAR_AS_WEIBAR
+      value: ONE_HBAR_AS_WEIBAR,
     });
     await txDeposit.wait();
 
-    const hbarBalanceBefore = await ethers.provider.getBalance(signers[0].address);
+    const hbarBalanceBefore = await ethers.provider.getBalance(
+      signers[0].address
+    );
     const whbarBalanceBefore = await contract.balanceOf(signers[0].address);
     const totalSupplyBefore = await contract.totalSupply();
 
     const txWithdraw = await contract.withdraw(ONE_HBAR);
-    await txWithdraw.wait();
+    const receiptWithdraw = await txWithdraw.wait();
 
-    const hbarBalanceAfter = await ethers.provider.getBalance(signers[0].address);
+    // Verify Withdrawal event was emitted with correct parameters
+    const withdrawalEvents = receiptWithdraw.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Withdrawal'
+    );
+    expect(withdrawalEvents.length).to.equal(1);
+    expect(withdrawalEvents[0].args[0]).to.equal(signers[0].address); // src
+    expect(withdrawalEvents[0].args[1]).to.equal(ONE_HBAR); // wad
+
+    const hbarBalanceAfter = await ethers.provider.getBalance(
+      signers[0].address
+    );
     const whbarBalanceAfter = await contract.balanceOf(signers[0].address);
     const totalSupplyAfter = await contract.totalSupply();
 
-    expect(hbarBalanceBefore - hbarBalanceAfter).to.be.lessThanOrEqual(ONE_HBAR_AS_WEIBAR);
+    expect(hbarBalanceBefore - hbarBalanceAfter).to.be.lessThanOrEqual(
+      ONE_HBAR_AS_WEIBAR
+    );
     expect(whbarBalanceBefore - ONE_HBAR).to.equal(whbarBalanceAfter);
     expect(totalSupplyBefore - ONE_HBAR).to.equal(totalSupplyAfter);
   });
 
-  it('should be able to transfer', async function() {
-    const receiver = (ethers.Wallet.createRandom()).address;
+  it('WHBAR-007 should be able to transfer', async function () {
+    const receiver = ethers.Wallet.createRandom().address;
     const receiverBalanceBefore = await contract.balanceOf(receiver);
 
     const txDeposit = await contract.deposit({
-      value: ONE_HBAR_AS_WEIBAR
+      value: ONE_HBAR_AS_WEIBAR,
     });
     await txDeposit.wait();
 
     const txTransfer = await contract.transfer(receiver, ONE_HBAR);
-    await txTransfer.wait();
+    const receiptTransfer = await txTransfer.wait();
+
+    // Verify Transfer event was emitted with correct parameters
+    const transferEvents = receiptTransfer.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Transfer'
+    );
+    expect(transferEvents.length).to.equal(1);
+    expect(transferEvents[0].args[0]).to.equal(signers[0].address); // src
+    expect(transferEvents[0].args[1]).to.equal(receiver); // dst
+    expect(transferEvents[0].args[2]).to.equal(ONE_HBAR); // wad
 
     const receiverBalanceAfter = await contract.balanceOf(receiver);
     expect(receiverBalanceBefore).to.equal(0);
     expect(receiverBalanceAfter).to.equal(ONE_HBAR);
   });
 
-  it('should be able to transferFrom', async function() {
+  it('WHBAR-008 should be able to transferFrom', async function () {
     const amount = 1;
 
     // create a random receiver
-    const receiverAddress = (ethers.Wallet.createRandom()).address;
+    const receiverAddress = ethers.Wallet.createRandom().address;
+
+    // create a new random signer
+    const newSigner = ethers.Wallet.createRandom().connect(signers[0].provider);
+
+    // add some balance for gas covering
+    await (
+      await signers[0].sendTransaction({
+        to: newSigner.address,
+        value: ONE_HBAR_AS_WEIBAR,
+      })
+    ).wait();
+
+    // deposit 1 hbar with signer[0]
+    await (
+      await contract.deposit({
+        value: ONE_HBAR_AS_WEIBAR,
+      })
+    ).wait();
+
+    // approve the newSigner from signer[0]
+    const txApprove = await contract.approve(newSigner.address, amount);
+    const receiptApprove = await txApprove.wait();
+
+    // Verify Approval event was emitted with correct parameters
+    const approvalEvents = receiptApprove.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Approval'
+    );
+    expect(approvalEvents.length).to.equal(1);
+    expect(approvalEvents[0].args[0]).to.equal(signers[0].address); // src
+    expect(approvalEvents[0].args[1]).to.equal(newSigner.address); // guy
+    expect(approvalEvents[0].args[2]).to.equal(amount); // wad
+
+    // save the balances before
+    const allowanceBefore = await contract.allowance(
+      signers[0].address,
+      newSigner.address
+    );
+    const receiverBalanceBefore = await contract.balanceOf(receiverAddress);
+
+    // execute transferFrom with newSigner using signers[0] approval
+    const contractWithNewSigner = await contract.connect(newSigner);
+    const txTransferFrom = await contractWithNewSigner.transferFrom(
+      signers[0].address,
+      receiverAddress,
+      amount
+    );
+    const receiptTransferFrom = await txTransferFrom.wait();
+
+    // Verify Transfer event was emitted with correct parameters
+    const transferEvents = receiptTransferFrom.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Transfer'
+    );
+    expect(transferEvents.length).to.equal(1);
+    expect(transferEvents[0].args[0]).to.equal(signers[0].address); // src
+    expect(transferEvents[0].args[1]).to.equal(receiverAddress); // dst
+    expect(transferEvents[0].args[2]).to.equal(amount); // wad
+
+    // save the balances after
+    const allowanceAfter = await contract.allowance(
+      signers[0].address,
+      newSigner.address
+    );
+    const receiverBalanceAfter = await contract.balanceOf(receiverAddress);
+
+    expect(allowanceBefore).to.equal(amount);
+    expect(allowanceAfter).to.equal(0);
+    expect(receiverBalanceBefore).to.equal(0);
+    expect(receiverBalanceAfter).to.equal(amount);
+  });
+
+  it('WHBAR-009 should be able to approve', async function () {
+    const receiverAddress = ethers.Wallet.createRandom().address;
+    const amount = SAMPLE_APPROVE_AMOUNT;
+
+    const txApprove = await contract.approve(receiverAddress, amount);
+    const receiptApprove = await txApprove.wait();
+
+    // Verify Approval event was emitted with correct parameters
+    const approvalEvents = receiptApprove.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Approval'
+    );
+    expect(approvalEvents.length).to.equal(1);
+    expect(approvalEvents[0].args[0]).to.equal(signers[0].address); // src
+    expect(approvalEvents[0].args[1]).to.equal(receiverAddress); // guy
+    expect(approvalEvents[0].args[2]).to.equal(amount); // wad
+
+    expect(
+      await contract.allowance(signers[0].address, receiverAddress)
+    ).to.equal(amount);
+  });
+
+  it('WHBAR-010 should be able to deposit via contract`s fallback method', async function () {
+    const whbarSigner0Before = await contract.balanceOf(signers[0].address);
+
+    const txFallback = await signers[0].sendTransaction({
+      to: contract.target,
+      data: SAMPLE_FALLBACK_DATA,
+      value: ONE_HBAR_AS_WEIBAR,
+    });
+    const receiptFallback = await txFallback.wait();
+
+    // Get the Deposit event signature
+    const depositEventSignature = 'Deposit(address,uint256)';
+    const depositTopic = ethers.id(depositEventSignature);
+
+    // Filter logs by the event signature
+    const depositEvents = receiptFallback.logs.filter(
+      (log) => log.topics[0] === depositTopic
+    );
+
+    expect(depositEvents.length).to.equal(1);
+
+    // Decode the event data
+    const decodedData = contract.interface.parseLog({
+      topics: depositEvents[0].topics,
+      data: depositEvents[0].data,
+    });
+
+    expect(decodedData.args[0]).to.equal(signers[0].address); // dst
+    expect(decodedData.args[1]).to.equal(ONE_HBAR_TRUNCATED); // wad
+
+    const whbarSigner0After = await contract.balanceOf(signers[0].address);
+    expect(whbarSigner0After - whbarSigner0Before).to.equal(ONE_HBAR);
+  });
+
+  it('WHBAR-011 should be able to deposit via contract`s receive method', async function () {
+    const whbarSigner0Before = await contract.balanceOf(signers[0].address);
+
+    const txReceive = await signers[0].sendTransaction({
+      to: contract.target,
+      value: ONE_HBAR_AS_WEIBAR,
+    });
+    const receiptReceive = await txReceive.wait();
+
+    // Get the Deposit event signature
+    const depositEventSignature = 'Deposit(address,uint256)';
+    const depositTopic = ethers.id(depositEventSignature);
+
+    // Filter logs by the event signature
+    const depositEvents = receiptReceive.logs.filter(
+      (log) => log.topics[0] === depositTopic
+    );
+
+    expect(depositEvents.length).to.equal(1);
+
+    // Decode the event data
+    const decodedData = contract.interface.parseLog({
+      topics: depositEvents[0].topics,
+      data: depositEvents[0].data,
+    });
+
+    expect(decodedData.args[0]).to.equal(signers[0].address); // dst
+    expect(decodedData.args[1]).to.equal(ONE_HBAR_TRUNCATED); // wad
+
+    const whbarSigner0After = await contract.balanceOf(signers[0].address);
+    expect(whbarSigner0After - whbarSigner0Before).to.equal(ONE_HBAR);
+  });
+
+  it('WHBAR-012 should throw InsufficientFunds error on withdraw', async function () {
+    await expect(contract.withdraw(HUNDRED_HBAR)).to.be.revertedWithCustomError(
+      contract,
+      `InsufficientFunds`
+    );
+  });
+
+  it('WHBAR-013 should throw InsufficientFunds error on transferFrom', async function () {
+    const receiverAddress = ethers.Wallet.createRandom().address;
+
+    await expect(
+      contract.transferFrom(signers[1].address, receiverAddress, HUNDRED_HBAR)
+    ).to.be.revertedWithCustomError(contract, `InsufficientFunds`);
+  });
+
+  it('WHBAR-014 should throw InsufficientAllowance error on withdraw', async function () {
+    const amount = 1;
+    const receiverAddress = ethers.Wallet.createRandom().address;
+    const newSigner = ethers.Wallet.createRandom().connect(signers[0].provider);
+
+    // add some balance for gas covering
+    await (
+      await signers[0].sendTransaction({
+        to: newSigner.address,
+        value: ONE_HBAR_AS_WEIBAR,
+      })
+    ).wait();
+
+    // deposit 1 hbar with signer[0]
+    await (
+      await contract.deposit({
+        value: ONE_HBAR_AS_WEIBAR,
+      })
+    ).wait();
+
+    const contractWithNewSigner = await contract.connect(newSigner);
+    await expect(
+      contractWithNewSigner.transferFrom(
+        signers[0].address,
+        receiverAddress,
+        amount
+      )
+    ).to.be.revertedWithCustomError(
+      contractWithNewSigner,
+      `InsufficientAllowance`
+    );
+  });
+
+  it('WHBAR-015 should throw SendFailed error on withdrawal from a contract with no receive/fallback method', async () => {
+    const contractWithoutReceiveFactory =
+      await ethers.getContractFactory('Target');
+    const contractWithoutReceive = await contractWithoutReceiveFactory.deploy();
+    await contractWithoutReceive.waitForDeployment();
+
+    const receiver = contractWithoutReceive.target;
+    const receiverBalanceBefore = await contract.balanceOf(receiver);
+
+    const txDeposit = await contract.deposit({
+      value: ONE_HBAR_AS_WEIBAR,
+    });
+    await txDeposit.wait();
+
+    const txTransfer = await contract.transfer(
+      contractWithoutReceive,
+      ONE_HBAR
+    );
+    await txTransfer.wait();
+
+    const receiverBalanceAfter = await contract.balanceOf(receiver);
+    expect(receiverBalanceBefore).to.equal(0);
+    expect(receiverBalanceAfter).to.equal(ONE_HBAR);
+
+    const tryToWithdrawTx = await contractWithoutReceive.tryToWithdraw(
+      contract.target,
+      ONE_HBAR
+    );
+    const tryToWithdrawReceipt = await tryToWithdrawTx.wait();
+
+    expect(tryToWithdrawReceipt.logs).to.not.be.empty;
+    expect(tryToWithdrawReceipt.logs[0].fragment.name).to.equal(
+      'WithdrawResponse'
+    );
+    // revert with SendFailed()
+    expect(tryToWithdrawReceipt.logs[0].args[0]).to.be.false;
+    // first 4 bytes of the SendError selector - keccak256("SendFailed()") = 0x81063e51806c3994c498b39c9d9f4124c2e61b7cd154bc84f959aea44d44ce4f
+    expect(tryToWithdrawReceipt.logs[0].args[1]).to.equal('0x81063e51');
+  });
+
+  it('WHBAR-016 should revert on overflow via transfer', async function () {
+    const receiver = ethers.Wallet.createRandom().address;
+    const MAX_UINT256 = ethers.MaxUint256;
+
+    const txDeposit = await contract.deposit({
+      value: ONE_HBAR_AS_WEIBAR,
+    });
+    await txDeposit.wait();
+
+    await expect(
+      contract.transfer(receiver, OVERFLOW_VALUE)
+    ).to.be.rejectedWith('value out-of-bounds');
+
+    // Test with MAX_UINT256 which should revert with InsufficientFunds
+    await expect(
+      contract.transfer(receiver, MAX_UINT256)
+    ).to.be.revertedWithCustomError(contract, 'InsufficientFunds');
+  });
+
+  it('WHBAR-017 should revert on overflow via approve', async function () {
+    const spender = ethers.Wallet.createRandom().address;
+    const MAX_UINT256 = ethers.MaxUint256;
+
+    await expect(contract.approve(spender, OVERFLOW_VALUE)).to.be.rejectedWith(
+      'value out-of-bounds'
+    );
+
+    // Test with MAX_UINT256 which should work (no overflow in approve)
+    await expect(contract.approve(spender, MAX_UINT256)).not.to.be.reverted;
+  });
+
+  it('WHBAR-018 should revert on negative value for deposit', async function () {
+    await expect(contract.deposit({ value: '-1' })).to.be.rejectedWith(
+      'unsigned value cannot be negative'
+    );
+  });
+
+  it('WHBAR-019 should revert on negative value for withdraw', async function () {
+    await expect(contract.withdraw('-1')).to.be.rejectedWith(
+      'value out-of-bounds'
+    );
+  });
+
+  it('WHBAR-020 should revert on negative value for approve', async function () {
+    const spender = ethers.Wallet.createRandom().address;
+
+    await expect(contract.approve(spender, '-1')).to.be.rejectedWith(
+      'value out-of-bounds'
+    );
+  });
+
+  it('WHBAR-021 should revert on negative value for transfer', async function () {
+    const receiver = ethers.Wallet.createRandom().address;
+
+    await expect(contract.transfer(receiver, '-1')).to.be.rejectedWith(
+      'value out-of-bounds'
+    );
+  });
+
+  it('WHBAR-022 should revert on negative value for transferFrom', async function () {
+    const sender = signers[0].address;
+    const receiver = ethers.Wallet.createRandom().address;
+
+    await expect(
+      contract.transferFrom(sender, receiver, '-1')
+    ).to.be.rejectedWith('value out-of-bounds');
+  });
+
+  it('WHBAR-023 should revert on value > MaxUint256 for deposit', async function () {
+    await expect(
+      contract.deposit({ value: OVERFLOW_VALUE })
+    ).to.be.rejectedWith('value cannot exceed MAX_INTEGER');
+  });
+
+  it('WHBAR-024 should revert on value > MaxUint256 for withdraw', async function () {
+    await expect(contract.withdraw(OVERFLOW_VALUE)).to.be.rejectedWith(
+      'value out-of-bounds'
+    );
+  });
+
+  it('WHBAR-025 should revert on value > MaxUint256 for transfer', async function () {
+    const receiver = ethers.Wallet.createRandom().address;
+
+    await expect(
+      contract.transfer(receiver, OVERFLOW_VALUE)
+    ).to.be.rejectedWith('value out-of-bounds');
+  });
+
+  it('WHBAR-026 should revert on value > MaxUint256 for approve', async function () {
+    const spender = ethers.Wallet.createRandom().address;
+
+    await expect(contract.approve(spender, OVERFLOW_VALUE)).to.be.rejectedWith(
+      'value out-of-bounds'
+    );
+  });
+
+  it('WHBAR-027 should revert on value > MaxUint256 for transferFrom', async function () {
+    const sender = signers[0].address;
+    const receiver = ethers.Wallet.createRandom().address;
+
+    await expect(
+      contract.transferFrom(sender, receiver, OVERFLOW_VALUE)
+    ).to.be.rejectedWith('value out-of-bounds');
+  });
+
+  it('WHBAR-032 Sending small amount of hbar should work and have the same value on WHBAR', async function () {
+    const tinyAmount = TINY_AMOUNT;
+    const tinyAmountAsWeibar = tinyAmount * WEIBAR_COEF;
+
+    const initialBalance = await contract.balanceOf(signers[0].address);
+
+    // Deposit the tiny amount and check for Deposit event
+    const txDeposit = await contract.deposit({
+      value: tinyAmountAsWeibar,
+    });
+    const receiptDeposit = await txDeposit.wait();
+    const depositEvents = receiptDeposit.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Deposit'
+    );
+    expect(depositEvents.length).to.equal(1);
+    expect(depositEvents[0].args[0]).to.equal(signers[0].address); // dst
+    expect(depositEvents[0].args[1]).to.equal(1); // wad
+
+    // Check that balance increased by exactly the tiny amount
+    const finalBalance = await contract.balanceOf(signers[0].address);
+    expect(finalBalance - initialBalance).to.equal(tinyAmount);
+
+    // Verify total supply also increased by the same amount
+    const totalSupply = await contract.totalSupply();
+    expect(totalSupply).to.be.greaterThanOrEqual(tinyAmount);
+  });
+
+  it('WHBAR-033 Multiple depositors can withdraw and transfer up to their own values', async function () {
+    const depositors = [signers[1], signers[2], signers[3]];
+    const depositAmounts = [TWO_HBAR, FIVE_HBAR, THREE_HBAR];
+
+    const initialBalances = [];
+    for (let i = 0; i < depositors.length; i++) {
+      initialBalances.push(await contract.balanceOf(depositors[i].address));
+    }
+
+    for (let i = 0; i < depositors.length; i++) {
+      const txDeposit = await contract.connect(depositors[i]).deposit({
+        value: depositAmounts[i] * WEIBAR_COEF,
+      });
+      const receiptDeposit = await txDeposit.wait();
+
+      // Verify Deposit event was emitted with correct parameters
+      const depositEvents = receiptDeposit.logs.filter(
+        (log) => log.fragment && log.fragment.name === 'Deposit'
+      );
+      expect(depositEvents.length).to.equal(1);
+      expect(depositEvents[0].args[0]).to.equal(depositors[i].address); // dst
+      expect(depositEvents[0].args[1]).to.equal(depositAmounts[i]); // wad
+
+      // Verify balance increased by exactly the deposit amount
+      const newBalance = await contract.balanceOf(depositors[i].address);
+      expect(newBalance - initialBalances[i]).to.equal(depositAmounts[i]);
+    }
+
+    // Test that each depositor can transfer their full amount but not more
+    for (let i = 0; i < depositors.length; i++) {
+      const recipient = signers[4].address;
+      const recipientInitialBalance = await contract.balanceOf(recipient);
+
+      // Transfer the full amount
+      const txTransfer = await contract
+        .connect(depositors[i])
+        .transfer(recipient, depositAmounts[i]);
+      const receiptTransfer = await txTransfer.wait();
+
+      // Verify Transfer event was emitted with correct parameters
+      const transferEvents = receiptTransfer.logs.filter(
+        (log) => log.fragment && log.fragment.name === 'Transfer'
+      );
+      expect(transferEvents.length).to.equal(1);
+      expect(transferEvents[0].args[0]).to.equal(depositors[i].address); // src
+      expect(transferEvents[0].args[1]).to.equal(recipient); // dst
+      expect(transferEvents[0].args[2]).to.equal(depositAmounts[i]); // wad
+
+      // Verify recipient received the full amount
+      const recipientFinalBalance = await contract.balanceOf(recipient);
+      expect(recipientFinalBalance - recipientInitialBalance).to.equal(
+        depositAmounts[i]
+      );
+
+      // Verify depositor's balance is now zero (or back to initial)
+      const depositorFinalBalance = await contract.balanceOf(
+        depositors[i].address
+      );
+      expect(depositorFinalBalance).to.equal(initialBalances[i]);
+
+      // Attempt to transfer more should fail
+      await expect(
+        contract.connect(depositors[i]).transfer(recipient, ONE_HBAR)
+      ).to.be.revertedWithCustomError(contract, 'InsufficientFunds');
+    }
+
+    // Test that signers[4] can withdraw the received funds
+    const signers4Balance = await contract.balanceOf(signers[4].address);
+    const ethBalanceBefore = await ethers.provider.getBalance(
+      signers[4].address
+    );
+
+    // Withdraw all received funds
+    const txWithdraw = await contract
+      .connect(signers[4])
+      .withdraw(signers4Balance);
+    const receiptWithdraw = await txWithdraw.wait();
+
+    // Verify Withdrawal event was emitted with correct parameters
+    const withdrawalEvents = receiptWithdraw.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Withdrawal'
+    );
+    expect(withdrawalEvents.length).to.equal(1);
+    expect(withdrawalEvents[0].args[0]).to.equal(signers[4].address); // src
+    expect(withdrawalEvents[0].args[1]).to.equal(signers4Balance); // wad
+
+    // Verify WHBAR balance is now zero
+    expect(await contract.balanceOf(signers[4].address)).to.equal(0);
+
+    // Verify ETH balance increased (minus gas costs)
+    const ethBalanceAfter = await ethers.provider.getBalance(
+      signers[4].address
+    );
+    expect(ethBalanceAfter).to.be.greaterThan(ethBalanceBefore);
+  });
+
+  it('WHBAR-044 Test that I can transfer to myself', async function () {
+    const depositAmount = THREE_HBAR;
+    const txDeposit = await contract.deposit({
+      value: depositAmount * WEIBAR_COEF,
+    });
+    const receiptDeposit = await txDeposit.wait();
+
+    // Verify Deposit event was emitted
+    const depositEvents = receiptDeposit.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Deposit'
+    );
+    expect(depositEvents.length).to.equal(1);
+
+    const initialBalance = await contract.balanceOf(signers[0].address);
+
+    const txTransfer = await contract.transfer(signers[0].address, ONE_HBAR);
+    const receiptTransfer = await txTransfer.wait();
+
+    // Verify Transfer event was emitted with correct parameters
+    const transferEvents = receiptTransfer.logs.filter(
+      (log) => log.fragment && log.fragment.name === 'Transfer'
+    );
+    expect(transferEvents.length).to.equal(1);
+    expect(transferEvents[0].args[0]).to.equal(signers[0].address); // src
+    expect(transferEvents[0].args[1]).to.equal(signers[0].address); // dst
+    expect(transferEvents[0].args[2]).to.equal(ONE_HBAR); // wad
+
+    // Balance should remain unchanged
+    const finalBalance = await contract.balanceOf(signers[0].address);
+    expect(finalBalance).to.equal(initialBalance);
+  });
+
+  it('WHBAR-045 Test that sending with 18 decimals precision truncates correctly', async function () {
+    // WHBAR has 8 decimals, but HBAR has 18 decimals in its wei representation
+    // When converting between them, the last 10 decimal places should be truncated
+
+    // Create two values that differ only in the last 10 decimal places
+    // 1.0 HBAR (clean value)
+    const cleanAmount = ethers.parseEther('1.0');
+
+    // 1.000000001234567890 HBAR (with extra precision in positions 9-18)
+    const preciseAmount = ethers.parseEther('1.000000001234567890');
+
+    const initialBalance = await contract.balanceOf(signers[0].address);
+
+    const txDeposit = await contract.deposit({
+      value: preciseAmount,
+    });
+    const receiptDeposit = await txDeposit.wait();
+
+    const depositEvents = receiptDeposit.logs.filter(
+        (log) => log.fragment && log.fragment.name === 'Deposit'
+    );
+    expect(depositEvents.length).to.equal(1);
+    expect(depositEvents[0].args[0]).to.equal(signers[0].address); // dst
+    expect(depositEvents[0].args[1]).to.equal(ONE_HBAR_TRUNCATED); // wad - should be truncated to 8 decimals
+
+    const finalBalance = await contract.balanceOf(signers[0].address);
+    const balanceIncrease = finalBalance - initialBalance;
+
+    const expectedIncrease = ONE_HBAR_TRUNCATED;
+
+    expect(balanceIncrease).to.equal(expectedIncrease);
+
+    // Verify that we can withdraw the full amount that was recognized
+    const txWithdraw = await contract.withdraw(expectedIncrease);
+    const receiptWithdraw = await txWithdraw.wait();
+
+    // Verify Withdrawal event was emitted with correct parameters
+    const withdrawalEvents = receiptWithdraw.logs.filter(
+        (log) => log.fragment && log.fragment.name === 'Withdrawal'
+    );
+    expect(withdrawalEvents.length).to.equal(1);
+    expect(withdrawalEvents[0].args[0]).to.equal(signers[0].address); // src
+    expect(withdrawalEvents[0].args[1]).to.equal(expectedIncrease); // wad
+
+    // Balance should be back to initial
+    const balanceAfterWithdraw = await contract.balanceOf(signers[0].address);
+    expect(balanceAfterWithdraw).to.equal(initialBalance);
+  });
+
+  it('should not be able to transfer WHBAR to the actual WHBAR contract', async () => {
+    const txDeposit = await contract.deposit({
+      value: ONE_HBAR_AS_WEIBAR
+    });
+    await txDeposit.wait();
+
+    await expect(contract.transfer(contract.target, ONE_HBAR))
+        .to.be.revertedWithCustomError(contract, `SendFailed`);
+  });
+
+  it('should not be able to transferFrom WHBAR to the actual WHBAR contract', async () => {
+    const amount = 1;
 
     // create a new random signer
     const newSigner = ethers.Wallet.createRandom().connect(signers[0].provider);
@@ -26685,116 +27289,10 @@ describe('WHBAR', function() {
     // approve the newSigner from signer[0]
     await (await contract.approve(newSigner.address, amount)).wait();
 
-    // save the balances before
-    const allowanceBefore = await contract.allowance(signers[0].address, newSigner.address);
-    const receiverBalanceBefore = await contract.balanceOf(receiverAddress);
-
     // execute transferFrom with newSigner using signers[0] approval
     const contractWithNewSigner = await contract.connect(newSigner);
-    await (await contractWithNewSigner.transferFrom(signers[0].address, receiverAddress, amount)).wait();
-
-    // save the balances after
-    const allowanceAfter = await contract.allowance(signers[0].address, newSigner.address);
-    const receiverBalanceAfter = await contract.balanceOf(receiverAddress);
-
-    expect(allowanceBefore).to.equal(amount);
-    expect(allowanceAfter).to.equal(0);
-    expect(receiverBalanceBefore).to.equal(0);
-    expect(receiverBalanceAfter).to.equal(amount);
-  });
-
-  it('should be able to approve', async function() {
-    const receiverAddress = (ethers.Wallet.createRandom()).address;
-    const amount = 5644;
-
-    const txApprove = await contract.approve(receiverAddress, amount);
-    await txApprove.wait();
-
-    expect(await contract.allowance(signers[0].address, receiverAddress)).to.equal(amount);
-  });
-
-  it('should be able to deposit via contract`s fallback method', async function () {
-    const whbarSigner0Before = await contract.balanceOf(signers[0].address);
-
-    const txFallback = await signers[0].sendTransaction({
-      to: contract.target,
-      data: '0x5644aa', // non-existing contract's function, will call fallback()
-      value: ONE_HBAR_AS_WEIBAR
-    });
-    await txFallback.wait();
-
-    const whbarSigner0After = await contract.balanceOf(signers[0].address);
-    expect(whbarSigner0After - whbarSigner0Before).to.equal(ONE_HBAR);
-  });
-
-  it('should be able to deposit via contract`s receive method', async function () {
-    const whbarSigner0Before = await contract.balanceOf(signers[0].address);
-
-    const txReceive = await signers[0].sendTransaction({
-      to: contract.target,
-      value: ONE_HBAR_AS_WEIBAR // missing data but passing value, will call receive()
-    });
-    await txReceive.wait();
-
-    const whbarSigner0After = await contract.balanceOf(signers[0].address);
-    expect(whbarSigner0After - whbarSigner0Before).to.equal(ONE_HBAR);
-  });
-
-  it('should throw InsufficientFunds error on withdraw', async function() {
-    await expect(contract.withdraw(BigInt(100) * ONE_HBAR))
-        .to.be.revertedWithCustomError(contract, `InsufficientFunds`);
-  });
-
-  it('should throw InsufficientAllowance error on withdraw', async function () {
-    const amount = 1;
-    const receiverAddress = (ethers.Wallet.createRandom()).address;
-    const newSigner = ethers.Wallet.createRandom().connect(signers[0].provider);
-
-    // add some balance for gas covering
-    await (await signers[0].sendTransaction({
-      to: newSigner.address,
-      value: ONE_HBAR_AS_WEIBAR
-    })).wait();
-
-    // deposit 1 hbar with signer[0]
-    await (await contract.deposit({
-      value: ONE_HBAR_AS_WEIBAR
-    })).wait();
-
-    const contractWithNewSigner = await contract.connect(newSigner);
-    await expect(contractWithNewSigner.transferFrom(signers[0].address, receiverAddress, amount))
-        .to.be.revertedWithCustomError(contractWithNewSigner, `InsufficientAllowance`);
-  });
-
-  it('should throw SendFailed error on withdrawal from a contract with no receive/fallback method', async() => {
-    const contractWithoutReceiveFactory = await ethers.getContractFactory('Target');
-    const contractWithoutReceive = await contractWithoutReceiveFactory.deploy();
-    await contractWithoutReceive.waitForDeployment();
-
-    const receiver = contractWithoutReceive.target;
-    const receiverBalanceBefore = await contract.balanceOf(receiver);
-
-    const txDeposit = await contract.deposit({
-      value: ONE_HBAR_AS_WEIBAR
-    });
-    await txDeposit.wait();
-
-    const txTransfer = await contract.transfer(contractWithoutReceive, ONE_HBAR);
-    await txTransfer.wait();
-
-    const receiverBalanceAfter = await contract.balanceOf(receiver);
-    expect(receiverBalanceBefore).to.equal(0);
-    expect(receiverBalanceAfter).to.equal(ONE_HBAR);
-
-    const tryToWithdrawTx = await contractWithoutReceive.tryToWithdraw(contract.target, ONE_HBAR);
-    const tryToWithdrawReceipt = await tryToWithdrawTx.wait();
-
-    expect(tryToWithdrawReceipt.logs).to.not.be.empty;
-    expect(tryToWithdrawReceipt.logs[0].fragment.name).to.equal('WithdrawResponse');
-    // revert with SendFailed()
-    expect(tryToWithdrawReceipt.logs[0].args[0]).to.be.false;
-    // first 4 bytes of the SendError selector - keccak256("SendFailed()") = 0x81063e51806c3994c498b39c9d9f4124c2e61b7cd154bc84f959aea44d44ce4f
-    expect(tryToWithdrawReceipt.logs[0].args[1]).to.equal('0x81063e51');
+    await expect(contractWithNewSigner.transferFrom(signers[0].address, contractWithNewSigner.target, amount))
+        .to.be.revertedWithCustomError(contractWithNewSigner, `SendFailed`);
   });
 });
 // Filename: test/yul/bitwise-coverage/Bitwise.js

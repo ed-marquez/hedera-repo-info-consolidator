@@ -19,7 +19,7 @@
 #include "TransactionResponse.h"
 #include "impl/HexConverter.h"
 
-#include <basic_types.pb.h>
+#include <services/basic_types.pb.h>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -2741,7 +2741,128 @@ public:
 } // namespace Hiero
 
 #endif // HIERO_SDK_CPP_ASSESSED_CUSTOM_FEE_H_
-// Filename: src/sdk/main/include/ChunkedTransaction.h
+// Filename: src/sdk/main/include/BatchTransaction.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_SDK_CPP_BATCH_TRANSACTION_H_
+#define HIERO_SDK_CPP_BATCH_TRANSACTION_H_
+
+#include "Transaction.h"
+
+namespace proto
+{
+class AtomicBatchTransactionBody;
+class TransactionBody;
+class WrappedTransaction;
+}
+
+namespace Hiero
+{
+/**
+ * A transaction body for handling a set of transactions atomically.
+ */
+class BatchTransaction : public Transaction<BatchTransaction>
+{
+public:
+  BatchTransaction() = default;
+
+  /**
+   * Construct from a TransactionBody protobuf object.
+   *
+   * @param transactionBody The TransactionBody protobuf object from which to construct.
+   * @throws std::invalid_argument If the input TransactionBody does not represent a Batch transaction.
+   */
+  explicit BatchTransaction(const proto::TransactionBody& transactionBody);
+
+  /**
+   * Construct from a map of TransactionIds to node account IDs and their respective Transaction protobuf objects.
+   *
+   * @param transactions The map of TransactionIds to node account IDs and their respective Transaction protobuf
+   *                     objects.
+   */
+  explicit BatchTransaction(const std::map<TransactionId, std::map<AccountId, proto::Transaction>>& transactions);
+
+  /**
+   * Append a transaction to the list of transactions this BatchTransaction will execute.
+   *
+   * @param transaction The transaction to be added
+   * @throws IllegalStateException if this transaction is frozen
+   * @throws IllegalStateException if the inner transaction is not frozen or missing a batch key
+   * @return A reference to this BatchTransaction with the newly-set transaction
+   */
+  BatchTransaction& addInnerTransaction(const WrappedTransaction& transaction);
+
+  /**
+   * Set the list of transactions that this BatchTransaction will execute.
+   *
+   * @param transactions The list of transactions that this BatchTransaction will execute.
+   * @return A reference to this BatchTransaction with the newly-set transactions.
+   */
+  BatchTransaction& setInnerTransactions(const std::vector<WrappedTransaction>& transactions);
+
+  /**
+   * Get the list of transactions that this BatchTransaction will execute.
+   *
+   * @return The list of transactions that this BatchTransaction will execute.
+   */
+  [[nodiscard]] inline std::vector<WrappedTransaction> getInnerTransactions() const { return mInnerTransactions; }
+
+private:
+  friend class WrappedTransaction;
+
+  /**
+   * Derived from Executable. Submit a Transaction protobuf object which contains this BatchTransaction's data to
+   * a Node.
+   *
+   * @param request  The Transaction protobuf object to submit.
+   * @param node     The Node to which to submit the request.
+   * @param deadline The deadline for submitting the request.
+   * @param response Pointer to the ProtoResponseType object that gRPC should populate with the response information
+   *                 from the gRPC server.
+   * @return The gRPC status of the submission.
+   */
+  [[nodiscard]] grpc::Status submitRequest(const proto::Transaction& request,
+                                           const std::shared_ptr<internal::Node>& node,
+                                           const std::chrono::system_clock::time_point& deadline,
+                                           proto::TransactionResponse* response) const override;
+
+  /**
+   * Derived from Transaction. Verify that all the checksums in this BatchTransaction are valid.
+   *
+   * @param client The Client that should be used to validate the checksums.
+   * @throws BadEntityException This BatchTransaction's checksums are not valid.
+   */
+  void validateChecksums(const Client& client) const override;
+
+  /**
+   * Derived from Transaction. Build and add the BatchTransaction protobuf representation to the Transaction
+   * protobuf object.
+   *
+   * @param body The TransactionBody protobuf object being built.
+   */
+  void addToBody(proto::TransactionBody& body) const override;
+
+  /**
+   * Initialize this BatchTransaction from its source TransactionBody protobuf object.
+   */
+  void initFromSourceTransactionBody();
+
+  /**
+   * Build a AtomicBatchTransactionBody protobuf object from this BatchTransaction object.
+   *
+   * @return A pointer to a BatchTransactionBody protobuf object filled with this BatchTransaction
+   * object's data.
+   */
+  [[nodiscard]] proto::AtomicBatchTransactionBody* build() const;
+
+  /**
+   * A list of transactions that represent the atomic batch transactions.
+   */
+  std::vector<WrappedTransaction> mInnerTransactions;
+};
+
+} // namespace Hiero
+
+#endif // HIERO_SDK_CPP_BATCH_TRANSACTION_H_// Filename: src/sdk/main/include/ChunkedTransaction.h
 // SPDX-License-Identifier: Apache-2.0
 #ifndef HIERO_SDK_CPP_CHUNKED_TRANSACTION_H_
 #define HIERO_SDK_CPP_CHUNKED_TRANSACTION_H_
@@ -3203,9 +3324,13 @@ public:
    *
    * @param mirrorNetwork The mirror node network from which to grab the address book and initialize the Client's
    *                      consensus network.
-   * @return A Client with the input mirror network and the corresponding address book consensus network
+   * @param realm         The realm of the network from which to grab the address book.
+   * @param shard         The shard of the network from which to grab the address book.
+   * @return A Client with the input mirror network and the corresponding address book consensus network.
    */
-  [[nodiscard]] static Client forMirrorNetwork(const std::vector<std::string>& mirrorNetwork);
+  [[nodiscard]] static Client forMirrorNetwork(const std::vector<std::string>& mirrorNetwork,
+                                               int64_t realm = 0LL,
+                                               int64_t shard = 0LL);
 
   /**
    * Construct a Client by a name. The name must be one of "mainnet", "testnet", or "previewnet", otherwise this will
@@ -11835,6 +11960,7 @@ private:
 #define HIERO_SDK_CPP_FILE_ID_H_
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -11874,6 +12000,33 @@ public:
    * The current exchange rate of HBAR to USD for the current network.
    */
   [[maybe_unused]] static const FileId EXCHANGE_RATES;
+
+  /**
+   * Get the address book file ID for a particular realm and/or shard.
+   *
+   * @param realm The realm from which to get the address book file.
+   * @param shard The shard from which to get the address book file.
+   * @return The ID of the address book file from the input realm and/or shard.
+   */
+  [[nodiscard]] static FileId getAddressBookFileIdFor(int64_t realm, int64_t shard);
+
+  /**
+   * Get the fee schedule file ID for a particular realm and/or shard.
+   *
+   * @param realm The realm from which to get the fee schedule file.
+   * @param shard The shard from which to get the fee schedule file.
+   * @return The ID of the fee schedule file from the input realm and/or shard.
+   */
+  [[nodiscard]] static FileId getFeeScheduleFileIdFor(int64_t realm, int64_t shard);
+
+  /**
+   * Get the exchange rates file ID for a particular realm and/or shard.
+   *
+   * @param realm The realm from which to get the exchange rates file.
+   * @param shard The shard from which to get the exchange rates file.
+   * @return The ID of the exchange rates file from the input realm and/or shard.
+   */
+  [[nodiscard]] static FileId getExchangeRatesFileIdFor(int64_t realm, int64_t shard);
 
   /**
    * Construct with a file number.
@@ -19315,8 +19468,53 @@ enum class Status
   /**
    * Max custom fees list is not supported for this operation.
    */
-  MAX_CUSTOM_FEES_IS_NOT_SUPPORTED
+  MAX_CUSTOM_FEES_IS_NOT_SUPPORTED,
 
+  /**
+   * The list of batch transactions is empty
+   */
+  BATCH_LIST_EMPTY,
+
+  /**
+   * The list of batch transactions contains duplicated transactions
+   */
+  BATCH_LIST_CONTAINS_DUPLICATES,
+
+  /**
+   * The list of batch transactions contains a transaction type that is
+   * in the AtomicBatch blacklist as configured in the network.
+   */
+  BATCH_TRANSACTION_IN_BLACKLIST,
+
+  /**
+   * The inner transaction of a batch transaction failed
+   */
+  INNER_TRANSACTION_FAILED,
+
+  /**
+   * The inner transaction of a batch transaction is missing a batch key
+   */
+  MISSING_BATCH_KEY,
+
+  /**
+   * The batch key is set for a non batch transaction
+   */
+  BATCH_KEY_SET_ON_NON_INNER_TRANSACTION,
+
+  /**
+   * The batch key is not valid
+   */
+  INVALID_BATCH_KEY,
+
+  /**
+   * The provided schedule expiry time is not configurable.
+   */
+  SCHEDULE_EXPIRY_NOT_CONFIGURABLE,
+
+  /**
+   * The network just started at genesis and is creating system entities.
+   */
+  CREATING_SYSTEM_ENTITIES
 };
 
 /**
@@ -23682,7 +23880,7 @@ private:
 #include <optional>
 #include <string>
 
-#include <basic_types.pb.h>
+#include <services/basic_types.pb.h>
 
 namespace proto
 {
@@ -27293,6 +27491,31 @@ public:
   SdkRequestType& signWithOperator(const Client& client);
 
   /**
+   * This method is used to mark a transaction as part of a batch transaction or make it so-called inner
+   * transaction. The Transaction will be frozen and signed by the operator of the client.
+   *
+   * @param client The Client with which to sign this Transaction.
+   * @param batchKey The batch key
+   * @return A reference to this derived Transaction object.
+   */
+  SdkRequestType& batchify(const Client& client, const std::shared_ptr<Key>& batchKey);
+
+  /**
+   * Set the key that will sign the batch of which this Transaction is a part of.
+   *
+   * @param batchKey The batch key
+   * @return A reference to this derived Transaction object.
+   */
+  SdkRequestType& setBatchKey(const std::shared_ptr<Key>& batchKey);
+
+  /**
+   * Get the key that will sign the batch of which this Transaction is a part of.
+   *
+   * @return The batch key of the Transaction.
+   */
+  [[nodiscard]] inline const std::shared_ptr<Key>& getBatchKey() { return mImpl->mBatchKey; }
+
+  /**
    * Add a signature to this Transaction.
    *
    * @param publicKey The associated PublicKey of the PrivateKey that generated the signature.
@@ -29476,6 +29699,7 @@ enum TransactionType : int
   ACCOUNT_CREATE_TRANSACTION,
   ACCOUNT_DELETE_TRANSACTION,
   ACCOUNT_UPDATE_TRANSACTION,
+  BATCH_TRANSACTION,
   CONTRACT_CREATE_TRANSACTION,
   CONTRACT_DELETE_TRANSACTION,
   CONTRACT_EXECUTE_TRANSACTION,
@@ -29832,6 +30056,7 @@ private:
 #include "AccountCreateTransaction.h"
 #include "AccountDeleteTransaction.h"
 #include "AccountUpdateTransaction.h"
+#include "BatchTransaction.h"
 #include "ContractCreateTransaction.h"
 #include "ContractDeleteTransaction.h"
 #include "ContractExecuteTransaction.h"
@@ -29902,6 +30127,7 @@ public:
                                               AccountCreateTransaction,
                                               AccountDeleteTransaction,
                                               AccountUpdateTransaction,
+                                              BatchTransaction,
                                               ContractCreateTransaction,
                                               ContractDeleteTransaction,
                                               ContractExecuteTransaction,
@@ -29981,6 +30207,14 @@ public:
    * @throws UninitializedException If no Transaction is contained within this WrappedTransaction.
    */
   [[nodiscard]] std::unique_ptr<proto::TransactionBody> toProtobuf() const;
+
+  /**
+   * Construct a Transaction protobuf object from this WrappedTransaction object.
+   *
+   * @return A pointer to the created Transaction protobuf object.
+   * @throws UninitializedException If no Transaction is contained within this WrappedTransaction.
+   */
+  [[nodiscard]] std::unique_ptr<proto::Transaction> toProtobufTransaction() const;
 
   /**
    * Construct a SchedulableTransactionBody protobuf object from this WrappedTransaction object.
@@ -31218,7 +31452,7 @@ private:
 #ifndef HIERO_SDK_CPP_IMPL_BASE_NODE_H_
 #define HIERO_SDK_CPP_IMPL_BASE_NODE_H_
 
-#include <basic_types.pb.h> // This is needed for Windows to build for some reason.
+#include <services/basic_types.pb.h> // This is needed for Windows to build for some reason.
 
 #include "BaseNodeAddress.h"
 #include "Defaults.h"
@@ -32792,16 +33026,16 @@ private:
 #ifndef HIERO_SDK_CPP_IMPL_NODE_H_
 #define HIERO_SDK_CPP_IMPL_NODE_H_
 
-#include <address_book_service.grpc.pb.h>
-#include <consensus_service.grpc.pb.h>
-#include <crypto_service.grpc.pb.h>
-#include <file_service.grpc.pb.h>
-#include <freeze_service.grpc.pb.h>
-#include <network_service.grpc.pb.h>
-#include <schedule_service.grpc.pb.h>
-#include <smart_contract_service.grpc.pb.h>
-#include <token_service.grpc.pb.h>
-#include <util_service.grpc.pb.h>
+#include <services/address_book_service.grpc.pb.h>
+#include <services/consensus_service.grpc.pb.h>
+#include <services/crypto_service.grpc.pb.h>
+#include <services/file_service.grpc.pb.h>
+#include <services/freeze_service.grpc.pb.h>
+#include <services/network_service.grpc.pb.h>
+#include <services/schedule_service.grpc.pb.h>
+#include <services/smart_contract_service.grpc.pb.h>
+#include <services/token_service.grpc.pb.h>
+#include <services/util_service.grpc.pb.h>
 
 #include "AccountId.h"
 #include "BaseNode.h"
@@ -34204,6 +34438,7 @@ protected:
   [[nodiscard]] inline const Client& getTestClient() const { return mClient; }
   [[nodiscard]] inline const std::vector<std::byte>& getTestFileContent() const { return mFileContent; }
   [[nodiscard]] inline const std::string& getTestSmartContractBytecode() const { return mTestContractBytecodeHex; }
+  [[nodiscard]] inline const std::string& getTestBigContents() const { return mBigContents; }
 
   void setTestClientOperator(const AccountId& accountId, const std::shared_ptr<PrivateKey>& privateKey);
   void setDefaultTestClientOperator();
@@ -34238,6 +34473,163 @@ private:
     "5160ff19168380011785556102be565b828001600101855582156102be579182015b828111156102be57825182559160200191906001019061"
     "02a3565b506102ca9291506102ce565b5090565b61024d91905b808211156102ca57600081556001016102d456fea264697066735822122084"
     "964d4c3f6bc912a9d20e14e449721012d625aa3c8a12de41ae5519752fc89064736f6c63430006000033";
+  const std::string mBigContents =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquam augue sem, ut mattis dui laoreet a. "
+    "Curabitur consequat est euismod, scelerisque metus et, tristique dui. Nulla commodo mauris ut faucibus ultricies. "
+    "Quisque venenatis nisl nec augue tempus, at efficitur elit eleifend. Duis pharetra felis metus, sed dapibus urna "
+    "vehicula id. Duis non venenatis turpis, sit amet ornare orci. Donec non interdum quam. Sed finibus nunc et risus "
+    "finibus, non sagittis lorem cursus. Proin pellentesque tempor aliquam. Sed congue nisl in enim bibendum, "
+    "condimentum vehicula nisi feugiat.\n"
+    "\n"
+    "Suspendisse non sodales arcu. Suspendisse sodales, lorem ac mollis blandit, ipsum neque porttitor nulla, et "
+    "sodales arcu ante fermentum tellus. Integer sagittis dolor sed augue fringilla accumsan. Cras vitae finibus arcu, "
+    "sit amet varius dolor. Etiam id finibus dolor, vitae luctus velit. Proin efficitur augue nec pharetra accumsan. "
+    "Aliquam lobortis nisl diam, vel fermentum purus finibus id. Etiam at finibus orci, et tincidunt turpis. Aliquam "
+    "imperdiet congue lacus vel facilisis. Phasellus id magna vitae enim dapibus vestibulum vitae quis augue. Morbi eu "
+    "consequat enim. Maecenas neque nulla, pulvinar sit amet consequat sed, tempor sed magna. Mauris lacinia sem "
+    "feugiat faucibus aliquet. Etiam congue non turpis at commodo. Nulla facilisi.\n"
+    "\n"
+    "Nunc velit turpis, cursus ornare fringilla eu, lacinia posuere leo. Mauris rutrum ultricies dui et suscipit. "
+    "Curabitur in euismod ligula. Curabitur vitae faucibus orci. Phasellus volutpat vestibulum diam sit amet "
+    "vestibulum. In vel purus leo. Nulla condimentum lectus vestibulum lectus faucibus, id lobortis eros consequat. "
+    "Proin mollis libero elit, vel aliquet nisi imperdiet et. Morbi ornare est velit, in vehicula nunc malesuada quis. "
+    "Donec vehicula convallis interdum.\n"
+    "\n"
+    "Integer pellentesque in nibh vitae aliquet. Ut at justo id libero dignissim hendrerit. Interdum et malesuada "
+    "fames ac ante ipsum primis in faucibus. Praesent quis ornare lectus. Nam malesuada non diam quis cursus. "
+    "Phasellus a libero ligula. Suspendisse ligula elit, congue et nisi sit amet, cursus euismod dolor. Morbi aliquam, "
+    "nulla a posuere pellentesque, diam massa ornare risus, nec eleifend neque eros et elit.\n"
+    "\n"
+    "Pellentesque a sodales dui. Sed in efficitur ante. Duis eget volutpat elit, et ornare est. Nam felis dolor, "
+    "placerat mattis diam id, maximus lobortis quam. Sed pellentesque lobortis sem sed placerat. Pellentesque augue "
+    "odio, molestie sed lectus sit amet, congue volutpat massa. Quisque congue consequat nunc id fringilla. Duis "
+    "semper nulla eget enim venenatis dapibus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per "
+    "inceptos himenaeos. Pellentesque varius turpis nibh, sit amet malesuada mauris malesuada quis. Vivamus dictum "
+    "egestas placerat. Vivamus id augue elit.\n"
+    "\n"
+    "Cras fermentum volutpat eros, vitae euismod lorem viverra nec. Donec lectus augue, porta eleifend odio sit amet, "
+    "condimentum rhoncus urna. Nunc sed odio velit. Morbi non cursus odio, eget imperdiet erat. Nunc rhoncus massa non "
+    "neque volutpat, sit amet faucibus ante congue. Phasellus nec lorem vel leo accumsan lobortis. Maecenas id ligula "
+    "bibendum purus suscipit posuere ac eget diam. Nam in quam pretium, semper erat auctor, iaculis odio. Maecenas "
+    "placerat, nisi ac elementum tempor, felis nulla porttitor orci, ac rhoncus diam justo in elit. Etiam lobortis "
+    "fermentum ligula in tincidunt. Donec quis vestibulum nunc. Sed eros diam, interdum in porta lobortis, gravida eu "
+    "magna. Donec diam purus, finibus et sollicitudin quis, fringilla nec nisi. Pellentesque habitant morbi tristique "
+    "senectus et netus et malesuada fames ac turpis egestas. Curabitur ultricies sagittis dapibus. Etiam ullamcorper "
+    "aliquet libero, eu venenatis mauris suscipit id.\n"
+    "\n"
+    "Ut interdum eleifend sem, vel bibendum ipsum volutpat eget. Nunc ac dignissim augue. Aliquam ornare aliquet magna "
+    "id dignissim. Vestibulum velit sem, lacinia eu rutrum in, rhoncus vitae mauris. Pellentesque scelerisque pulvinar "
+    "mauris non cursus. Integer id dolor porta, bibendum sem vel, pretium tortor. Fusce a nisi convallis, interdum "
+    "quam condimentum, suscipit dolor. Sed magna diam, efficitur non nunc in, tincidunt varius mi. Aliquam ullamcorper "
+    "nulla eu fermentum bibendum. Vivamus a felis pretium, hendrerit enim vitae, hendrerit leo. Suspendisse lacinia "
+    "lectus a diam consectetur suscipit. Aenean hendrerit nisl sed diam venenatis pellentesque. Nullam egestas lectus "
+    "a consequat pharetra. Vivamus ornare tellus auctor, facilisis lacus id, feugiat dui. Nam id est ut est rhoncus "
+    "varius.\n"
+    "\n"
+    "Aenean vel vehicula erat. Aenean gravida risus vitae purus sodales, quis dictum enim porta. Ut elit elit, "
+    "fermentum sed posuere non, accumsan eu justo. Integer porta malesuada quam, et elementum massa suscipit nec. "
+    "Donec in elit diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. "
+    "Duis suscipit vel ante volutpat vestibulum.\n"
+    "\n"
+    "Pellentesque ex arcu, euismod et sapien ut, vulputate suscipit enim. Donec mattis sagittis augue, et mattis "
+    "lacus. Cras placerat consequat lorem sed luctus. Nam suscipit aliquam sem ac imperdiet. Mauris a semper augue, "
+    "pulvinar fringilla magna. Integer pretium massa non risus commodo hendrerit. Sed dictum libero id erat sodales "
+    "mattis. Etiam auctor dolor lectus, ut sagittis enim lobortis vitae. Orci varius natoque penatibus et magnis dis "
+    "parturient montes, nascetur ridiculus mus. Curabitur nec orci lobortis, cursus risus eget, sollicitudin massa. "
+    "Integer vel tincidunt mi, id eleifend quam. Nullam facilisis nisl eu mauris congue, vitae euismod nisi malesuada. "
+    "Vivamus sit amet urna et libero sagittis dictum.\n"
+    "\n"
+    "In hac habitasse platea dictumst. Aliquam erat volutpat. Ut dictum, mi a viverra venenatis, mi urna pulvinar "
+    "nisi, nec gravida lectus diam eget urna. Ut dictum sit amet nisl ut dignissim. Sed sed mauris scelerisque, "
+    "efficitur augue in, vulputate turpis. Proin dolor justo, bibendum et sollicitudin feugiat, imperdiet sed mi. Sed "
+    "elementum vitae massa vel lobortis. Cras vitae massa sit amet libero dictum tempus.\n"
+    "\n"
+    "Vivamus ut mauris lectus. Curabitur placerat ornare scelerisque. Cras malesuada nunc quis tortor pretium bibendum "
+    "vel sed dui. Cras lobortis nibh eu erat blandit, sit amet consequat neque fermentum. Phasellus imperdiet molestie "
+    "tristique. Cras auctor purus erat, id mollis ligula porttitor eget. Mauris porta pharetra odio et finibus. "
+    "Suspendisse eu est a ligula bibendum cursus. Mauris ac laoreet libero. Nullam volutpat sem quis rhoncus "
+    "gravida.\n"
+    "\n"
+    "Donec malesuada lacus ac iaculis cursus. Sed sem orci, feugiat ac est ut, ultricies posuere nisi. Suspendisse "
+    "potenti. Phasellus ut ultricies purus. Etiam sem tortor, fermentum quis aliquam eget, consequat ut nulla. Aliquam "
+    "dictum metus in mi fringilla, vel gravida nulla accumsan. Cras aliquam eget leo vel posuere. Vivamus vitae "
+    "malesuada nunc. Morbi placerat magna mi, id suscipit lacus auctor quis. Nam at lorem vel odio finibus fringilla "
+    "ut ac velit. Donec laoreet at nibh quis vehicula.\n"
+    "\n"
+    "Fusce ac tristique nisi. Donec leo nisi, consectetur at tellus sit amet, consectetur ultrices dui. Quisque "
+    "gravida mollis tempor. Maecenas semper, sapien ut dignissim feugiat, massa enim viverra dolor, non varius eros "
+    "nulla nec felis. Nunc massa lacus, ornare et feugiat id, bibendum quis purus. Praesent viverra elit sit amet "
+    "purus consectetur venenatis. Maecenas nibh risus, elementum sit amet enim sagittis, ultrices malesuada lectus. "
+    "Vivamus non felis ante. Ut vulputate ex arcu. Aliquam porta gravida porta. Aliquam eros leo, malesuada quis eros "
+    "non, maximus tristique neque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus "
+    "mus. Etiam ligula orci, mollis vel luctus nec, venenatis vitae est. Fusce rutrum convallis nisi.\n"
+    "\n"
+    "Nunc laoreet eget nibh in feugiat. Pellentesque nec arcu cursus, gravida dolor a, pellentesque nisi. Praesent vel "
+    "justo blandit, placerat risus eget, consectetur orci. Sed maximus metus mi, ut euismod augue ultricies in. Nunc "
+    "id risus hendrerit, aliquet lorem nec, congue justo. Vestibulum vel nunc ac est euismod mattis ac vitae nulla. "
+    "Donec blandit luctus mauris, sit amet bibendum dui egestas et. Aenean nec lorem nec elit ornare rutrum nec eget "
+    "ligula. Fusce a ipsum vitae neque elementum pharetra. Pellentesque ullamcorper ullamcorper libero, vitae porta "
+    "sem sagittis vel. Interdum et malesuada fames ac ante ipsum primis in faucibus.\n"
+    "\n"
+    "Duis at massa sit amet risus pellentesque varius sit amet vitae eros. Cras tempor aliquet sapien, vehicula varius "
+    "neque volutpat et. Donec purus nibh, pellentesque ut lobortis nec, ultricies ultricies nisl. Sed accumsan ut dui "
+    "sit amet vulputate. Suspendisse eu facilisis massa, a hendrerit mauris. Nulla elementum molestie tincidunt. Donec "
+    "mi justo, ornare vel tempor id, gravida et orci. Nam molestie erat nec nisi bibendum accumsan. Duis vitae tempor "
+    "ante. Morbi congue mauris vel sagittis facilisis. Vivamus vehicula odio orci, a tempor nibh euismod in. Proin "
+    "mattis, nibh at feugiat porta, purus velit posuere felis, quis volutpat sapien dui vel odio. Nam fermentum sem "
+    "nec euismod aliquet. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis "
+    "egestas. Aliquam erat volutpat.\n"
+    "\n"
+    "Mauris congue lacus tortor. Pellentesque arcu eros, accumsan imperdiet porttitor vitae, mattis nec justo. Nullam "
+    "ac aliquam mauris. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. "
+    "Suspendisse potenti. Fusce accumsan tempus felis a sagittis. Maecenas et velit odio. Vestibulum ante ipsum primis "
+    "in faucibus orci luctus et ultrices posuere cubilia curae; Aliquam eros lacus, volutpat non urna sed, tincidunt "
+    "ullamcorper elit. Sed sit amet gravida libero. In varius mi vel diam sollicitudin mollis.\n"
+    "\n"
+    "Aenean varius, diam vitae hendrerit feugiat, libero augue ultrices odio, eget consequat sem tellus eu nisi. Nam "
+    "dapibus enim et auctor sollicitudin. Nunc iaculis eros orci, ac accumsan eros malesuada ut. Ut semper augue "
+    "felis, nec sodales lorem consectetur non. Cras gravida eleifend est, et sagittis eros imperdiet congue. Fusce id "
+    "tellus dapibus nunc scelerisque tempus. Donec tempor placerat libero, in commodo nisi bibendum eu. Donec id eros "
+    "non est sollicitudin luctus. Duis bibendum bibendum tellus nec viverra. Aliquam non faucibus ex, nec luctus dui. "
+    "Curabitur efficitur varius urna non dignissim. Suspendisse elit elit, ultrices in elementum eu, tempor at "
+    "magna.\n"
+    "\n"
+    "Nunc in purus sit amet mi laoreet pulvinar placerat eget sapien. Donec vel felis at dui ultricies euismod quis "
+    "vel neque. Donec tincidunt urna non eros pretium blandit. Nullam congue tincidunt condimentum. Curabitur et "
+    "libero nibh. Proin ultricies risus id imperdiet scelerisque. Suspendisse purus mi, viverra vitae risus ut, tempus "
+    "tincidunt enim. Ut luctus lobortis nisl, eget venenatis tortor cursus non. Mauris finibus nisl quis gravida "
+    "ultricies. Fusce elementum lacus sit amet nunc congue, in porta nulla tincidunt.\n"
+    "\n"
+    "Mauris ante risus, imperdiet blandit posuere in, blandit eu ipsum. Integer et auctor arcu. Integer quis elementum "
+    "purus. Nunc in ultricies nisl, sed rutrum risus. Suspendisse venenatis eros nec lorem rhoncus, in scelerisque "
+    "velit condimentum. Etiam condimentum quam felis, in elementum odio mattis et. In ut nibh porttitor, hendrerit "
+    "tellus vel, luctus magna. Vestibulum et ligula et dolor pellentesque porta. Aenean efficitur porta massa et "
+    "bibendum. Nulla vehicula sem in risus volutpat, a eleifend elit maximus.\n"
+    "\n"
+    "Proin orci lorem, auctor a felis eu, pretium lobortis nulla. Phasellus aliquam efficitur interdum. Sed sit amet "
+    "velit rutrum est dictum facilisis. Duis cursus enim at nisl tincidunt, eu molestie elit vehicula. Cras "
+    "pellentesque nisl id enim feugiat fringilla. In quis tincidunt neque. Nam eu consectetur dolor. Ut id interdum "
+    "mauris. Mauris nunc tortor, placerat in tempor ut, vestibulum eu nisl. Integer vel dapibus ipsum. Nunc id erat "
+    "pulvinar, tincidunt magna id, condimentum massa. Pellentesque consequat est eget odio placerat vehicula. Etiam "
+    "augue neque, sagittis non leo eu, tristique scelerisque dui. Ut dui urna, blandit quis urna ac, tincidunt "
+    "tristique turpis.\n"
+    "\n"
+    "Suspendisse venenatis rhoncus ligula ultrices condimentum. In id laoreet eros. Suspendisse suscipit fringilla leo "
+    "id euismod. Sed in quam libero. Ut at ligula tellus. Sed tristique gravida dui, at egestas odio aliquam iaculis. "
+    "Praesent imperdiet velit quis nibh consequat, quis pretium sem sagittis. Donec tortor ex, congue sit amet "
+    "pulvinar ac, rutrum non est. Praesent ipsum magna, venenatis sit amet vulputate id, eleifend ac ipsum.\n"
+    "\n"
+    "In consequat, nisi iaculis laoreet elementum, massa mauris varius nisi, et porta nisi velit at urna. Maecenas sit "
+    "amet aliquet eros, a rhoncus nisl. Maecenas convallis enim nunc. Morbi purus nisl, aliquam ac tincidunt sed, "
+    "mattis in augue. Quisque et elementum quam, vitae maximus orci. Suspendisse hendrerit risus nec vehicula "
+    "placerat. Nulla et lectus nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac "
+    "turpis egestas.\n"
+    "\n"
+    "Etiam ut sodales ex. Nulla luctus, magna eu scelerisque sagittis, nibh quam consectetur neque, non rutrum dolor "
+    "metus nec ex. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed "
+    "egestas augue elit, sollicitudin accumsan massa lobortis ac. Curabitur placerat, dolor a aliquam maximus, velit "
+    "ipsum laoreet ligula, id ullamcorper lacus nibh eget nisl. Donec eget lacus venenatis enim consequat auctor vel "
+    "in.\n";
 };
 
 } // namespace Hiero
@@ -34402,6 +34794,7 @@ struct ApproveAllowanceParams;
 struct CreateAccountParams;
 struct DeleteAccountParams;
 struct DeleteAllowanceParams;
+struct TransferCryptoParams;
 struct UpdateAccountParams;
 
 /**
@@ -34435,6 +34828,14 @@ nlohmann::json createAccount(const CreateAccountParams& params);
  * @return A JSON response containing the status of the account deletion.
  */
 nlohmann::json deleteAccount(const DeleteAccountParams& params);
+
+/**
+ * Transfer crypto between accounts.
+ *
+ * @param params The parameters to use to transfer crypto.
+ * @return A JSON response containing the status of the transfer.
+ */
+nlohmann::json transferCrypto(const TransferCryptoParams& params);
 
 /**
  * Update an account.
@@ -34743,6 +35144,64 @@ struct [[maybe_unused]] adl_serializer<Hiero::TCK::AccountService::DeleteAllowan
 } // namespace nlohmann
 
 #endif // HIERO_TCK_CPP_DELETE_ALLOWANCE_PARAMS_H_
+// Filename: src/tck/include/account/params/TransferCryptoParams.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_TCK_CPP_TRANSFER_CRYPTO_PARAMS_H_
+#define HIERO_TCK_CPP_TRANSFER_CRYPTO_PARAMS_H_
+
+#include "common/CommonTransactionParams.h"
+#include "common/transfer/TransferParams.h"
+#include "json/JsonUtils.h"
+
+#include <optional>
+#include <vector>
+
+namespace Hiero::TCK::AccountService
+{
+/**
+ * Struct to hold the arguments for a `transferCrypto` JSON-RPC method call.
+ */
+struct TransferCryptoParams
+{
+  /**
+   * The transfer information.
+   */
+  std::optional<std::vector<TransferParams>> mTransfers;
+
+  /**
+   * Any parameters common to all transaction types.
+   */
+  std::optional<CommonTransactionParams> mCommonTxParams;
+};
+
+} // namespace Hiero::TCK::AccountService
+
+namespace nlohmann
+{
+/**
+ * JSON serializer template specialization required to convert TransferCryptoParams arguments properly.
+ */
+template<>
+struct [[maybe_unused]] adl_serializer<Hiero::TCK::AccountService::TransferCryptoParams>
+{
+  /**
+   * Convert a JSON object to a TransferCryptoParams.
+   *
+   * @param jsonFrom The JSON object with which to fill the TransferCryptoParams.
+   * @param params   The TransferCryptoParams to fill with the JSON object.
+   */
+  static void from_json(const json& jsonFrom, Hiero::TCK::AccountService::TransferCryptoParams& params)
+  {
+    params.mTransfers =
+      Hiero::TCK::getOptionalJsonParameter<std::vector<Hiero::TCK::TransferParams>>(jsonFrom, "transfers");
+    params.mCommonTxParams =
+      Hiero::TCK::getOptionalJsonParameter<Hiero::TCK::CommonTransactionParams>(jsonFrom, "commonTransactionParams");
+  }
+};
+
+} // namespace nlohmann
+
+#endif // HIERO_TCK_CPP_TRANSFER_CRYPTO_PARAMS_H_
 // Filename: src/tck/include/account/params/UpdateAccountParams.h
 // SPDX-License-Identifier: Apache-2.0
 #ifndef HIERO_TCK_CPP_UPDATE_ACCOUNT_PARAMS_H_
@@ -35228,7 +35687,15 @@ struct CommonTransactionParams
   {
     if (mTransactionId.has_value())
     {
-      transaction.setTransactionId(TransactionId::fromString(mTransactionId.value()));
+      // Transaction ID could be the entire transaction ID, or just the account ID of the payer.
+      try
+      {
+        transaction.setTransactionId(TransactionId::fromString(mTransactionId.value()));
+      }
+      catch (const std::invalid_argument&)
+      {
+        transaction.setTransactionId(TransactionId::generate(AccountId::fromString(mTransactionId.value())));
+      }
     }
 
     if (mMaxTransactionFee.has_value())
@@ -35322,6 +35789,288 @@ struct [[maybe_unused]] adl_serializer<Hiero::TCK::CommonTransactionParams>
 } // namespace nlohmann
 
 #endif // HIERO_TCK_CPP_COMMON_TRANSACTION_PARAMS_H_
+// Filename: src/tck/include/common/transfer/HbarTransferParams.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_TCK_CPP_HBAR_TRANSFER_PARAMS_H_
+#define HIERO_TCK_CPP_HBAR_TRANSFER_PARAMS_H_
+
+#include "json/JsonErrorType.h"
+#include "json/JsonRpcException.h"
+#include "json/JsonUtils.h"
+
+#include <optional>
+#include <string>
+#include <vector>
+
+namespace Hiero::TCK
+{
+/**
+ * Struct that contains the parameters of an Hbar transfer.
+ */
+struct HbarTransferParams
+{
+  /**
+   * REQUIRED if mEvmAddress is not provided. The ID of the account associated with the transfer.
+   */
+  std::optional<std::string> mAccountId;
+
+  /**
+   * REQUIRED if mAccountId is not provided. The ID of the account associated with the transfer.
+   */
+  std::optional<std::string> mEvmAddress;
+
+  /**
+   * The amount of Hbar transferred (in tinybars).
+   */
+  std::string mAmount;
+};
+
+} // namespace Hiero::TCK
+
+namespace nlohmann
+{
+/**
+ * JSON serializer template specialization required to convert HbarTransferParams arguments properly.
+ */
+template<>
+struct [[maybe_unused]] adl_serializer<Hiero::TCK::HbarTransferParams>
+{
+  /**
+   * Convert a JSON object to a HbarTransferParams.
+   *
+   * @param jsonFrom The JSON object with which to fill the HbarTransferParams.
+   * @param params   The HbarTransferParams to fill with the JSON object.
+   */
+  static void from_json(const json& jsonFrom, Hiero::TCK::HbarTransferParams& params)
+  {
+    params.mAccountId = Hiero::TCK::getOptionalJsonParameter<std::string>(jsonFrom, "accountId");
+    params.mEvmAddress = Hiero::TCK::getOptionalJsonParameter<std::string>(jsonFrom, "evmAddress");
+    params.mAmount = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "amount");
+
+    if ((params.mAccountId.has_value() && params.mEvmAddress.has_value()) ||
+        (!params.mAccountId.has_value() && !params.mEvmAddress.has_value()))
+    {
+      throw Hiero::TCK::JsonRpcException(Hiero::TCK::JsonErrorType::INVALID_PARAMS,
+                                         "invalid parameters: only one of accountId or evmAddress SHALL be provided.");
+    }
+  }
+};
+
+} // namespace nlohmann
+
+#endif // HIERO_TCK_CPP_HBAR_TRANSFER_PARAMS_H_
+// Filename: src/tck/include/common/transfer/NftTransferParams.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_TCK_CPP_NFT_TRANSFER_PARAMS_H_
+#define HIERO_TCK_CPP_NFT_TRANSFER_PARAMS_H_
+
+#include "json/JsonUtils.h"
+
+#include <optional>
+#include <string>
+
+namespace Hiero::TCK
+{
+/**
+ * Struct that contains the parameters of an NFT transfer.
+ */
+struct NftTransferParams
+{
+  /**
+   * The ID of the account sending the NFT.
+   */
+  std::string mSenderAccountId;
+
+  /**
+   * The ID of the account receiving the NFT.
+   */
+  std::string mReceiverAccountId;
+
+  /**
+   * The ID of the token associated with the transfer.
+   */
+  std::string mTokenId;
+
+  /**
+   * The serial number of the NFT being transferred.
+   */
+  std::string mSerialNumber;
+};
+
+} // namespace Hiero::TCK
+
+namespace nlohmann
+{
+/**
+ * JSON serializer template specialization required to convert NftTransferParams arguments properly.
+ */
+template<>
+struct [[maybe_unused]] adl_serializer<Hiero::TCK::NftTransferParams>
+{
+  /**
+   * Convert a JSON object to a NftTransferParams.
+   *
+   * @param jsonFrom The JSON object with which to fill the NftTransferParams.
+   * @param params   The NftTransferParams to fill with the JSON object.
+   */
+  static void from_json(const json& jsonFrom, Hiero::TCK::NftTransferParams& params)
+  {
+    params.mSenderAccountId = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "senderAccountId");
+    params.mReceiverAccountId = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "receiverAccountId");
+    params.mTokenId = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "tokenId");
+    params.mSerialNumber = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "serialNumber");
+  }
+};
+
+} // namespace nlohmann
+
+#endif // HIERO_TCK_CPP_NFT_TRANSFER_PARAMS_H_
+// Filename: src/tck/include/common/transfer/TokenTransferParams.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_TCK_CPP_TOKEN_TRANSFER_PARAMS_H_
+#define HIERO_TCK_CPP_TOKEN_TRANSFER_PARAMS_H_
+
+#include "json/JsonUtils.h"
+
+#include <optional>
+#include <string>
+
+namespace Hiero::TCK
+{
+/**
+ * Struct that contains the parameters of a token transfer.
+ */
+struct TokenTransferParams
+{
+  /**
+   * The ID of the account associated with the transfer.
+   */
+  std::string mAccountId;
+
+  /**
+   * The ID of the token associated with the transfer.
+   */
+  std::string mTokenId;
+
+  /**
+   * The amount of token to be transferred.
+   */
+  std::string mAmount;
+
+  /**
+   * The decimals of the token to be transferred.
+   */
+  std::optional<uint32_t> mDecimals;
+};
+
+} // namespace Hiero::TCK
+
+namespace nlohmann
+{
+/**
+ * JSON serializer template specialization required to convert TokenTransferParams arguments properly.
+ */
+template<>
+struct [[maybe_unused]] adl_serializer<Hiero::TCK::TokenTransferParams>
+{
+  /**
+   * Convert a JSON object to a TokenTransferParams.
+   *
+   * @param jsonFrom The JSON object with which to fill the TokenTransferParams.
+   * @param params   The TokenTransferParams to fill with the JSON object.
+   */
+  static void from_json(const json& jsonFrom, Hiero::TCK::TokenTransferParams& params)
+  {
+    params.mAccountId = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "accountId");
+    params.mTokenId = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "tokenId");
+    params.mAmount = Hiero::TCK::getRequiredJsonParameter<std::string>(jsonFrom, "amount");
+    params.mDecimals = Hiero::TCK::getOptionalJsonParameter<uint32_t>(jsonFrom, "decimals");
+  }
+};
+
+} // namespace nlohmann
+
+#endif // HIERO_TCK_CPP_TOKEN_TRANSFER_PARAMS_H_
+// Filename: src/tck/include/common/transfer/TransferParams.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_TCK_CPP_TRANSFER_PARAMS_H_
+#define HIERO_TCK_CPP_TRANSFER_PARAMS_H_
+
+#include "common/transfer/HbarTransferParams.h"
+#include "common/transfer/NftTransferParams.h"
+#include "common/transfer/TokenTransferParams.h"
+#include "json/JsonErrorType.h"
+#include "json/JsonRpcException.h"
+#include "json/JsonUtils.h"
+
+#include <optional>
+
+namespace Hiero::TCK
+{
+/**
+ * Struct that contains the parameters of a transfer.
+ */
+struct TransferParams
+{
+  /**
+   * REQUIRED if mToken and mNft are not provided. The parameters of the Hbar transfer.
+   */
+  std::optional<HbarTransferParams> mHbar;
+
+  /**
+   * REQUIRED if mHbar and mNft are not provided. The parameters of the token transfer.
+   */
+  std::optional<TokenTransferParams> mToken;
+
+  /**
+   * REQUIRED if hbar and token are not provided. The parameters of the NFT transfer.
+   */
+  std::optional<NftTransferParams> mNft;
+
+  /**
+   * Is this transfer an approved transfer?
+   */
+  std::optional<bool> mApproved;
+};
+
+} // namespace Hiero::TCK
+
+namespace nlohmann
+{
+/**
+ * JSON serializer template specialization required to convert TransferParams arguments properly.
+ */
+template<>
+struct [[maybe_unused]] adl_serializer<Hiero::TCK::TransferParams>
+{
+  /**
+   * Convert a JSON object to a TransferParams.
+   *
+   * @param jsonFrom The JSON object with which to fill the TransferParams.
+   * @param params   The TransferParams to fill with the JSON object.
+   */
+  static void from_json(const json& jsonFrom, Hiero::TCK::TransferParams& params)
+  {
+    params.mHbar = Hiero::TCK::getOptionalJsonParameter<Hiero::TCK::HbarTransferParams>(jsonFrom, "hbar");
+    params.mToken = Hiero::TCK::getOptionalJsonParameter<Hiero::TCK::TokenTransferParams>(jsonFrom, "token");
+    params.mNft = Hiero::TCK::getOptionalJsonParameter<Hiero::TCK::NftTransferParams>(jsonFrom, "nft");
+    params.mApproved = Hiero::TCK::getOptionalJsonParameter<bool>(jsonFrom, "approved");
+
+    // Only one allowance type should be allowed.
+    const bool hasOnlyHbar = params.mHbar.has_value() && !params.mToken.has_value() && !params.mNft.has_value();
+    const bool hasOnlyToken = !params.mHbar.has_value() && params.mToken.has_value() && !params.mNft.has_value();
+    const bool hasOnlyNft = !params.mHbar.has_value() && !params.mToken.has_value() && params.mNft.has_value();
+    if (!hasOnlyHbar && !hasOnlyToken && !hasOnlyNft)
+    {
+      throw Hiero::TCK::JsonRpcException(Hiero::TCK::JsonErrorType::INVALID_PARAMS,
+                                         "invalid parameters: only one type of transfer SHALL be provided.");
+    }
+  }
+};
+
+} // namespace nlohmann
+
+#endif // HIERO_TCK_CPP_TRANSFER_PARAMS_H_
 // Filename: src/tck/include/json/JsonErrorType.h
 // SPDX-License-Identifier: Apache-2.0
 #ifndef HIERO_TCK_CPP_JSON_ERROR_TYPE_H_
@@ -36259,6 +37008,7 @@ namespace Hiero::TCK::TokenService
 /**
  * Forward declarations.
  */
+struct AirdropTokenParams;
 struct AssociateTokenParams;
 struct BurnTokenParams;
 struct CreateTokenParams;
@@ -36273,6 +37023,15 @@ struct UnfreezeTokenParams;
 struct UnpauseTokenParams;
 struct UpdateTokenFeeScheduleParams;
 struct UpdateTokenParams;
+struct WipeTokenParams;
+
+/**
+ * Airdrop tokens to accounts.
+ *
+ * @params params The parameters to use to airdrop tokens.
+ * @return A JSON response containing the status of the token airdrop.
+ */
+nlohmann::json airdropToken(const AirdropTokenParams& params);
 
 /**
  * Associate an account with tokens.
@@ -36386,9 +37145,92 @@ nlohmann::json updateTokenFeeSchedule(const UpdateTokenFeeScheduleParams& params
  */
 nlohmann::json updateToken(const UpdateTokenParams& params);
 
+/**
+ * Wipe a token or tokens from an account.
+ *
+ * @param params The parameters to use to wipe the token(s).
+ * @ return A JSON response containing the status of the token wipe.
+ */
+nlohmann::json wipeToken(const WipeTokenParams& params);
+
 } // namespace Hiero::TCK::TokenService
 
 #endif // HIERO_TCK_CPP_TOKEN_SERVICE_H_
+// Filename: src/tck/include/token/params/AirdropTokenParams.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_TCK_CPP_AIRDROP_TOKEN_PARAMS_H_
+#define HIERO_TCK_CPP_AIRDROP_TOKEN_PARAMS_H_
+
+#include "common/CommonTransactionParams.h"
+#include "common/transfer/TransferParams.h"
+#include "json/JsonErrorType.h"
+#include "json/JsonRpcException.h"
+#include "json/JsonUtils.h"
+
+#include <optional>
+#include <vector>
+
+namespace Hiero::TCK::TokenService
+{
+/**
+ * Struct to hold the arguments for a `airdropToken` JSON-RPC method call.
+ */
+struct AirdropTokenParams
+{
+  /**
+   * The airdrop information.
+   */
+  std::optional<std::vector<TransferParams>> mTokenTransfers;
+
+  /**
+   * Any parameters common to all transaction types.
+   */
+  std::optional<CommonTransactionParams> mCommonTxParams;
+};
+
+} // namespace Hiero::TCK::TokenService
+
+namespace nlohmann
+{
+/**
+ * JSON serializer template specialization required to convert AirdropTokenParams arguments properly.
+ */
+template<>
+struct [[maybe_unused]] adl_serializer<Hiero::TCK::TokenService::AirdropTokenParams>
+{
+  /**
+   * Convert a JSON object to a AirdropTokenParams.
+   *
+   * @param jsonFrom The JSON object with which to fill the AirdropTokenParams.
+   * @param params   The AirdropTokenParams to fill with the JSON object.
+   */
+  static void from_json(const json& jsonFrom, Hiero::TCK::TokenService::AirdropTokenParams& params)
+  {
+    params.mTokenTransfers =
+      Hiero::TCK::getOptionalJsonParameter<std::vector<Hiero::TCK::TransferParams>>(jsonFrom, "tokenTransfers");
+
+    // Hbar transfer information is not allowed and calls for an INVALID_PARAMS response.
+    if (params.mTokenTransfers.has_value())
+    {
+      for (const Hiero::TCK::TransferParams& transfer : params.mTokenTransfers.value())
+      {
+        if (transfer.mHbar.has_value())
+        {
+          throw Hiero::TCK::JsonRpcException(Hiero::TCK::JsonErrorType::INVALID_PARAMS,
+                                             "invalid parameters: Hbar transfers are NOT allowed as part of a token"
+                                             "airdrop.");
+        }
+      }
+    }
+
+    params.mCommonTxParams =
+      Hiero::TCK::getOptionalJsonParameter<Hiero::TCK::CommonTransactionParams>(jsonFrom, "commonTransactionParams");
+  }
+};
+
+} // namespace nlohmann
+
+#endif // HIERO_TCK_CPP_AIRDROP_TOKEN_PARAMS_H_
 // Filename: src/tck/include/token/params/AssociateTokenParams.h
 // SPDX-License-Identifier: Apache-2.0
 #ifndef HIERO_TCK_CPP_ASSOCIATE_TOKEN_PARAMS_H_
@@ -37507,3 +38349,78 @@ struct [[maybe_unused]] adl_serializer<Hiero::TCK::TokenService::UpdateTokenPara
 } // namespace nlohmann
 
 #endif // HIERO_TCK_CPP_UPDATE_TOKEN_PARAMS_H_
+// Filename: src/tck/include/token/params/WipeTokenParams.h
+// SPDX-License-Identifier: Apache-2.0
+#ifndef HIERO_TCK_CPP_WIPE_TOKEN_PARAMS_H_
+#define HIERO_TCK_CPP_WIPE_TOKEN_PARAMS_H_
+
+#include "common/CommonTransactionParams.h"
+#include "json/JsonUtils.h"
+
+#include <nlohmann/json.hpp>
+#include <optional>
+#include <string>
+
+namespace Hiero::TCK::TokenService
+{
+/**
+ * Struct to hold the arguments for a `wipeToken` JSON-RPC method call.
+ */
+struct WipeTokenParams
+{
+  /**
+   * The ID of the token to wipe.
+   */
+  std::optional<std::string> mTokenId;
+
+  /**
+   * The ID of the account from which to wipe the tokens.
+   */
+  std::optional<std::string> mAccountId;
+
+  /**
+   * The amount of fungible tokens to wipe.
+   */
+  std::optional<std::string> mAmount;
+
+  /**
+   * The serial numbers of the NFTs to wipe.
+   */
+  std::optional<std::vector<std::string>> mSerialNumbers;
+
+  /**
+   * Any parameters common to all transaction types.
+   */
+  std::optional<CommonTransactionParams> mCommonTxParams;
+};
+
+} // namespace Hedera::TCK::TokenService
+
+namespace nlohmann
+{
+/**
+ * JSON serializer template specialization required to convert WipeTokenParams arguments properly.
+ */
+template<>
+struct [[maybe_unused]] adl_serializer<Hiero::TCK::TokenService::WipeTokenParams>
+{
+  /**
+   * Convert a JSON object to a WipeTokenParams.
+   *
+   * @param jsonFrom The JSON object with which to fill the WipeTokenParams.
+   * @param params   The WipeTokenParams to fill with the JSON object.
+   */
+  static void from_json(const json& jsonFrom, Hiero::TCK::TokenService::WipeTokenParams& params)
+  {
+    params.mTokenId = Hiero::TCK::getOptionalJsonParameter<std::string>(jsonFrom, "tokenId");
+    params.mAccountId = Hiero::TCK::getOptionalJsonParameter<std::string>(jsonFrom, "accountId");
+    params.mAmount = Hiero::TCK::getOptionalJsonParameter<std::string>(jsonFrom, "amount");
+    params.mSerialNumbers = Hiero::TCK::getOptionalJsonParameter<std::vector<std::string>>(jsonFrom, "serialNumbers");
+    params.mCommonTxParams =
+      Hiero::TCK::getOptionalJsonParameter<Hiero::TCK::CommonTransactionParams>(jsonFrom, "commonTransactionParams");
+  }
+};
+
+} // namespace nlohmann
+
+#endif // HIERO_TCK_CPP_WIPE_TOKEN_PARAMS_H_
